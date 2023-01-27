@@ -5,12 +5,11 @@ object lang:
   trait AttributeType extends ElemType
 
   sealed trait Elem
-
   final case class Entity(et: EntityType, id: String) extends Elem:
-    override def toString = s"""$et($id)"""
+    override def toString = s"""$et(${id.show})"""
 
   final case class Attribute[T](at: AttributeType, value: T) extends Elem:
-    override def toString = s"""$at($value)"""
+    override def toString = s"""$at(${value.show})"""
 
   final case class Relation(e: Entity, rt: RelationType, sub: Model) extends Elem:
     override def toString = s"""$e.${rt.toString.toLowerCase}(${sub.toVector.mkString(",")})"""
