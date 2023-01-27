@@ -2,8 +2,6 @@ package reqt
 
 import scala.collection.immutable.ArraySeq
 
-export meta.help
-
 object meta:
   val entityConcepts = ArraySeq[(String,String)](
     "Actor" -> 
