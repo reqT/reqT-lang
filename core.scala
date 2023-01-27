@@ -37,6 +37,8 @@ object core:
     case Prio, Benefit
   export IntAttributeType.*
 
+  extension (sat: IntAttributeType) def apply(value: Int): Attribute[Int] = Attribute(sat, value)
+
   enum RelationType extends ElemType:
     case Has, Requires
   export RelationType.*
