@@ -1,13 +1,19 @@
 package reqt
 
-object core:
+object lang:
   sealed trait ElemType
   trait AttributeType extends ElemType
 
   sealed trait Elem
-  final case class Entity(et: EntityType, id: String) extends Elem
-  final case class Attribute[T](at: AttributeType, value: T) extends Elem
-  final case class Relation(e: Entity, rt: RelationType, sub: Model) extends Elem
+
+  final case class Entity(et: EntityType, id: String) extends Elem:
+    override def toString = s"""$et($id)"""
+
+  final case class Attribute[T](at: AttributeType, value: T) extends Elem:
+    override def toString = s"""$at($value)"""
+
+  final case class Relation(e: Entity, rt: RelationType, sub: Model) extends Elem:
+    override def toString = s"""$e.${rt.toString.toLowerCase}(${sub.toVector.mkString(",")})"""
 
   final case class Model(toVector: Vector[Elem]):
     def ++(other: Model): Model = Model(toVector ++ other.toVector)
@@ -42,3 +48,7 @@ object core:
   enum RelationType extends ElemType:
     case Has, Requires
   export RelationType.*
+
+  extension (e: Entity)
+    def has(sub: Elem*): Relation = Relation(e, Has, Model(sub*))
+    def requires(sub: Elem*): Relation = Relation(e, Requires, Model(sub*))
