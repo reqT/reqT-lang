@@ -56,7 +56,7 @@ object parse:
             currentLineNbr += nbrNewLines
             if s.endsWith("\n") then buf += Token.Indent(0, currentLineNbr, s)
             else // s ends with a \n and then some leading spaces of indentation 
-              val level = s.reverse.takeWhile(_.isWhitespace).replaceTabsWithSpace.length
+              val level = s.reverse.takeWhile(_ != '\n').replaceTabsWithSpace.length
               buf += Token.Indent(level, currentLineNbr, s)
         else
           val et = parseEntityType(s)
