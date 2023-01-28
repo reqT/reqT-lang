@@ -16,6 +16,7 @@ object lang:
 
   final case class Model(toVector: Vector[Elem]):
     def ++(other: Model): Model = Model(toVector ++ other.toVector)
+    def +(e: Elem): Model = Model(toVector :+ e)
     override def toString: String = toVector.mkString("Model(",",",")")
 
   object Model:

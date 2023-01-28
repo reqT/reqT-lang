@@ -89,7 +89,6 @@ object meta:
     "Value" -> "An amount. An estimate of worth.",
   )
 
-
   val relationConcepts = ArraySeq[(String,String)](
     "binds" -> "Ties a value to an option. A configuration binds a variation point." ,
     "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity." ,
