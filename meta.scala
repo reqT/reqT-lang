@@ -56,7 +56,7 @@ object meta:
     "WorkPackage" -> "A collection of (development) work tasks.",
   )
 
-  val stringAttributeConcepts = ArraySeq[(String,String)](
+  val stringAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note that explains or discusses some entity." ,
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation." ,
     "Example" -> "A note that illustrates some entity by a  typical instance." ,
@@ -74,7 +74,7 @@ object meta:
     "Why" -> "A description of intention. Rationale.",
   )
 
-  val intAttributeConcepts = ArraySeq[(String,String)](
+  val intAttrConcepts = ArraySeq[(String,String)](
     "Benefit" -> "A characterization of a good or helpful result or effect (e.g. of a feature)." ,
     "Capacity" -> "The largest amount that can be held or contained (e.g. by a resource)." ,
     "Cost" -> "The expenditure of something, such as time or effort, necessary for the implementation of an entity." ,
@@ -109,8 +109,8 @@ object meta:
 
   val concepts: ArraySeq[(String, (String, String))] = 
     entityConcepts.map((a,b) => (a, (b, "EntityType"))) ++
-    stringAttributeConcepts.map((a,b) => (a, (b, "StringAttributeType"))) ++
-    intAttributeConcepts.map((a,b) => (a, (b, "IntAttributeType"))) ++
+    stringAttrConcepts.map((a,b) => (a, (b, "StringAttrType"))) ++
+    intAttrConcepts.map((a,b) => (a, (b, "IntAttrType"))) ++
     relationConcepts.map((a,b) => (a, (b, "RelationType")))
 
   val conceptMap: Map[String, (String, String)] = concepts.toMap

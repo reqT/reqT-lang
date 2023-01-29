@@ -2,16 +2,17 @@ package reqt
 
 object lang:
   sealed trait ElemType
-  trait AttributeType extends ElemType
+  trait AttrType extends ElemType
 
   sealed trait Elem
-  final case class Entity(et: EntityType, id: String) extends Elem:
+  sealed trait Node extends Elem
+  final case class Ent(et: EntType, id: String) extends Node:
     override def toString = s"""$et(${id.show})"""
 
-  final case class Attribute[T](at: AttributeType, value: T) extends Elem:
+  final case class Attr[T](at: AttrType, value: T) extends Node:
     override def toString = s"""$at(${value.show})"""
 
-  final case class Relation(e: Entity, rt: RelationType, sub: Model) extends Elem:
+  final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
     override def toString = s"""$e.${rt.toString.toLowerCase}(${sub.toVector.mkString(",")})"""
 
   final case class Model(toVector: Vector[Elem]):
@@ -27,28 +28,28 @@ object lang:
     def +=(e: Elem): ModelBuilder = {buf += e; this}
     def toModel: Model = Model(buf.toVector)
 
-  enum EntityType extends ElemType:
+  enum EntType extends ElemType:
     case Feature, Req, Stakeholder
-  export EntityType.*
+  export EntType.*
 
-  extension (et: EntityType) def apply(id: String): Entity = Entity(et, id)
+  extension (et: EntType) def apply(id: String): Ent = Ent(et, id)
 
-  enum StringAttributeType extends AttributeType:
+  enum StrAttrType extends AttrType:
     case Spec, Gist
-  export StringAttributeType.*
+  export StrAttrType.*
 
-  extension (sat: StringAttributeType) def apply(value: String): Attribute[String] = Attribute(sat, value)
+  extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
 
-  enum IntAttributeType extends AttributeType:
+  enum IntAttrType extends AttrType:
     case Prio, Benefit
-  export IntAttributeType.*
+  export IntAttrType.*
 
-  extension (sat: IntAttributeType) def apply(value: Int): Attribute[Int] = Attribute(sat, value)
+  extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
 
-  enum RelationType extends ElemType:
+  enum RelType extends ElemType:
     case Has, Requires
-  export RelationType.*
+  export RelType.*
 
-  extension (e: Entity)
-    def has(sub: Elem*): Relation = Relation(e, Has, Model(sub*))
-    def requires(sub: Elem*): Relation = Relation(e, Requires, Model(sub*))
+  extension (e: Ent)
+    def has(sub: Elem*): Rel = Rel(e, Has, Model(sub*))
+    def requires(sub: Elem*): Rel = Rel(e, Requires, Model(sub*))
