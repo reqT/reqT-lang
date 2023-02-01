@@ -107,13 +107,14 @@ object parse:
 
   def partitionNextLine(tokens: List[Token]): (List[Token], List[Token]) = 
     tokens match 
-    case List(Token.Indent(_), Token.End()) => (Nil, Nil)
+    case List(Token.Indent(_), e@Token.End()) => (e, Nil)
     case List(x@Token.Indent(level), xs*) => 
       (x +: xs.toList.takeWhile(!_.isDelim), xs.toList.dropWhile(!_.isDelim))
-    case List(Token.End()) => (Nil, Nil)
-    case x :: xs => // Error: all tokenized lines should start with Indent token
+    case List(e@Token.End()) => (e, Nil)
+    //case x :: xs => // Error: all tokenized lines should start with Indent token
       (x +: xs.takeWhile(!_.isDelim), xs.dropWhile(!_.isDelim)) 
-    case Nil => (Nil, Nil)
+    //case Nil => (Nil, Nil)
+    //case xs => new Exception(s"reqt.parse: internal error (a bug) parsing $xs")
 
   def parseModel(tokens: List[Token]): Either[String, lang.Model] = 
     if tokens.isEmpty then Right(lang.Model()) else
