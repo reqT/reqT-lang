@@ -3,8 +3,8 @@ package reqt
 import reqt.lang.*
 
 object parse:
-  val parseEntType: Map[String, EntType] = 
-    EntType.values.map(e => e.toString -> e).toMap.withDefaultValue(null) //ugly but fast
+  val parseEntType: Map[String, EntType] = //null is ugly but fast
+    EntType.values.map(e => e.toString -> e).toMap.withDefaultValue(null) 
 
   val parseStrAttrType: Map[String, StrAttrType] = 
     StrAttrType.values.map(e => e.toString -> e).toMap.withDefaultValue(null)
@@ -32,6 +32,11 @@ object parse:
     lazy val isRelType = ret != null
 
     lazy val isElemType = isEntType || isIntAttrType || isStrAttrType || isRelType
+
+    lazy val isIndent = this.isInstanceOf[Token.Indent]
+    lazy val isEnd = this.isInstanceOf[Token.End]
+    lazy val isDelim = isIndent || isEnd
+
 
   object Token:
     case class Word(s: String)(val line: Int, val orig: String) extends Token
@@ -85,18 +90,35 @@ object parse:
             else buf += Token.Word(s)(currentLineNbr, s)
         end while
         buf += Token.End()(currentLineNbr + 1)
-        buf.toList
-  
+        mergeWords(buf.toList)
+
+  end extension 
+
+  /** recursively combine pairs of non-ElemType words */
   def mergeWords(tokens: List[Token]): List[Token] = 
     tokens match
-     case List(w1@Token.Word(s1), sp@Token.Space(n), w2@Token.Word(s2), xs*) if !w1.isElemType && !w2.isElemType =>
-       mergeWords(Token.Word(s"$s1${sp.orig}$s2")(w1.line, w1.orig + sp.orig + w2.orig) +: xs.toList)
- 
-     case x :: xs => x :: mergeWords(xs)
-     
-     case Nil => Nil
+    case List(w1@Token.Word(s1), sp@Token.Space(n), w2@Token.Word(s2), xs*) 
+      if !w1.isElemType && !w2.isElemType =>
+        mergeWords( 
+          Token.Word(s"$s1${sp.orig}$s2")(w1.line, w1.orig + sp.orig + w2.orig) 
+            +: xs.toList)
+    case x :: xs => x :: mergeWords(xs)
+    case Nil => Nil
+
+  def partitionNextLine(tokens: List[Token]): (List[Token], List[Token]) = 
+    tokens match 
+    case List(Token.Indent(_), Token.End()) => (Nil, Nil)
+    case List(x@Token.Indent(level), xs*) => 
+      (x +: xs.toList.takeWhile(!_.isDelim), xs.toList.dropWhile(!_.isDelim))
+    case List(Token.End()) => (Nil, Nil)
+    case x :: xs => // Error: all tokenized lines should start with Indent token
+      (x +: xs.takeWhile(!_.isDelim), xs.dropWhile(!_.isDelim)) 
+    case Nil => (Nil, Nil)
+
   
   def parseModel(tokens: List[Token]): Either[String, lang.Model] = 
     if tokens.isEmpty then Right(lang.Model()) else
       var builder = lang.ModelBuilder()
       Right(builder.toModel)
+
+end parse
