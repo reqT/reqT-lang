@@ -87,11 +87,14 @@ object parse:
         buf += Token.End()(currentLineNbr + 1)
         buf.toList
   
-  def mergeWords(tokens: List[Token]): List[Token] = tokens match
-    case List(w1@Token.Word(s1), sp@Token.Space(n), w2@Token.Word(s2), xs*) if !w1.isElemType && !w2.isElemType =>
-      mergeWords(Token.Word(s"$s1${sp.orig}$s2")(w1.line, w1.orig + sp.orig + w2.orig) +: xs.toList)  
-    case x :: xs => x :: mergeWords(xs)
-    case Nil => Nil
+  def mergeWords(tokens: List[Token]): List[Token] = 
+    tokens match
+     case List(w1@Token.Word(s1), sp@Token.Space(n), w2@Token.Word(s2), xs*) if !w1.isElemType && !w2.isElemType =>
+       mergeWords(Token.Word(s"$s1${sp.orig}$s2")(w1.line, w1.orig + sp.orig + w2.orig) +: xs.toList)
+ 
+     case x :: xs => x :: mergeWords(xs)
+     
+     case Nil => Nil
   
   def parseModel(tokens: List[Token]): Either[String, lang.Model] = 
     if tokens.isEmpty then Right(lang.Model()) else
