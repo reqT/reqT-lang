@@ -62,7 +62,6 @@ object meta:
     "Example" -> "A note that illustrates some entity by a  typical instance." ,
     "Expectation" -> "The required output of a test in order to be counted as passed." ,
     "FileName" -> "The name of a storage of serialized, persistent data." ,
-    "Frequency" -> "The rate of occurrence of some entity. " ,
     "Gist" -> "A short and simple description of an entity, e.g. a function or a test." ,
     "Image" -> "(The name of) a picture of an entity." ,
     "Input" -> "Data consumed by an entity, " ,
@@ -107,18 +106,51 @@ object meta:
     "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
   )
 
-  val concepts: ArraySeq[(String, (String, String))] = 
-    entityConcepts.map((a,b) => (a, (b, "EntityType"))) ++
-    stringAttrConcepts.map((a,b) => (a, (b, "StringAttrType"))) ++
-    intAttrConcepts.map((a,b) => (a, (b, "IntAttrType"))) ++
-    relationConcepts.map((a,b) => (a, (b, "RelationType")))
+  case class Concept(name: String, description: String, abstractType: String)
 
-  val conceptMap: Map[String, (String, String)] = concepts.toMap
+  val concepts: ArraySeq[Concept] = 
+    entityConcepts.map((n, d) => Concept(n, d, "EntityType")) ++
+    stringAttrConcepts.map((n, d) => Concept(n,  d, "StringAttrType")) ++
+    intAttrConcepts.map((n, d) => Concept(n,  d, "IntAttrType")) ++
+    relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))
 
-  def explain(concept: String): String = conceptMap.get(concept) match
-    case Some((name, tpe)) => s"$name [$tpe]"
-    case None => "Unknown concept"
+  val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
+
+  def describe(name: String): String = conceptMap.get(name) match
+    case Some(Concept(name, descr, abstractType)) => s"$descr [$abstractType]"
+    case None => s"Unknown concept: $name"
   
-  extension (concept: Any) def help = explain(concept.toString)
+  extension (concept: Any) def help: String = describe(concept.toString)
 
-  
+  extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
+
+  val entityNames: ArraySeq[String] = entityConcepts.names
+  val stringAttrNames: ArraySeq[String] = stringAttrConcepts.names
+  val intAttrNames: ArraySeq[String] = intAttrConcepts.names
+  val relationNames: ArraySeq[String] = relationConcepts.names
+
+  val conceptNames: ArraySeq[String] = concepts.map(_.name)
+
+  val isConceptName: Set[String] = conceptNames.toSet
+
+  def generate: String = 
+    def method(n: String): String = 
+      s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))"
+
+    s"""|  enum EntType extends ElemType:
+        |    case ${entityNames.mkString(",")}
+        |
+        |  enum StrAttrType extends AttrType:
+        |    case ${stringAttrNames.mkString(",")}
+        |
+        |  enum IntAttrType extends AttrType:
+        |    case ${intAttrNames.mkString(",")}
+        |
+        |  enum RelType extends ElemType:
+        |    case ${relationNames.map(_.capitalize).mkString(",")}
+        |
+        |  extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
+        |  extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
+        |  extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
+        |  extension (e: Ent)
+        |""".stripMargin ++ relationNames.map(method).mkString("\n").stripMargin
