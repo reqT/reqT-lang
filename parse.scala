@@ -115,7 +115,6 @@ object parse:
       (x +: xs.takeWhile(!_.isDelim), xs.dropWhile(!_.isDelim)) 
     case Nil => (Nil, Nil)
 
-  
   def parseModel(tokens: List[Token]): Either[String, lang.Model] = 
     if tokens.isEmpty then Right(lang.Model()) else
       var builder = lang.ModelBuilder()
