@@ -4,8 +4,7 @@ import scala.collection.immutable.ArraySeq
 
 object meta:
   val entityConcepts = ArraySeq[(String,String)](
-    "Actor" -> 
-      ("A human or machine that communicates with a system."),
+    "Actor" -> "A human or machine that communicates with a system.",
     "App" -> "A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application." ,
     "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level." ,
     "Breakpoint" -> "A point of change. An important aspect of a (non-linear) relation between quality and benefit.",
