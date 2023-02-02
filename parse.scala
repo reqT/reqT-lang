@@ -34,8 +34,7 @@ object parse:
     lazy val isElemType = isEntType || isIntAttrType || isStrAttrType || isRelType
 
     val isIndent = this.isInstanceOf[Token.Indent]
-    val isEnd = this.isInstanceOf[Token.End]
-    val isDelim = isIndent || isEnd
+    val isNum = this.isInstanceOf[Token.Num]
     val isSpace = this.isInstanceOf[Token.Space]
     val isWord = this.isInstanceOf[Token.Word]
 
@@ -45,7 +44,7 @@ object parse:
     case class Num(i: Int)(val line: Int, val orig: String) extends Token
     case class Space(nbrSpaces: Int)(val line: Int, val orig: String) extends Token
     case class Indent(level: Int)(val line: Int, val orig: String) extends Token
-    case class End()(val line: Int, val orig: String = "") extends Token
+    //case class End()(val line: Int, val orig: String = "") extends Token
 
   val tabSpaces = " " * 2
 
@@ -90,7 +89,7 @@ object parse:
             if i.isDefined then buf += Token.Num(i.get)(currentLineNbr, s)   
             else buf += Token.Word(s)(currentLineNbr, s)
         end while
-        buf += Token.End()(currentLineNbr + 1)
+        //buf += Token.End()(currentLineNbr + 1)
         mergeWords(buf.toList).filterNot(_.isSpace)
 
   end extension 
@@ -106,42 +105,118 @@ object parse:
     case Nil => Nil
     case x :: xs => x :: mergeWords(xs)
 
-  extension (tokens: List[Token]) def toText: String = tokens.map(_.orig).mkString
+  extension (tokens: List[Token]) 
+    def toText: String = tokens.map(_.orig).mkString
 
   def partitionNextLine(tokens: List[Token]): (List[Token], List[Token]) = 
     tokens match 
-    case Nil | List(Token.End()) | List(Token.Indent(_)) => (Nil, Nil)
-    case List(Token.Indent(_), Token.End()) => (Nil, Nil)
+    case Nil | List(Token.Indent(_)) => (Nil, Nil)
     case List(Token.Indent(_), x@Token.Indent(_), xs*) => partitionNextLine(x :: xs.toList)
     case List(x@Token.Indent(level), xs*) => 
-      (x +: xs.toList.takeWhile(!_.isDelim), xs.toList.dropWhile(!_.isDelim))
+      (x +: xs.toList.takeWhile(!_.isIndent), xs.toList.dropWhile(!_.isIndent))
     case xs => assert(false, s"reqt.parse bug: Indent|End missing in $xs")
 
-  def parseModel(tokens: List[Token]): Either[(Token, String), List[Elem]] = 
-    val (nextLine, rest) = partitionNextLine(tokens)
-    nextLine match
-    case Nil => Right(List())
-    case List(Token.Indent(_))  => parseModel(rest)
-    case List(Token.End()) => Right(List())
-    case List(indent@Token.Indent(level), line*) =>
-       line match
-       case Nil => parseModel(rest)
-       case x :: xs if x.isStrAttrType => Right(List(x.sat.apply(xs.toText)))
-       case x :: xs if x.isIntAttrType => 
-         xs.headOption match
-         case Some(Token.Num(i)) => Right(List(x.iat.apply(i)))
-         case Some(t) => Left(t -> s"integer expected after ${x.iat}")
-         case None => Left(x -> s"integer expected but end of line found")
-       
-       case e :: id :: xs => 
-          ??? // kolla om xs slutar med relType och allt där emellan blir id och ta submodel i början av rest med större idndentering
-       case e :: xs if e.isEntType => Right(List(e.ent.apply(xs.toText)))
-       case x :: xs => Left(x -> s"element type expected")
+  type ParseResult = Either[(Token, String), List[Elem]]
 
-    case xs => assert(false, s"reqt.parse bug: Indent missing in $xs")
+  extension (t: Token) 
+    def isIndentSameOrLeftOf(currentLevel: Int): Boolean = 
+      t match
+      case Token.Indent(myLevel) if myLevel <= currentLevel => true 
+      case _ => false
+
+  def parseElems(tokens: List[Token]): ParseResult = 
+    println(s">>>  parsing $tokens")
+    tokens match
+    case Nil => Right(Nil)
+    case List(Token.Indent(_)) => Right(Nil)
+    case List(Token.Indent(_), i@Token.Indent(_), elems*) => parseElems(i :: elems.toList)
+    case List(indent@Token.Indent(level), tokensAfterIndent*) =>
+       val tokensToParse = tokensAfterIndent.toList
+       tokensToParse match
+       case Nil => Right(Nil)
+
+       case x :: xs if x.isStrAttrType =>
+         val remainingTokensOnThisLine = xs.takeWhile(!_.isIndent) 
+         val strAttr =  x.sat.apply(remainingTokensOnThisLine.toText)
+         val remainingTokensAfterThisLine = xs.drop(remainingTokensOnThisLine.length)
+         val remainingElemsOrErr = parseElems(remainingTokensAfterThisLine)
+         remainingElemsOrErr match 
+         case Right(elems) => Right(strAttr :: elems)
+         case Left(err) => Left(err)
+       
+       case x :: xs if x.isIntAttrType => 
+         xs match
+         case List(n@Token.Num(i), ys*) => 
+           val remainingTokensOnThisLine = ys.toList.takeWhile(!_.isIndent)
+           val intAttr = x.iat.apply(n.i)
+           val remainingTokensAfterThisLine = ys.toList.drop(remainingTokensOnThisLine.length)
+           val remainingElemsOrErr = parseElems(remainingTokensAfterThisLine)
+           remainingElemsOrErr match 
+           case Right(elems) => Right(intAttr :: elems)
+           case Left(err)    => Left(err)
+         case List(t, ts*) => Left(t -> s"integer expected after ${x.iat}")
+         case Nil => Left(x -> s"integer expected but end of line found")
+
+       case e :: Nil if e.isEntType => Left(e -> s"id expected")
+
+       case e :: id :: xs if e.isEntType && id.isElemType => Left(e -> s"id expected but elem found")
+
+       case e :: id :: xs if e.isEntType => // Feature xyz has ...
+          val remainingTokensOnThisLine = xs.takeWhile(!_.isIndent)
+          if remainingTokensOnThisLine.nonEmpty then 
+            val reversedRemainingTokensOnThisLine = remainingTokensOnThisLine.reverse
+            val lastTokenOnThisLine = reversedRemainingTokensOnThisLine.head 
+            println(s"  >>> xs = $xs")
+            println(s"  >>> lastTokenOnThisLine = $lastTokenOnThisLine")
+            if lastTokenOnThisLine.isRelType then
+              val relType = lastTokenOnThisLine.ret
+              val subTokens = xs.drop(remainingTokensOnThisLine.length).takeWhile(!_.isIndentSameOrLeftOf(level))
+              println(s"  >>> subTokens = $subTokens")
+              val subElemsOrErr = parseElems(subTokens)
+              subElemsOrErr match 
+              case Right(elems) => 
+                val rel = Rel(e.ent.apply(id.orig), relType, Model(elems*))
+                val remainingTokens = xs.drop(remainingTokensOnThisLine.length + subTokens.length)
+                val remainingElemsOrErr = parseElems(remainingTokens)
+                remainingElemsOrErr match
+                  case Right(moreElems) => Right(rel :: moreElems)
+                  case left => left 
+              case left => left
+            else if lastTokenOnThisLine.isNum // a hack to allow one-liners: Feature x has Prio 1
+                    && remainingTokensOnThisLine.length > 2 
+                    && reversedRemainingTokensOnThisLine(1).isIntAttrType 
+                    && reversedRemainingTokensOnThisLine(2).isRelType then 
+              val ret  = reversedRemainingTokensOnThisLine(2).ret
+              val iat = reversedRemainingTokensOnThisLine(1).iat
+              val i = lastTokenOnThisLine.asInstanceOf[Token.Num].i
+              val remainingTokensAfterThisLine = xs.drop(remainingTokensOnThisLine.length)
+              val remainingElemsOrErr = parseElems(remainingTokensAfterThisLine)
+              remainingElemsOrErr match
+              case Right(elems) => 
+                // TODO take indented lines after this from elems and put in submodel
+                Right(Rel(e.ent.apply(id.orig), ret , Model(iat.apply(i))) :: elems)
+              case Left(err) => Left(err)
+
+            else // make an entity with the rest of line part of id
+              val remainingTokensAfterThisLine = xs.drop(remainingTokensOnThisLine.length)
+              val remainingElemsOrErr = parseElems(remainingTokensAfterThisLine)
+              remainingElemsOrErr match
+              case Right(elems) => Right(e.ent.apply((id :: remainingTokensOnThisLine).toText):: elems)
+              case Left(err) => Left(err)
+
+          else // this line is single entity and id and nothing else
+            val remainingTokensAfterThisLine = xs.drop(remainingTokensOnThisLine.length)
+            val remainingElemsOrErr = parseElems(remainingTokensAfterThisLine)
+            remainingElemsOrErr match
+            case Right(elems) => Right(e.ent.apply(id.orig) :: elems)
+            case Left(err) => Left(err)
+       
+       case x :: xs => Left(x -> s"element type expected before $xs")
+
+    case xs => assert(false, s"reqt.parse bug: Indent or End token missing in $xs")
 
   extension (s: String) def toModel: Either[String, Model] = 
-    parseModel(s.tokenize) match
+    parseElems(s.tokenize) match
     case Right(elems) => Right(Model(elems*))
     case Left((t, msg)) => Left(s"error at line ${t.line}: ${msg};${ t.orig}")
 
