@@ -33,17 +33,18 @@ object parse:
 
     lazy val isElemType = isEntType || isIntAttrType || isStrAttrType || isRelType
 
-    lazy val isIndent = this.isInstanceOf[Token.Indent]
-    lazy val isEnd = this.isInstanceOf[Token.End]
-    lazy val isDelim = isIndent || isEnd
+    val isIndent = this.isInstanceOf[Token.Indent]
+    val isEnd = this.isInstanceOf[Token.End]
+    val isDelim = isIndent || isEnd
+    val isSpace = this.isInstanceOf[Token.Space]
+    val isWord = this.isInstanceOf[Token.Word]
 
 
   object Token:
-    case class Word(s: String)(val line: Int, val orig: String) extends Token
+    case class Word(text: String)(val line: Int, val orig: String) extends Token
     case class Num(i: Int)(val line: Int, val orig: String) extends Token
     case class Space(nbrSpaces: Int)(val line: Int, val orig: String) extends Token
     case class Indent(level: Int)(val line: Int, val orig: String) extends Token
-    case class Err(msg: String)(val line: Int, val orig: String) extends Token
     case class End()(val line: Int, val orig: String = "") extends Token
 
   val tabSpaces = " " * 2
@@ -90,11 +91,11 @@ object parse:
             else buf += Token.Word(s)(currentLineNbr, s)
         end while
         buf += Token.End()(currentLineNbr + 1)
-        mergeWords(buf.toList)
+        mergeWords(buf.toList).filterNot(_.isSpace)
 
   end extension 
 
-  /** recursively combine pairs of non-ElemType words */
+  /** combine pairs of non-ElemType words */
   def mergeWords(tokens: List[Token]): List[Token] = 
     tokens match
     case List(w1@Token.Word(s1), sp@Token.Space(n), w2@Token.Word(s2), xs*) 
@@ -102,23 +103,46 @@ object parse:
         mergeWords( 
           Token.Word(s"$s1${sp.orig}$s2")(w1.line, w1.orig + sp.orig + w2.orig) 
             +: xs.toList)
-    case x :: xs => x :: mergeWords(xs)
     case Nil => Nil
+    case x :: xs => x :: mergeWords(xs)
+
+  extension (tokens: List[Token]) def toText: String = tokens.map(_.orig).mkString
 
   def partitionNextLine(tokens: List[Token]): (List[Token], List[Token]) = 
     tokens match 
-    case List(Token.Indent(_), e@Token.End()) => (e, Nil)
+    case Nil | List(Token.End()) | List(Token.Indent(_)) => (Nil, Nil)
+    case List(Token.Indent(_), Token.End()) => (Nil, Nil)
+    case List(Token.Indent(_), x@Token.Indent(_), xs*) => partitionNextLine(x :: xs.toList)
     case List(x@Token.Indent(level), xs*) => 
       (x +: xs.toList.takeWhile(!_.isDelim), xs.toList.dropWhile(!_.isDelim))
-    case List(e@Token.End()) => (e, Nil)
-    //case x :: xs => // Error: all tokenized lines should start with Indent token
-      (x +: xs.takeWhile(!_.isDelim), xs.dropWhile(!_.isDelim)) 
-    //case Nil => (Nil, Nil)
-    //case xs => new Exception(s"reqt.parse: internal error (a bug) parsing $xs")
+    case xs => assert(false, s"reqt.parse bug: Indent|End missing in $xs")
 
-  def parseModel(tokens: List[Token]): Either[String, lang.Model] = 
-    if tokens.isEmpty then Right(lang.Model()) else
-      var builder = lang.ModelBuilder()
-      Right(builder.toModel)
+  def parseModel(tokens: List[Token]): Either[(Token, String), List[Elem]] = 
+    val (nextLine, rest) = partitionNextLine(tokens)
+    nextLine match
+    case Nil => Right(List())
+    case List(Token.Indent(_))  => parseModel(rest)
+    case List(Token.End()) => Right(List())
+    case List(indent@Token.Indent(level), line*) =>
+       line match
+       case Nil => parseModel(rest)
+       case x :: xs if x.isStrAttrType => Right(List(x.sat.apply(xs.toText)))
+       case x :: xs if x.isIntAttrType => 
+         xs.headOption match
+         case Some(Token.Num(i)) => Right(List(x.iat.apply(i)))
+         case Some(t) => Left(t -> s"integer expected after ${x.iat}")
+         case None => Left(x -> s"integer expected but end of line found")
+       
+       case e :: id :: xs => 
+          ??? // kolla om xs slutar med relType och allt där emellan blir id och ta submodel i början av rest med större idndentering
+       case e :: xs if e.isEntType => Right(List(e.ent.apply(xs.toText)))
+       case x :: xs => Left(x -> s"element type expected")
+
+    case xs => assert(false, s"reqt.parse bug: Indent missing in $xs")
+
+  extension (s: String) def toModel: Either[String, Model] = 
+    parseModel(s.tokenize) match
+    case Right(elems) => Right(Model(elems*))
+    case Left((t, msg)) => Left(s"error at line ${t.line}: ${msg};${ t.orig}")
 
 end parse
