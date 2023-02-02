@@ -136,7 +136,13 @@ object meta:
     def method(n: String): String = 
       s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))"
 
-    s"""|  enum EntType extends ElemType:
+    s"""|//!GENERATE code below by `println(reqt.meta.generate)` in repl and copy-paste
+        |package reqt
+        |
+        |trait GENERATED:
+        |  self : lang.type =>
+        |
+        |  enum EntType extends ElemType:
         |    case ${entityNames.mkString(",")}
         |
         |  enum StrAttrType extends AttrType:
