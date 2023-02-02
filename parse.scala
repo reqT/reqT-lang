@@ -1,7 +1,5 @@
 package reqt
 
-import reqt.lang.*
-
 object parse:
   val parseEntType: Map[String, EntType] = //null is ugly but fast
     EntType.values.map(e => e.toString -> e).toMap.withDefaultValue(null) 

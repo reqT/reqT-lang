@@ -139,23 +139,25 @@ object meta:
     s"""|//!GENERATE code below by `println(reqt.meta.generate)` in repl and copy-paste
         |package reqt
         |
-        |trait GENERATED:
-        |  self : lang.type =>
+        |enum EntType extends ElemType:
+        |  case ${entityNames.mkString(",")}
         |
-        |  enum EntType extends ElemType:
-        |    case ${entityNames.mkString(",")}
+        |enum StrAttrType extends AttrType:
+        |  case ${stringAttrNames.mkString(",")}
         |
-        |  enum StrAttrType extends AttrType:
-        |    case ${stringAttrNames.mkString(",")}
+        |enum IntAttrType extends AttrType:
+        |  case ${intAttrNames.mkString(",")}
         |
-        |  enum IntAttrType extends AttrType:
-        |    case ${intAttrNames.mkString(",")}
+        |enum RelType extends ElemType:
+        |  case ${relationNames.map(_.capitalize).mkString(",")}
         |
-        |  enum RelType extends ElemType:
-        |    case ${relationNames.map(_.capitalize).mkString(",")}
+        |export EntType.*
+        |export StrAttrType.*
+        |export IntAttrType.*
+        |export RelType.*
         |
-        |  extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
-        |  extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
-        |  extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
-        |  extension (e: Ent)
+        |extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
+        |extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
+        |extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
+        |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(method).mkString("\n").stripMargin
