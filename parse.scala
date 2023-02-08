@@ -1,10 +1,5 @@
 package reqt
 
-import reqt.parse.Token.Word
-import reqt.parse.Token.Num
-import reqt.parse.Token.Space
-import reqt.parse.Token.Indent
-
 object parse:
   val parseEntType: Map[String, EntType] = //null is ugly but fast
     EntType.values.map(e => e.toString -> e).toMap.withDefaultValue(null) 
@@ -176,7 +171,7 @@ object parse:
       val at: AttrType = if atToken.isIntAttrType then atToken.iat else atToken.sat
       println(s"  !!!!! parseOneLineRelation  at=$at")
       val a = lastTokenOnThisLine match
-        case Num(i) if atToken.isIntAttrType => atToken.iat.apply(i)
+        case Token.Num(i) if atToken.isIntAttrType => atToken.iat.apply(i)
         case _ if atToken.isStrAttrType => atToken.sat.apply(lastTokenOnThisLine.orig) 
         case t => println(s"????????? $t"); ???
       
