@@ -1,7 +1,7 @@
 package reqt
 
 trait ElemType
-trait AttrType extends ElemType
+trait AttrType[T] extends ElemType
 
 sealed trait Elem
 
@@ -9,7 +9,7 @@ sealed trait Node extends Elem
 
 final case class Ent(et: EntType, id: String) extends Node
 
-final case class Attr[T <: Int | String](at: AttrType, value: T) extends Node
+final case class Attr[T <: Int | String](at: AttrType[T], value: T) extends Node
 
 final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
   def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }

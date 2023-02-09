@@ -168,7 +168,7 @@ object parse:
     val isLegalAttr = atToken.isIntAttrType || atToken.isStrAttrType
     if !isLegalAttr then Left(atToken -> "attribute type expected") 
     else 
-      val at: AttrType = if atToken.isIntAttrType then atToken.iat else atToken.sat
+      val at: AttrType[?] = if atToken.isIntAttrType then atToken.iat else atToken.sat
       println(s"  !!!!! parseOneLineRelation  at=$at")
       val a = lastTokenOnThisLine match
         case Token.Num(i) if atToken.isIntAttrType => atToken.iat.apply(i)

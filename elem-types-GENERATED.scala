@@ -4,10 +4,10 @@ package reqt
 enum EntType extends ElemType:
   case Actor,App,Barrier,Breakpoint,Class,Component,Configuration,Data,Design,Domain,Epic,Event,Feature,Function,Goal,Idea,Interface,Item,Issue,Label,Meta,Member,Module,MockUp,Product,Quality,Relationship,Release,Req,Resource,Risk,Scenario,Screen,Section,Service,Stakeholder,State,Story,System,Target,Task,Term,Test,Ticket,UseCase,User,Variant,VariationPoint,WorkPackage
 
-enum StrAttrType extends AttrType:
+enum StrAttrType extends AttrType[String]:
   case Comment,Deprecated,Example,Expectation,FileName,Gist,Image,Input,Output,Spec,Status,Text,Title,Why
 
-enum IntAttrType extends AttrType:
+enum IntAttrType extends AttrType[Int]:
   case Benefit,Capacity,Cost,Damage,Frequency,Max,Min,Order,Prio,Probability,Profit,Value
 
 enum RelType extends ElemType:
