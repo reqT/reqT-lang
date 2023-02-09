@@ -1,10 +1,28 @@
 package reqt
 
-extension (a: Any) def show: String = 
-  val s = a.toString
-  a match
-    case _: Int | Double | Boolean => s
-    case _: String => if s.contains('"') || s.contains('\n') then s"\"\"\"$s\"\"\"" else s"\"$s\""
-    case _: Float => s"${s}F"
-    case _: Long => s"${s}L"
-    case _ => s
+extension [A](a: A)(using s: ShowAsScala[? >: A]) 
+  def toScala: String = s.showAsScala(a)
+
+trait ShowAsScala[A]:
+  def showAsScala(a: A): String
+
+object ShowAsScala:
+  given showIntStringAsScala: ShowAsScala[Int | String] with 
+    override def showAsScala(a: Int | String): String = a match 
+      case s: String => if s.contains('"') || s.contains('\n') then s"\"\"\"$s\"\"\"" else s"\"$s\""
+      case i: Int  => i.toString
+
+  given showElemAsScala: ShowAsScala[Elem] with 
+    override def showAsScala(e: Elem): String = e match 
+      case e: Ent     => s"${e.et.toString}(${e.id.toScala})"
+      case a: Attr[?] => s"${a.at.toString}(${a.value.toScala})"
+      case r: Rel     => 
+        s"""${r.e.toScala}.${r.rt.toString.toLowerCase}(${r.sub.elems.map(_.toScala).mkString(",")})"""
+  
+  given showModelAsScala: ShowAsScala[Model] with 
+    override def showAsScala(m: Model): String = 
+      // TODO: make pretty indentation if long/deep model
+      m.elems.map(_.toScala).mkString("Model(",",",")")
+
+  given showAnyAsScala: ShowAsScala[ElemType] with
+    override def showAsScala(et: ElemType): String = et.toString
