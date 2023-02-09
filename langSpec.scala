@@ -2,12 +2,12 @@ package reqt
 
 object langSpec:
   def md: String = s"""
-    |# Specification of the reqt language version 1.0
+    |# Language Specification of reqt version 1.0
     |## Preface
     |
     |Reqt is a language for software requirements modelling.
     |
-    |A reqt model is a sequence of elements, where each element can be either an entity, an attribute or a relation.
+    |A reqt Model is a sequence of elements, where each element can be either an entity, an attribute or a relation.
     |* An **entity** has an **entity type**, e.g. `Feature`, `UseCase`, and a **unique id**. The id is a string of any character except whitespace.
     |* An **attribute** has an **attribute type**, e.g. `Prio`, `Spec`, and a **value**. The attribute type determines if the value is either an integer, e.g. Prio 12, or a string, e.g. `Spec a string of characters`.
     |* A **relation** recursively combines an entity and a **relation type** with a non-empty sub-model. 
