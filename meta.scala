@@ -142,10 +142,10 @@ object meta:
         |enum EntType extends ElemType:
         |  case ${entityNames.mkString(",")}
         |
-        |enum StrAttrType extends AttrType:
+        |enum StrAttrType extends AttrType[String]:
         |  case ${stringAttrNames.mkString(",")}
         |
-        |enum IntAttrType extends AttrType:
+        |enum IntAttrType extends AttrType[Int]:
         |  case ${intAttrNames.mkString(",")}
         |
         |enum RelType extends ElemType:
