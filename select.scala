@@ -37,7 +37,7 @@ extension (m: Model)
       case r: Rel if 
           ts.contains(r.rt) ||  
           ts.contains(r.e & r.rt) || ts.contains(r.e.et & r.rt) ||
-          ts.contains(r) || r.expandSubnodes.exists(ts.contains)
+          ts.contains(r) || r.expandSubnodes.exists(rel => ts.contains(rel))
         => 
           if !deep then r else Rel(r.e, r.rt, r.sub.pick(sst, deep = true)) 
     }

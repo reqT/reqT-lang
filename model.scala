@@ -12,7 +12,9 @@ final case class Ent(et: EntType, id: String) extends Node
 final case class Attr[T <: Int | String](at: AttrType, value: T) extends Node
 
 final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
-  def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node =>  Rel(e, rt, Model(n)) }
+  def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
+  def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
+  def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
 
 final case class Model(elems: Vector[Elem]):
   def ++(other: Model): Model = Model(elems ++ other.elems)
