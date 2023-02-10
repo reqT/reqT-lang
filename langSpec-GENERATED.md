@@ -36,7 +36,7 @@ Each line is split into a sequence of the following tokens types:
 * An `Outdent(n)` is inserted before an `Indent(n)` if `n < p` where `p` is the level of the previous `Indent(p)`.
 
 
-### Model Syntax
+## Model Syntax
 
 A legal `reqt` model abides the following grammar, where `|` denotes alternative and `*` denotes zero or more: 
 ```
@@ -81,7 +81,7 @@ RelationType ::= `Binds` | `Deprecates` | `Excludes` | `Has` | `Helps` | `Hurts`
 `InteractsWith` | `Is` | `Precedes` | `RelatesTo` | `Requires` | `SuperOf` | `Verifies`
 ```
 
-### Special Parsing Rules
+## Special Parsing Rules
 
 The following rules provides exceptions to the above grammar: 
 

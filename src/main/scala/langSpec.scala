@@ -41,7 +41,7 @@ Each line is split into a sequence of the following tokens types:
 * An `Outdent(n)` is inserted before an `Indent(n)` if `n < p` where `p` is the level of the previous `Indent(p)`.
 
 
-### Model Syntax
+## Model Syntax
 
 A legal `reqt` model abides the following grammar, where `|` denotes alternative and `*` denotes zero or more: 
 ```
@@ -78,7 +78,7 @@ StringAttributeType ::= ${meta.stringAttrNames.map(n => s"`$n`").mkString(" | ")
 RelationType ::= ${meta.relationNames.map(_.capitalize).map(n => s"`$n`").mkString(" | ").wrap(80)}
 ```
 
-### Special Parsing Rules
+## Special Parsing Rules
 
 The following rules provides exceptions to the above grammar: 
 
