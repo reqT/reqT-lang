@@ -49,6 +49,30 @@ object parse:
   extension (s: String) 
     def replaceTabsWithSpace: String = s.replace("\t", tabSpaces)
 
+    def wrapLongLineAtWords(n: Int = 72): String = 
+      val words = s.split(" ").iterator
+      val sb = StringBuilder()
+      var i = 0
+      while words.hasNext do
+        val w: String = words.next
+        i += w.length
+        if i > n then 
+          if w.length > n then 
+            sb.append(w)
+            sb.append('\n')
+            i = 0
+          else
+            sb.append('\n')
+            sb.append(w)
+            i = w.length 
+        else sb.append(w)
+        if words.hasNext then sb.append(' ')
+      end while
+      sb.toString
+
+    def wrap(n: Int = 72): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
+
+
     def splitIntoWordsAndSpaces: List[String] = 
       if s.isEmpty then List() else
         val buf = scala.collection.mutable.ListBuffer.empty[String]

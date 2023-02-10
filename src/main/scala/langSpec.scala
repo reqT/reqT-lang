@@ -1,5 +1,7 @@
 package reqt
 
+import parse.wrap
+
 object langSpec:
   def md: String = s"""
     |# Language Specification of reqt version 4.0
@@ -25,13 +27,13 @@ object langSpec:
     |    Prio 23
     |```
     |
-    |## Lexical Syntax
+    |## Lexical Tokens
     |
     |`reqt` is case sensitive, has significant indentation, and use UTF-8 encoding. 
     |The input is split into lines based on the newline character (Unicode `U+000A`). 
     |Each line is split into a sequence of the following tokens types:
     |
-    |* `Word` is a sequence of non-whitespace characters, according to `isWhitespace` on `Char` in Scala.
+    |* `Word` is a sequence of non-whitespace characters, according to `isWhitespace` on the `Char` type in Scala.
     |* `Num` is an integer literal following the same rules as a defined `toIntOption` on `String` in Scala.
     |* `Indent(n)` is a possibly empty sequence of either space or tab characters at the beginning of a line. 
     |  - It is illegal to mix spaces and tabs at the beginning of a line. 
@@ -66,13 +68,13 @@ object langSpec:
     |
     |SubModel ::= (Indent(j > i) Elem)* Outdent(i)
     |
-    |EntityType ::= ${meta.entityNames.map(n => s"`$n`").mkString(" | ")}
+    |EntityType ::= ${meta.entityNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
     |
-    |IntAttributeType ::= ${meta.intAttrNames.map(n => s"`$n`").mkString(" | ")}
+    |IntAttributeType ::= ${meta.intAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
     |
-    |StringAttributeType ::= ${meta.stringAttrNames.map(n => s"`$n`").mkString(" | ")}
+    |StringAttributeType ::= ${meta.stringAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
     |
-    |RelationType ::= ${meta.relationNames.map(_.capitalize).map(n => s"`$n`").mkString(" | ")}
+    |RelationType ::= ${meta.relationNames.map(_.capitalize).map(n => s"`$n`").mkString(" | ").wrap(80)}
     |```
     |
     |### Special Parsing Rules
