@@ -42,7 +42,9 @@ A legal `reqt` model abides the following grammar, where `|` denotes alternative
 ```
 Model ::= (Indent(i) Elem)*
 
-Elem ::= Attribute | Entity | Relation
+Elem ::= Node | Relation
+
+Node ::= Attribute | Entity
 
 Attribute ::= IntAttribute |  StringAttribute
 
@@ -56,7 +58,7 @@ Id :: = Word
 
 Relation ::= SingleLineRelation | MultiLineRelation
 
-SingleLineRelation ::= Entity RelationType Attribute
+SingleLineRelation ::= Entity RelationType Node
 
 MultiLineRelation ::= Entity RelationType SubModel
 
