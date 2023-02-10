@@ -2,7 +2,7 @@ package reqt
 
 object langSpec:
   def md: String = s"""
-    |# Language Specification of reqt version 1.0
+    |# Language Specification of reqt version 4.0
     |## Preface
     |
     |Reqt is a language for software requirements modelling.
