@@ -1,9 +1,9 @@
 package reqt
 
-extension [A](a: A)(using s: ShowAsScala[? >: A]) 
+extension [A](a: A)(using s: ShowAsScala[A]) 
   def toScala: String = s.showAsScala(a)
 
-trait ShowAsScala[A]:
+trait ShowAsScala[-A]:
   def showAsScala(a: A): String
 
 object ShowAsScala:
@@ -21,7 +21,7 @@ object ShowAsScala:
   
   given showModelAsScala: ShowAsScala[Model] with 
     override def showAsScala(m: Model): String = 
-      // TODO: make pretty indentation if long/deep model
+      // TODO: make pretty indentation and nice line wrapping if long/deep model
       m.elems.map(_.toScala).mkString("Model(",",",")")
 
   given showAnyAsScala: ShowAsScala[ElemType] with
