@@ -35,7 +35,7 @@ Each line is split into a sequence of the following tokens types:
   - The indent level `n` is defined as the number of spaces at the beginning of the line.
 * An `Outdent(n)` is inserted before an `Indent(n)` if `n < p` where `p` is the level of the previous `Indent(p)`.
 
- 
+
 ### Model Syntax
 
 A legal `reqt` model abides the following grammar, where `|` denotes alternative and `*` denotes zero or more: 
@@ -73,7 +73,7 @@ IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | 
 `Probability` | `Profit` | `Value`
 
 StringAttributeType ::= `Comment` | `Deprecated` | `Example` | `Expectation` | `FileName` | `Gist` | `Image` | `Input` 
- `Output` | `Spec` | `Status` | `Text` | `Title` | `Why`
+| `Output` | `Spec` | `Status` | `Text` | `Title` | `Why`
 
 RelationType ::= `Binds` | `Deprecates` | `Excludes` | `Has` | `Helps` | `Hurts` | `Impacts` | `Implements` | 
 `InteractsWith` | `Is` | `Precedes` | `RelatesTo` | `Requires` | `SuperOf` | `Verifies`
