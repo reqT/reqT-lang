@@ -100,4 +100,3 @@ as well as subsequent lines with a higher Indent level.
 This gives the Error: "Higher indentation level is not allowed here."
 
 5. The elements following a `MultiLineRelation` that are on a higher Indent level are part of the (possibly empty) `SubModel`.
-

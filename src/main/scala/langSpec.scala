@@ -2,8 +2,9 @@ package reqt
 
 import parse.wrap
 
-object langSpec:
-  def md: String = s"""# Language Specification of reqt version 4.0
+object langSpec: // save this file by sbt> Test / runMain generateLangSpec
+  def generateMarkDown: String = 
+    s"""# Language Specification of reqt version 4.0
 ## Preface
 
 Reqt is a language for software requirements modelling.

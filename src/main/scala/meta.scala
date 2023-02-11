@@ -136,7 +136,8 @@ object meta:
     def method(n: String): String = 
       s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))"
 
-    s"""|//!GENERATE code below by `println(reqt.meta.generate)` in repl and copy-paste
+    s"""|//!GENERATE this file in sbt> Test / runMain generateEnums
+        |// or by `println(reqt.meta.generate)` in repl and copy-paste
         |package reqt
         |
         |enum EntType extends ElemType:
