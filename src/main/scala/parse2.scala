@@ -61,7 +61,7 @@ object ModelParser:
               val ia: Attr[Int] = intAttrTypes(f).apply(num.get)
               elems.append(intAttrTypes(f).apply(num.get))
               val afterNumOnThisLine = restOfLine.stripLeading.drop(second.get.length).trim
-              if afterNumOnThisLine.length > 0 then elems.append(Text(afterNumOnThisLine))
+              if afterNumOnThisLine.length > 0 then elems.append(Text(s"??? $afterNumOnThisLine"))
 
           case f if first.isEntType =>
             val ent: EntType = entTypes(f) 
@@ -80,7 +80,7 @@ object ModelParser:
           case f =>
             val value: String = parseFollowingIndentedLines(line)
             elems.append(Text(value))
-            
+
         end match
       end if
 

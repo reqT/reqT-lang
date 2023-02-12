@@ -14,7 +14,7 @@ class TestParse extends munit.FunSuite {
   test("Illegal IntAttr  "){ parse("Prio x y z" -> Model(Text("??? Prio x y z"))) }
   test("Simple IntAttr   "){ parse("Prio 1" -> Model(Prio(1))) }
   test("IntAttr + space  "){ parse("Prio 1   " -> Model(Prio(1))) }
-  test("IntAttr + extra  "){ parse("Prio 1 x y " -> Model(Prio(1), Text("x y"))) }
+  test("IntAttr + extra  "){ parse("Prio 1 x y " -> Model(Prio(1), Text("??? x y"))) }
   test("Simple Ent       "){ parse("Feature  xxx" -> Model(Feature("xxx"))) }
   test("Simple Ent +extra"){ parse("Feature  xxx  hej " -> Model(Feature("xxx"), Text("??? hej"))) }
 
