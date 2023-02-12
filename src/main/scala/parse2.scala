@@ -71,11 +71,11 @@ object ModelParser:
             val thirdRelOpt: Option[RelType] = third.flatMap(t => relTypes.get(t)) 
             if relOpt.isEmpty && second.isDefined && third.isEmpty then // single entity
               elems.append(ent.apply(second.get))
-            else if relOpt.isEmpty && second.isDefined && third.isDefined then // extra after id
+            else if relOpt.isEmpty && second.isDefined && third.isDefined then // more after id
               elems.append(ent.apply(second.get)) 
-              elems.append(Text(s"??? ${restOfLine.skipFirstToken}"))
+              elems.append(Err(s"??? ${restOfLine.skipFirstToken}"))
             else 
-              elems.append(Text("TODO"))
+              elems.append(Err("TODO"))
 
           case f =>
             val value: String = parseFollowingIndentedLines(line)

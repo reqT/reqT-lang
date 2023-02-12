@@ -16,7 +16,6 @@ object meta:
     "Domain" -> "The application area of a product with its surrounding entities.",
     "Epic" -> "A large user story or a collection of stories." ,
     "Event" -> "Something that can happen in the domain and/or in the system.",
-    "Err" -> "An error representing a system failure.",
     "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
     "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific." ,
     "Goal" -> "An intention of a stakeholder or desired system property." ,
@@ -61,6 +60,7 @@ object meta:
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation." ,
     "Example" -> "A note that illustrates some entity by a  typical instance." ,
     "Expectation" -> "The required output of a test in order to be counted as passed." ,
+    "Err" -> "An error message explaining a failure.",
     "FileName" -> "The name of a storage of serialized, persistent data." ,
     "Gist" -> "A short and simple description of an entity, e.g. a function or a test." ,
     "Image" -> "(The name of) a picture of an entity." ,
@@ -154,7 +154,7 @@ object meta:
         |// or by `println(reqt.meta.generate)` in repl and copy-paste
         |package reqt
         |
-        |enum EntType extends ElemType:
+        |enum EntType extends NodeType:
         |  case ${entityNames.mkString(",")}
         |
         |enum StrAttrType extends AttrType[String]:
