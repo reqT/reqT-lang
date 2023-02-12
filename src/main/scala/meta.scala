@@ -16,6 +16,7 @@ object meta:
     "Domain" -> "The application area of a product with its surrounding entities.",
     "Epic" -> "A large user story or a collection of stories." ,
     "Event" -> "Something that can happen in the domain and/or in the system.",
+    "Err" -> "An error representing a system failure.",
     "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
     "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific." ,
     "Goal" -> "An intention of a stakeholder or desired system property." ,

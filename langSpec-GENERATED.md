@@ -65,11 +65,11 @@ MultiLineRelation ::= Entity RelationType SubModel
 SubModel ::= (Indent(j > i) Elem)* Outdent(i)
 
 EntityType ::= `Actor` | `App` | `Barrier` | `Breakpoint` | `Class` | `Component` | `Configuration` | `Data` | 
-`Design` | `Domain` | `Epic` | `Event` | `Feature` | `Function` | `Goal` | `Idea` | `Interface` | 
-`Item` | `Issue` | `Label` | `Meta` | `Member` | `Module` | `MockUp` | `Product` | `Quality` | 
-`Relationship` | `Release` | `Req` | `Resource` | `Risk` | `Scenario` | `Screen` | `Section` | 
-`Service` | `Stakeholder` | `State` | `Story` | `System` | `Target` | `Task` | `Term` | `Test` | 
-`Ticket` | `UseCase` | `User` | `Variant` | `VariationPoint` | `WorkPackage`
+`Design` | `Domain` | `Epic` | `Event` | `Err` | `Feature` | `Function` | `Goal` | `Idea` | 
+`Interface` | `Item` | `Issue` | `Label` | `Meta` | `Member` | `Module` | `MockUp` | `Product` | 
+`Quality` | `Relationship` | `Release` | `Req` | `Resource` | `Risk` | `Scenario` | `Screen` | 
+`Section` | `Service` | `Stakeholder` | `State` | `Story` | `System` | `Target` | `Task` | 
+`Term` | `Test` | `Ticket` | `UseCase` | `User` | `Variant` | `VariationPoint` | `WorkPackage`
 
 IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | `Max` | `Min` | `Order` | `Prio` | 
 `Probability` | `Profit` | `Value`
