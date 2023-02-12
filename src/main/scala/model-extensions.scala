@@ -21,7 +21,7 @@ extension (st: PickTerm)
   def |(st2: PickTerm): PickExpression = PickExpression(st,st2)
 
 extension (m: Model) 
-  def pick(sst: PickExpression | PickTerm): Model =
+  def keep(sst: PickExpression | PickTerm): Model =
     val ts = sst match 
       case s : PickExpression => s.terms.toSet
       case t : PickTerm => Set(t)
@@ -32,7 +32,7 @@ extension (m: Model)
       case a: Attr[?] if ts.contains(a.at) || ts.contains(a) => Some(a)
       
       case r: Rel => 
-        val sub = r.sub.pick(sst)
+        val sub = r.sub.keep(sst)
         if sub.elems.nonEmpty then Some(Rel(r.e, r.rt, sub)) 
         else if 
           ts.contains(r.rt) ||  
