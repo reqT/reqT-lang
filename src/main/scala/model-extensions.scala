@@ -21,26 +21,26 @@ extension (st: PickTerm)
   def |(st2: PickTerm): PickExpression = PickExpression(st,st2)
 
 extension (m: Model) 
-  def pick(sst: PickExpression | PickTerm, deep: Boolean = false): Model =
+  def pick(sst: PickExpression | PickTerm): Model =
     val ts = sst match 
       case s : PickExpression => s.terms.toSet
       case t : PickTerm => Set(t)
-    val pickedElems = m.elems.collect {
-      case e: Ent     if ts.contains(e.et) || ts.contains(e) => e 
 
-      case a: Attr[?] if ts.contains(a.at) || ts.contains(a) => a
+    val pickedElems = m.elems.flatMap ( elem => elem match
+      case e: Ent     if ts.contains(e.et) || ts.contains(e) => Some(e) 
+
+      case a: Attr[?] if ts.contains(a.at) || ts.contains(a) => Some(a)
       
-      case r: Rel if deep => 
-        val sub = r.sub.pick(sst, deep = true)
-        if sub.elems.nonEmpty then Rel(r.e, r.rt, sub) else throw new NoSuchElementException
-      
-      case r: Rel if 
+      case r: Rel => 
+        val sub = r.sub.pick(sst)
+        if sub.elems.nonEmpty then Some(Rel(r.e, r.rt, sub)) 
+        else if 
           ts.contains(r.rt) ||  
           ts.contains(r.e & r.rt) || ts.contains(r.e.et & r.rt) ||
           ts.contains(r) || r.expandSubnodes.exists(rel => ts.contains(rel))
-        => 
-          if !deep then r else Rel(r.e, r.rt, r.sub.pick(sst, deep = true)) 
-    }
-    Model(pickedElems)
+        then Some(Rel(r.e, r.rt, sub))
+        else None
 
-  def pickDeep(sst: PickExpression | PickTerm): Model = pick(sst, deep = true)
+      case _ => None
+    )
+    Model(pickedElems)
