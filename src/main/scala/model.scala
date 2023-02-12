@@ -1,10 +1,10 @@
 package reqt
 
 trait ElemType
-trait AttrType[T] extends ElemType
+trait NodeType extends ElemType
+trait AttrType[T] extends NodeType
 
 sealed trait Elem
-
 sealed trait Node extends Elem
 
 final case class Ent(et: EntType, id: String) extends Node

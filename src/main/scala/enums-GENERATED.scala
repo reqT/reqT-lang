@@ -2,7 +2,7 @@
 // or by `println(reqt.meta.generate)` in repl and copy-paste
 package reqt
 
-enum EntType extends ElemType:
+enum EntType extends NodeType:
   case Actor,App,Barrier,Breakpoint,Class,Component,Configuration,Data,Design,Domain,Epic,Event,Feature,Function,Goal,Idea,Interface,Item,Issue,Label,Meta,Member,Module,MockUp,Product,Quality,Relationship,Release,Req,Resource,Risk,Scenario,Screen,Section,Service,Stakeholder,State,Story,System,Target,Task,Term,Test,Ticket,UseCase,User,Variant,VariationPoint,WorkPackage
 
 enum StrAttrType extends AttrType[String]:

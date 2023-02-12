@@ -127,10 +127,23 @@ object meta:
   val stringAttrNames: ArraySeq[String] = stringAttrConcepts.names
   val intAttrNames: ArraySeq[String] = intAttrConcepts.names
   val relationNames: ArraySeq[String] = relationConcepts.names
-
   val conceptNames: ArraySeq[String] = concepts.map(_.name)
 
   val isConceptName: Set[String] = conceptNames.toSet
+
+  val entTypes: Map[String, EntType] = EntType.values.map(e => e.toString -> e).toMap
+  val strAttrTypes: Map[String, StrAttrType] = StrAttrType.values.map(e => e.toString -> e).toMap
+  val intAttrTypes: Map[String, IntAttrType] = IntAttrType.values.map(e => e.toString -> e).toMap
+  val relTypes: Map[String, RelType] = RelType.values.map(e => e.toString.toLowerCase -> e).toMap
+  val nodeTypes: Map[String, NodeType] = entTypes ++ strAttrTypes ++ intAttrTypes
+  
+  extension (s: String)
+    inline def isEntType: Boolean     = meta.entTypes.isDefinedAt(s)
+    inline def isStrAttrType: Boolean = meta.strAttrTypes.isDefinedAt(s)
+    inline def isIntAttrType: Boolean = meta.intAttrTypes.isDefinedAt(s)
+    inline def isNodeType: Boolean    = meta.nodeTypes.isDefinedAt(s)
+    inline def isRelType: Boolean     = meta.relTypes.isDefinedAt(s)
+
 
   def generate: String = 
     def method(n: String): String = 
