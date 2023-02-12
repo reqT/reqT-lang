@@ -1,6 +1,6 @@
 package reqt
 
-import parse.wrap
+import parser.wrap
 
 object langSpec: // save this file by sbt> Test / runMain generateLangSpec
   def generateMarkDown: String = 

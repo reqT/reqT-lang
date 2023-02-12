@@ -12,7 +12,8 @@ libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test
 
 lazy val `reqt-lang` = (project in file("."))
   .settings(
-    name := "reqt-lang"
+    name := "reqt-lang",
+    scalacOptions := List("-encoding", "utf8", "-Werror", "-deprecation", "-unchecked")
   )
 
 lazy val build = taskKey[Unit]("build all the things")

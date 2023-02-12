@@ -26,15 +26,5 @@ final case class Model(elems: Vector[Elem]):
 object Model:
   def apply(elems: Elem*): Model = Model(elems.toVector)
 
-extension (sc: StringContext)
-  def m(args: Any*): Model = 
-    val strings: Iterator[String] = sc.parts.iterator
-    val expressions: Iterator[Any] = args.iterator
-    val sb = StringBuilder(strings.next)
-    while strings.hasNext do
-        sb.append(expressions.next.toString)
-        sb.append(strings.next)
-    sb.toString
-    Model(Feature("interpolator TODO"))
 
 
