@@ -154,25 +154,51 @@ object meta:
         |// or by `println(reqt.meta.generate)` in repl and copy-paste
         |package reqt
         |
-        |enum EntType extends NodeType:
-        |  case ${entityNames.mkString(",")}
+        |object model:
+        |  sealed trait Elem
+        |  sealed trait Node extends Elem
         |
-        |enum StrAttrType extends AttrType[String]:
-        |  case ${stringAttrNames.mkString(",")}
+        |  trait ElemType
+        |  trait NodeType extends ElemType
+        |  trait AttrType[T] extends NodeType
         |
-        |enum IntAttrType extends AttrType[Int]:
-        |  case ${intAttrNames.mkString(",")}
+        |  final case class Ent(et: EntType, id: String) extends Node
         |
-        |enum RelType extends ElemType:
-        |  case ${relationNames.map(_.capitalize).mkString(",")}
+        |  final case class Attr[T <: Int | String](at: AttrType[T], value: T) extends Node
         |
-        |export EntType.*
-        |export StrAttrType.*
-        |export IntAttrType.*
-        |export RelType.*
+        |  final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
+        |    def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
+        |    def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
+        |    def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
         |
-        |extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
-        |extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
-        |extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
-        |extension (e: Ent)
-        |""".stripMargin ++ relationNames.map(method).mkString("\n").stripMargin
+        |  final case class Model(elems: Vector[Elem]):
+        |    def ++(other: Model): Model = Model(elems ++ other.elems)
+        |    def +(e: Elem): Model = Model(elems :+ e)
+        |    def tip: Model = Model(elems.collect { case n: Node => n case Rel(e, _, _) => e }.distinct)
+        |    def top: Model = Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.tip) })
+        |    override def toString: String = elems.mkString("Model(",",",")")
+        |
+        |  object Model:
+        |    def apply(elems: Elem*): Model = Model(elems.toVector)
+        |  enum EntType extends NodeType:
+        |    case ${entityNames.mkString(",")}
+        |  
+        |  enum StrAttrType extends AttrType[String]:
+        |    case ${stringAttrNames.mkString(",")}
+        |  
+        |  enum IntAttrType extends AttrType[Int]:
+        |    case ${intAttrNames.mkString(",")}
+        |  
+        |  enum RelType extends ElemType:
+        |    case ${relationNames.map(_.capitalize).mkString(",")}
+        |  
+        |  export EntType.*
+        |  export StrAttrType.*
+        |  export IntAttrType.*
+        |  export RelType.*
+        |  
+        |  extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
+        |  extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
+        |  extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
+        |  extension (e: Ent)
+        |""".stripMargin ++ relationNames.map(method).mkString("  ","\n  ", "").stripMargin
