@@ -13,9 +13,9 @@ object parser:
     def isElemStart: Boolean = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
     def isTextLine: Boolean = !isElemStart
 
-    def level: Int = 
+    def level(base: Int): Int = 
       val initSpace = s.takeWhile(ch => ch.isSpaceChar || ch == '\t')
-      initSpace.replace("\\t", "  ").length
+      initSpace.replace("\\t", "  ").length + base
 
     def wrapLongLineAtWords(n: Int = 72): String = 
       val words = s.split(" ").iterator
@@ -44,29 +44,32 @@ object parser:
   extension (xs: Array[String]) def toCamelCase: String = 
     xs.headOption.getOrElse("") ++ xs.drop(1).map(_.capitalize).mkString
 
-  def parseModel(input: String): Model = 
-    val lines: Array[String] = input.toLines
-    Model(parseLines(0, lines.length, lines)*)
+  def parseModel(input: String): Model = Model(parseElems(input, 0)*)
 
-  def parseLines(fromIndex: Int, untilIndex: Int, lines: Array[String]): List[Elem] = 
+  def parseElems(input: String, baseLevel: Int): List[Elem] = 
+    val lines: Array[String] = input.toLines
+    parseLines(0, lines.length, lines, baseLevel)
+
+  def parseLines(fromIndex: Int, untilIndex: Int, lines: Array[String], baseLevel: Int): List[Elem] = 
     val elems = List.empty[Elem].toBuffer
     var i = fromIndex
     while i < untilIndex do
 
       val line: String = lines(i)
-      val level: Int = line.level
+      val level: Int = line.level(baseLevel)
+      println(s"level=$level")
       val words: Array[String] = line.toWords
 
       if words.nonEmpty then
 
         val first = words.head
-        val level = first.level
+        val level = first.level(baseLevel)
         val restOfLine = line.skipFirstToken
 
         inline def endOfTextBlock: Int =
           var more = i
           while more + 1 < lines.length 
-            && (lines(more + 1).level > level) 
+            && (lines(more + 1).level(baseLevel) > level) 
             && lines(more + 1).isTextLine 
           do more += 1
           more
@@ -74,7 +77,7 @@ object parser:
         inline def endOfBlock: Int =
           var more = i
           while more + 1 < lines.length 
-            && (lines(more + 1).level > level) 
+            && (lines(more + 1).level(baseLevel) > level) 
           do more += 1
           more
 
@@ -100,44 +103,65 @@ object parser:
             val num: Int = second.flatMap(_.toIntOption).getOrElse(0)
             val ia: Attr[Int] = intAttrTypes(f).apply(num)
             elems.append(intAttrTypes(f).apply(num))
-            val afterNumOnThisLine = restOfLine.stripLeading.drop(second.get.length).trim
-            if afterNumOnThisLine.length > 0 then elems.append(Text(afterNumOnThisLine))
+            val afterNumOnThisLine = restOfLine.stripLeading.drop(second.getOrElse("").length).trim
+            if afterNumOnThisLine.length > 0 then elems.appendAll(parseElems(afterNumOnThisLine, level))
 
           case f if first.isEntType =>
             val ent: EntType = entTypes(f) 
-            val relIx: Int = words.indexWhere(w => relTypes.isDefinedAt(w.capitalize))
-            if relIx == 0 then // single entity
-              elems.append(ent.apply(words.drop(1).toCamelCase))
+            val r: Int = words.indexWhere(w => relTypes.isDefinedAt(w))
+
+            if r == -1 then // ent id
+              val wordsWithId = words.lift(1) match
+                case Some(id) if isConceptName(id) => words(0) +: "???" +: words.drop(1)
+                case _ => words  
+
+              val remainingWords = wordsWithId.drop(2)
+              val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
+              val idStart = wordsWithId.lift(1).getOrElse("???") 
+
+              val extraIfText: String = extraElemsOnThisLine match
+                case List(Attr(Text,s)) => s
+                case _ => "" 
+              
+              val idExtra = 
+                if extraElemsOnThisLine.isEmpty then remainingWords.toCamelCase 
+                else extraIfText
+
+              val id = idStart ++ idExtra
+
+              val extraElemsInRel = if idExtra == "" then extraElemsOnThisLine else Nil
+
+              val j = endOfBlock
+              val extraSubsequentElems: List[Elem] = 
+                if j == i then Nil else 
+                  val subLines = takeLines(j)
+                  parseLines(0, subLines.length, subLines, baseLevel)
+
+              val elemsToAddInRel = extraSubsequentElems ++ extraElemsInRel
+
+              if elemsToAddInRel.nonEmpty then 
+                val rel = Rel(ent(id), Has, Model(elemsToAddInRel*))
+                elems.append(rel)
+              else 
+                elems.append(ent.apply(id))
+
             else // relation
-              ???
+              val rt = relTypes(words(r))
+              val idMaybeEmpty = words.slice(1, r).toCamelCase
+              val id = if idMaybeEmpty.isEmpty then "???" else idMaybeEmpty
+              val remainingWords = words.slice(r + 1, words.length)
+              val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
+              val j = endOfBlock
+              val extraSubsequentElems: List[Elem] = 
+                if j == i then Nil else 
+                  val subLines = takeLines(j)
+                  parseLines(0, subLines.length, subLines, baseLevel)
+              val rel = Rel(ent(id), rt, Model((extraElemsOnThisLine ++ extraSubsequentElems)*))
+              elems.append(rel)
 
-            // val relOpt: Option[RelType] = relTypes.get(words.last)
-            // val second: Option[String]  = words.lift(1)
-            // val third: Option[String]   = words.lift(2)
-            // if relOpt.isEmpty && second.isDefined then 
-            //   if third.isEmpty then 
-            //     // single entity
-            //     elems.append(ent.apply(second.get))
-            //   else  
-            //     // more after id
-            //     elems.append(ent.apply(second.get)) 
-            //     elems.append(Text(restOfLine.skipFirstToken)) // TODO: check if more elems on restOfLine???
-            // else if relOpt.isDefined && second.isDefined && third.isDefined then
-            //     // single relation start
-            //     val here = i
-            //     val until = endOfBlock
-            //     val subElems = if until == i then List() else parseLines(i + 1, until + 1, lines)
-            //     i = until 
-
-            //     elems.append(Rel(ent.apply(second.get), relOpt.get, Model(subElems*)))
-            //     if relOpt.get.toString != third.get.capitalize then
-            //       // Feature xxx yyy has 
-            //       elems.append(Err(s"??? Illegal multi-word id ${second.get} ${third.get} on line $here: $line"))
-            // else
-            //   elems.append(Err(s"??? Illegal relation on line $i: $line\nsecond=$second relOpt=$relOpt third=$third"))
-
-          case f =>
-            val value: String = s"$line\n${takeLines(endOfTextBlock).mkString("\n")}"
+          case f => // everything else is a Text attribute
+            val j = endOfTextBlock
+            val value = if j > i then takeLines(endOfTextBlock).mkString(line,"\n","") else line
             elems.append(Text(value))
 
         end match
