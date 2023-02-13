@@ -63,7 +63,6 @@ object parser:
       if words.nonEmpty then
 
         val first = words.head
-        val level = first.level(baseLevel)
         val restOfLine = line.skipFirstToken
 
         inline def endOfTextBlock: Int =
