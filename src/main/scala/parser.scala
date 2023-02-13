@@ -51,15 +51,15 @@ object parser:
     parseLines(0, lines.length, lines, baseLevel)
 
   def parseLines(fromIndex: Int, untilIndex: Int, lines: Array[String], baseLevel: Int): List[Elem] = 
-    println(s"parseLines(fromIndex=$fromIndex, untilIndex=$untilIndex, lines=$lines, baseLevel=$baseLevel)")
+    //println(s"parseLines(fromIndex=$fromIndex, untilIndex=$untilIndex, lines=$lines, baseLevel=$baseLevel)")
     val elems = List.empty[Elem].toBuffer
     var i = fromIndex
     while i < untilIndex do
 
       val line: String = lines(i)
-      println(s"line=$line")
+      //println(s"line=$line")
       val level: Int = line.level(baseLevel)
-      println(s"level=$level")
+      //println(s"level=$level")
       val words: Array[String] = line.toWords
 
       if words.nonEmpty then
