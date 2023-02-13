@@ -26,7 +26,7 @@ build := Def.sequential(
 hello := println("""
   *** Welcome to the reqt-lang build in sbt ***
 
-  type 'Test / run' to generate meta files 
+  type 'Test / genMeta' to generate meta files 
   type 'test' to run all tests
   type 'package' to build jar in target/scala-x.y.z
   type 'build' to do all of the above

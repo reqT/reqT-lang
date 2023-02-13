@@ -150,7 +150,7 @@ object meta:
     def method(n: String): String = 
       s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))"
 
-    s"""|//!GENERATE this file in sbt> Test / runMain generateEnums
+    s"""|//!GENERATE this file in sbt> Test / runMain generateMeta
         |// or by `println(reqt.meta.generate)` in repl and copy-paste
         |package reqt
         |

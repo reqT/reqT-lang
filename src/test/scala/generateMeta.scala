@@ -5,7 +5,7 @@ extension (s: String) infix def saveTo(f: String) =
 val modelFile = "src/main/scala/model-GENERATED.scala"
 val langSpecFile = "langSpec-GENERATED.md"
 
-@main def generateMetaFiles = 
+@main def generateMeta = 
   println(s"Generating $modelFile")
   reqt.meta.generate saveTo modelFile
   println(s"Generating $langSpecFile")

@@ -41,7 +41,8 @@ object parser:
     def wrap(n: Int = 72): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
   end extension
 
-  extension (xs: Array[String]) def toCamelCase: String = xs.headOption.getOrElse("") ++ xs.drop(1).map(_.capitalize).mkString
+  extension (xs: Array[String]) def toCamelCase: String = 
+    xs.headOption.getOrElse("") ++ xs.drop(1).map(_.capitalize).mkString
 
   def parseModel(input: String): Model = 
     val lines: Array[String] = input.toLines
