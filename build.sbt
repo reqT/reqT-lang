@@ -19,16 +19,16 @@ lazy val `reqt-lang` = (project in file("."))
 lazy val build = taskKey[Unit]("build all the things")
 build := Def.sequential(
       (Test / run).toTask(""),
-      (Test / test),
+      Test / test,
       Compile / packageBin,
     ).value
 
 hello := println("""
   *** Welcome to the reqt-lang build in sbt ***
 
-  type 'package' to build jar in target/scala-x.y.z
+  type 'Test / run' to generate meta files 
   type 'test' to run all tests
-  type 'Test / runMain generateMeta' to generate meta files 
+  type 'package' to build jar in target/scala-x.y.z
   type 'build' to do all of the above
   type 'console' to enter the Scala REPL with reqt.* imported
   type 'hello' to see this message
@@ -37,7 +37,7 @@ hello := println("""
 lazy val hello = taskKey[Unit]("Prints welcome message")
 
 lazy val myStartupTransition: State => State = { s: State =>
-  "hello" :: "scalaVersion" :: "version" :: "projects" :: s
+  "hello" :: s
 }
 
 Global / onLoad := {
