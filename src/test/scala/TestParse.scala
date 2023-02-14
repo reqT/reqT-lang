@@ -11,28 +11,38 @@ class TestParser extends munit.FunSuite {
           |Parsed:  $parsed
           |Expected:$expected""".stripMargin)
 
-  test("Simple StrAttr   "){ parse("Spec  x" -> Model(Spec("x"))) }
+  test("Simple StrAttr   "):
+    parse("Spec  x x x \n y" -> Model(Spec("x x x\n y"))) 
 
-  test("2 Simple StrAttr "){ parse("Spec  x\nSpec y" -> Model(Spec("x"),Spec("y"))) }
+  test("2 Simple StrAttr "):
+    parse("Spec  x\nSpec y" -> Model(Spec("x"),Spec("y"))) 
 
-  test("Multiline StrAttr"){ parse("Spec  xxx\n yyy" -> Model(Spec("xxx\n yyy"))) }
+  test("Multiline StrAttr"):
+    parse("Spec  x x x\n y y y" -> Model(Spec("x x x\n y y y"))) 
 
-  test("Simple Non-elem  "){ parse("xxx\n yyy" -> Model(Text("xxx\n yyy"))) }
+  test("Simple Non-elem  "):
+    parse("xxx\n yyy" -> Model(Text("xxx\n yyy"))) 
 
-  test("Illegal IntAttr  "){ parse("Prio x y z" -> 
-    Model(Prio(0), Text("x y z"))) }
+  test("Illegal IntAttr  "):
+    parse("Prio x y z" -> Model(Prio(0), Text("x y z"))) 
 
-  test("Simple IntAttr   "){ parse("Prio 1" -> Model(Prio(1))) }
+  test("Simple IntAttr   "):
+    parse("Prio 1" -> Model(Prio(1))) 
 
-  test("IntAttr + space  "){ parse("Prio 1   " -> Model(Prio(1))) }
+  test("IntAttr + space  "):
+    parse("Prio 1   " -> Model(Prio(1))) 
 
-  test("IntAttr + extra  "){ parse("Prio 1 x y " -> Model(Prio(1), Text("x y"))) }
+  test("IntAttr + extra  "):
+    parse("Prio 1 x y " -> Model(Prio(1), Text("x y"))) 
 
-  test("Simple Ent       "){ parse("Feature  xxx" -> Model(Feature("xxx"))) }
+  test("Simple Ent       "):
+    parse("Feature  x " -> Model(Feature("x"))) 
 
-  test("Simple Ent +extra"){ parse("Feature  xxx  hej " -> Model(Feature("xxx hej"))) }
+  test("Simple Ent +extra"):
+    parse("Feature  x y " -> Model(Feature("x y"))) 
 
-  test("Empty single Rel "){ parse("Feature x has" -> Model(Feature("x").has()))}
+  test("Empty single Rel "):
+    parse("Feature x has" -> Model(Feature("x").has()))
 
   test("Rel sub1         "): 
     parse("Feature x has\n Prio 1" -> Model(Feature("x").has(Prio(1))))
@@ -49,7 +59,7 @@ class TestParser extends munit.FunSuite {
 
   test("Missing id + more"): 
     parse:
-      "Feature has\n Prio 1\n  Req y\nReq z" -> 
+      "Feature    has\n Prio 1\n  Req y\nReq z" -> 
         Model(
           Feature("???") has(Prio(1),Req("y")),
           Req("z")
