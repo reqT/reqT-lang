@@ -176,15 +176,12 @@ object meta:
         |    def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
         |    def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
         |
-        |  final case class Model(elems: Vector[Elem]):
-        |    def ++(other: Model): Model = Model(elems ++ other.elems)
-        |    def +(e: Elem): Model = Model(elems :+ e)
-        |    def tip: Model = Model(elems.collect { case n: Node => n case Rel(e, _, _) => e }.distinct)
-        |    def top: Model = Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.tip) })
+        |  final case class Model(elems: Vector[Elem]) extends ModelOps:
         |    override def toString: String = elems.mkString("Model(",",",")")
         |
         |  object Model:
         |    def apply(elems: Elem*): Model = Model(elems.toVector)
+        |
         |  enum EntType extends NodeType:
         |    case ${entityNames.mkString(",")}
         |  

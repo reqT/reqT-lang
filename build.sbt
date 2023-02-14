@@ -16,12 +16,17 @@ lazy val `reqt-lang` = (project in file("."))
     scalacOptions := List("-encoding", "utf8", "-Werror", "-deprecation", "-unchecked")
   )
 
+lazy val meta = taskKey[Unit]("generate meta things")
+meta := (Test / run).toTask("").value
+
 lazy val build = taskKey[Unit]("build all the things")
 build := Def.sequential(
-      (Test / run).toTask(""),
-      Test / test,
-      Compile / packageBin,
-    ).value
+        meta,
+        Test / test,
+        Compile / packageBin,
+      ).value
+
+lazy val hello = taskKey[Unit]("Prints welcome message")
 
 hello := println("""
   *** Welcome to the reqt-lang build in sbt ***
@@ -33,8 +38,6 @@ hello := println("""
   type 'console' to enter the Scala REPL with reqt.* imported
   type 'hello' to see this message
 """)
-
-lazy val hello = taskKey[Unit]("Prints welcome message")
 
 lazy val myStartupTransition: State => State = { s: State =>
   "hello" :: s
