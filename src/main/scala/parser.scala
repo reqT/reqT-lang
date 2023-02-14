@@ -41,9 +41,6 @@ object parser:
     def wrap(n: Int = 72): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
   end extension
 
-  extension (xs: Array[String]) def toCamelCase: String = 
-    xs.headOption.getOrElse("") ++ xs.drop(1).map(_.capitalize).mkString
-
   def parseModel(input: String): Model = Model(parseElems(input, 0)*)
 
   def parseElems(input: String, baseLevel: Int): List[Elem] = 
@@ -89,29 +86,30 @@ object parser:
             result
           else Array()
 
-        def parseStrAttr(sat: StrAttrType, remainingLine: String): Unit =
-          val j = endOfTextBlock // check if more lines follow with just indented text
-          val extra = if j > i then takeLines(j).mkString("\n","\n","") else ""
-          val value: String = remainingLine ++ extra
-          val sa = sat.apply(value)
-          elems.append(sa)
-
         first match
-          case f if first.isStrAttrType => parseStrAttr(strAttrTypes(f), restOfLine)
+          case f if first.isStrAttrType => 
+            val j = endOfTextBlock // check if more lines with just indented text
+            val extra = if j > i then takeLines(j).mkString("\n","\n","") else ""
+            val value: String = restOfLine ++ extra
+            val sa = strAttrTypes(f).apply(value)
+            elems.append(sa)
+
             
-          case f if first.isIntAttrType => // parse IntAttr
+          case f if first.isIntAttrType => 
             val second: Option[String] = words.lift(1)
-            val num: Int = second.flatMap(_.toIntOption).getOrElse(0)
-            val ia: Attr[Int] = intAttrTypes(f).apply(num)
-            elems.append(intAttrTypes(f).apply(num))
-            val afterNumOnThisLine = restOfLine.stripLeading.drop(second.getOrElse("").length).trim
-            if afterNumOnThisLine.length > 0 then elems.appendAll(parseElems(afterNumOnThisLine, level))
+            val numOpt: Option[Int] = second.flatMap(_.toIntOption)
+            val ia: Attr[Int] = intAttrTypes(f).apply(numOpt.getOrElse(0))
+            elems.append(ia)
+            val afterNumOnThisLine = 
+              restOfLine.stripLeading.drop(if numOpt.isDefined then 1 else 0).trim
+            if afterNumOnThisLine.length > 0 then 
+              elems.appendAll(parseElems(afterNumOnThisLine, level))
 
           case f if first.isEntType =>
             val ent: EntType = entTypes(f) 
             val r: Int = words.indexWhere(w => relTypes.isDefinedAt(w))
 
-            if r == -1 then // ent id
+            if r == -1 then // there is no RelType given
               val wordsWithId = words.lift(1) match
                 case Some(id) if isConceptName(id) => words(0) +: "???" +: words.drop(1)
                 case _ => words  
@@ -125,10 +123,10 @@ object parser:
                 case _ => "" 
               
               val idExtra = 
-                if extraElemsOnThisLine.isEmpty then remainingWords.toCamelCase 
+                if extraElemsOnThisLine.isEmpty then remainingWords.mkString(" ") 
                 else extraIfText
 
-              val id = idStart ++ idExtra
+              val id = s"$idStart${if idExtra.nonEmpty then " " else ""}$idExtra"
 
               val extraElemsInRel = if idExtra == "" then extraElemsOnThisLine else Nil
 
@@ -146,9 +144,9 @@ object parser:
               else 
                 elems.append(ent.apply(id))
 
-            else // relation
+            else // this is a relation
               val rt = relTypes(words(r))
-              val idMaybeEmpty = words.slice(1, r).toCamelCase
+              val idMaybeEmpty = words.slice(1, r).mkString(" ")
               val id = if idMaybeEmpty.isEmpty then "???" else idMaybeEmpty
               val remainingWords = words.slice(r + 1, words.length)
               val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
@@ -162,7 +160,7 @@ object parser:
 
           case f => // everything else is a Text attribute
             val j = endOfTextBlock
-            val value = if j > i then takeLines(endOfTextBlock).mkString(line,"\n","") else line
+            val value = if j > i then takeLines(endOfTextBlock).mkString(s"$line\n","\n","") else line
             elems.append(Text(value))
 
         end match
