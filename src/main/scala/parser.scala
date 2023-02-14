@@ -111,12 +111,12 @@ object parser:
 
             if r == -1 then // there is no RelType given
               val wordsWithId = words.lift(1) match
-                case Some(id) if isConceptName(id) => words(0) +: "???" +: words.drop(1)
+                case Some(id) if isConceptName(id) => words(0) +: Ent.emptyId +: words.drop(1)
                 case _ => words  
 
               val remainingWords = wordsWithId.drop(2)
               val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
-              val idStart = wordsWithId.lift(1).getOrElse("???") 
+              val idStart = wordsWithId.lift(1).getOrElse(Ent.emptyId) 
 
               val extraIfText: String = extraElemsOnThisLine match
                 case List(Attr(Text,s)) => s
@@ -147,7 +147,7 @@ object parser:
             else // this is a relation
               val rt = relTypes(words(r))
               val idMaybeEmpty = words.slice(1, r).mkString(" ")
-              val id = if idMaybeEmpty.isEmpty then "???" else idMaybeEmpty
+              val id = if idMaybeEmpty.isEmpty then Ent.emptyId else idMaybeEmpty
               val remainingWords = words.slice(r + 1, words.length)
               val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
               val j = endOfBlock

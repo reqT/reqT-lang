@@ -162,7 +162,12 @@ object meta:
         |  trait NodeType extends ElemType
         |  trait AttrType[T] extends NodeType
         |
-        |  final case class Ent(et: EntType, id: String) extends Node
+        |  final case class Ent private (et: EntType, id: String) extends Node
+        |  object Ent:
+        |    val emptyId = "???"
+        |    def apply(et: EntType, id: String): Ent = 
+        |      new Ent(et, if id.isEmpty then emptyId else id)
+        |
         |
         |  final case class Attr[T <: Int | String](at: AttrType[T], value: T) extends Node
         |
