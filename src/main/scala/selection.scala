@@ -10,7 +10,7 @@ object selection:
   extension (et: Ent)      def &(rt: RelType)  = Link(et,rt)
   extension (et: EntType)  def &(rt: RelType)  = LinkType(et,rt)
 
-  type Selection = SelectionExpr | SelectionTerm
+  type Selection = SelectionTerm | SelectionExpr
   type SelectionTerm = Elem | ElemType | Link | LinkType
 
   case class SelectionExpr(terms: SelectionTerm*):
@@ -30,3 +30,32 @@ object selection:
   extension (lhs: SelectionTerm) 
     def |(rhs: SelectionTerm): SelectionExpr = SelectionExpr(lhs,rhs)
     def |(rhs: SelectionExpr): SelectionExpr = SelectionExpr((lhs +: rhs.terms)*)
+
+  def apply(s: Selection, m: Model): Model = 
+    val hasTerm = s match 
+      case se: SelectionExpr => se.terms.toSet
+      case st: SelectionTerm => Set(st)
+
+    val pickedElems = m.elems.flatMap:
+      elem => elem match
+        case e: Ent     if hasTerm(e.et) || hasTerm(e) => Some(e) 
+
+        case a: Attr[?] if hasTerm(a.at) || hasTerm(a) => Some(a)
+
+        case r: Rel => 
+          val sub = r.sub.keep(s)
+          if sub.elems.nonEmpty then Some(Rel(r.e, r.rt, sub)) 
+          else if 
+            hasTerm(r.rt) ||  
+            hasTerm(r.e & r.rt) || 
+            hasTerm(r.e.et & r.rt) ||
+            hasTerm(r) ||
+            r.expandSubnodes.exists(rel => hasTerm(rel))
+          then Some(Rel(r.e, r.rt, sub))
+          else None
+
+        case _ => None
+
+    Model(pickedElems)
+
+     
