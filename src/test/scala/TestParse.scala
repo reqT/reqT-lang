@@ -34,7 +34,8 @@ class TestParser extends munit.FunSuite {
 
   test("Empty single Rel "){ parse("Feature x has" -> Model(Feature("x").has()))}
 
-  test("Rel sub1         "){ parse("Feature x has\n Prio 1" -> Model(Feature("x").has(Prio(1))))}
+  test("Rel sub1         "): 
+    parse("Feature x has\n Prio 1" -> Model(Feature("x").has(Prio(1))))
   
   test("Rel sub2 outdent "): 
     parse:
