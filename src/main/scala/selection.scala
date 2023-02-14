@@ -1,17 +1,13 @@
 package reqt
 
 object selection:
-  case class Link(e: Ent, rt: RelType):  //TODO should it be called RelHead?
-    override def toString = s"$e & $rt"
+  import ModelPath.{EntLink, EntTypeLink}
 
-  case class LinkType(et: EntType, rt: RelType):
-    override def toString = s"$et & $rt"
-
-  extension (et: Ent)      def &(rt: RelType)  = Link(et,rt)
-  extension (et: EntType)  def &(rt: RelType)  = LinkType(et,rt)
+  extension (et: Ent)      def &(rt: RelType)  = EntLink(et,rt)
+  extension (et: EntType)  def &(rt: RelType)  = EntTypeLink(et,rt)
 
   type Selection = SelectionTerm | SelectionExpr
-  type SelectionTerm = Elem | ElemType | Link | LinkType
+  type SelectionTerm = Elem | ElemType | EntLink | EntTypeLink
 
   case class SelectionExpr(terms: SelectionTerm*):
     override def toString = terms.mkString(" | ")
@@ -22,8 +18,8 @@ object selection:
     def &(rhs: RelType): SelectionExpr =
       val terms: Seq[SelectionTerm] = lhs.terms.map: term =>
         (term, rhs) match
-          case (e: Ent, rt: RelType) => Link(e, rt)
-          case (et: EntType, rt: RelType) => LinkType(et, rt)
+          case (e: Ent, rt: RelType) => EntLink(e, rt)
+          case (et: EntType, rt: RelType) => EntTypeLink(et, rt)
           case pair => pair._1
       SelectionExpr(terms*)
 
