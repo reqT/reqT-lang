@@ -3,6 +3,7 @@ package reqt
 object ModelPath:
 
   // TODO is EntLink really needed? Can we use a Rel with empty sub
+  // or should Feature("x").has give EntTypeLink ???
 
   case class EntLink(e: Ent, rt: RelType):
     override def toString = s"$e & $rt"

@@ -55,6 +55,7 @@ object model:
     def deprecates(sub: Elem*): Rel = Rel(e, Deprecates, Model(sub*))
     def excludes(sub: Elem*): Rel = Rel(e, Excludes, Model(sub*))
     def has(sub: Elem*): Rel = Rel(e, Has, Model(sub*))
+    def has: ModelPath.EntLink = ModelPath.EntLink(e, Has) //TODO
     def helps(sub: Elem*): Rel = Rel(e, Helps, Model(sub*))
     def hurts(sub: Elem*): Rel = Rel(e, Hurts, Model(sub*))
     def impacts(sub: Elem*): Rel = Rel(e, Impacts, Model(sub*))
