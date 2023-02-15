@@ -52,11 +52,11 @@ Elem ::= Node | Relation
 
 Node ::= Attribute | Entity
 
-Attribute ::= IntAttribute |  StringAttribute
+Attribute ::= IntAttribute |  StrAttribute
 
 IntAttribute ::= IntAttributeType Num
 
-StringAttribute ::= StringAttributeType (Word)*
+StrAttribute ::= StrAttributeType (Word)*
 
 Entity ::= EntityType Id
 
@@ -74,7 +74,7 @@ EntityType ::= ${meta.entityNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
 
 IntAttributeType ::= ${meta.intAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
 
-StringAttributeType ::= ${meta.stringAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
+StrAttributeType ::= ${meta.strAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
 
 RelationType ::= ${meta.relationNames.map(_.capitalize).map(n => s"`$n`").mkString(" | ").wrap(80)}
 ```
@@ -83,10 +83,10 @@ RelationType ::= ${meta.relationNames.map(_.capitalize).map(n => s"`$n`").mkStri
 
 The following rules provides exceptions to the above grammar: 
 
-1. An Id cannot be an `EntityType`, `IntAttributeType`, `StringAttributeType`, or `RelationType`.
+1. An Id cannot be an `EntityType`, `IntAttributeType`, `StrAttributeType`, or `RelationType`.
 This gives the Error: "Reserved word cannot be used as Id of Entity."
 
-2. The rest of the line after a `StringAttributeType` is part of its string value,
+2. The rest of the line after a `StrAttributeType` is part of its string value,
 as well as subsequent lines with a higher Indent level.
 
 3. The rest of the line after an `IntAttributeType` is part of its integer value. 

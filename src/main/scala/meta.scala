@@ -55,7 +55,7 @@ object meta:
     "WorkPackage" -> "A collection of (development) work tasks.",
   )
 
-  val stringAttrConcepts = ArraySeq[(String,String)](
+  val strAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note that explains or discusses some entity." ,
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation." ,
     "Example" -> "A note that illustrates some entity by a  typical instance." ,
@@ -110,7 +110,7 @@ object meta:
 
   val concepts: ArraySeq[Concept] = 
     entityConcepts.map((n, d) => Concept(n, d, "EntityType")) ++
-    stringAttrConcepts.map((n, d) => Concept(n,  d, "StringAttrType")) ++
+    strAttrConcepts.map((n, d) => Concept(n,  d, "StrAttrType")) ++
     intAttrConcepts.map((n, d) => Concept(n,  d, "IntAttrType")) ++
     relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))
 
@@ -125,7 +125,7 @@ object meta:
   extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
 
   val entityNames: ArraySeq[String] = entityConcepts.names
-  val stringAttrNames: ArraySeq[String] = stringAttrConcepts.names
+  val strAttrNames: ArraySeq[String] = strAttrConcepts.names
   val intAttrNames: ArraySeq[String] = intAttrConcepts.names
   val relationNames: ArraySeq[String] = relationConcepts.names
   val conceptNames: ArraySeq[String] = concepts.map(_.name)
@@ -148,7 +148,8 @@ object meta:
 
   def generate: String = 
     def method(n: String): String = 
-      s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))"
+      s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))\n" +
+      s"|    def $n: EntLink = EntLink(e, ${n.capitalize})\n"
 
     s"""|//!GENERATE this file in sbt> Test / runMain generateMeta
         |// or by `println(reqt.meta.generate)` in repl and copy-paste
@@ -168,8 +169,16 @@ object meta:
         |    def apply(et: EntType, id: String): Ent = 
         |      new Ent(et, if id.isEmpty then emptyId else id)
         |
+        |  case class EntTypeLink(et: EntType, rt: RelType)
         |
-        |  final case class Attr[T <: Int | String](at: AttrType[T], value: T) extends Node
+        |  case class EntLink(e: Ent, rt: RelType):
+        |
+        |  sealed trait Attr[T] extends Node:
+        |    def at: AttrType[T]
+        |    def value: T
+        |
+        |  final case class StrAttr(at: StrAttrType, value: String) extends Attr[String]
+        |  final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int]
         |
         |  final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
         |    def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
@@ -186,7 +195,7 @@ object meta:
         |    case ${entityNames.mkString(",")}
         |  
         |  enum StrAttrType extends AttrType[String]:
-        |    case ${stringAttrNames.mkString(",")}
+        |    case ${strAttrNames.mkString(",")}
         |  
         |  enum IntAttrType extends AttrType[Int]:
         |    case ${intAttrNames.mkString(",")}
@@ -200,7 +209,7 @@ object meta:
         |  export RelType.*
         |  
         |  extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
-        |  extension (sat: StrAttrType) def apply(value: String): Attr[String] = Attr(sat, value)
-        |  extension (sat: IntAttrType) def apply(value: Int): Attr[Int] = Attr(sat, value)
+        |  extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
+        |  extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
         |  extension (e: Ent)
         |""".stripMargin ++ relationNames.map(method).mkString("  ","\n  ", "").stripMargin

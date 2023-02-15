@@ -1,7 +1,7 @@
 package reqt
 
 object parser:
-  import meta.*, model.*
+  import meta.*
   extension (s: String)
     def toModel = parser.parseModel(s)
     def toLines: Array[String] = s.split("\n")
@@ -119,7 +119,7 @@ object parser:
               val idStart = wordsWithId.lift(1).getOrElse(Ent.emptyId) 
 
               val extraIfText: String = extraElemsOnThisLine match
-                case List(Attr(Text,s)) => s
+                case List(StrAttr(Text,s)) => s
                 case _ => "" 
               
               val idExtra = 

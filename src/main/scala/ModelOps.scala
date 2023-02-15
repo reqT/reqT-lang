@@ -18,4 +18,11 @@ trait ModelOps:
     Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.tip) })
 
   /** A Model with elems picked according to a selection. **/
-  def keep(s: selection.Selection): Model = selection(s, this)
+  def keep(s: selection.Expr): Model = selection(s, this)
+
+  def /(link: Link): Model = path(self, Vector(link))
+  def /(links: Vector[Link]): Model = path(self, links)
+  def /(sat: StrAttrType): Option[String] = path(self, sat)
+
+  //def /(iat: IntAttrType): Model = path(self, iat)
+

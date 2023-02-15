@@ -1,36 +1,34 @@
 package reqt
 
 object selection:
-  import ModelPath.{EntLink, EntTypeLink}
-
   extension (et: Ent)      def &(rt: RelType)  = EntLink(et,rt)
   extension (et: EntType)  def &(rt: RelType)  = EntTypeLink(et,rt)
 
-  type Selection = SelectionTerm | SelectionExpr
-  type SelectionTerm = Elem | ElemType | EntLink | EntTypeLink
+  type Expr = Term | Or
+  type Term = Elem | ElemType | EntLink | EntTypeLink
 
-  case class SelectionExpr(terms: SelectionTerm*):
+  case class Or(terms: Term*):
     override def toString = terms.mkString(" | ")
 
-  extension (lhs: SelectionExpr) 
-    def |(rhs: SelectionTerm): SelectionExpr = SelectionExpr((lhs.terms :+ rhs)*)
-    def |(rhs: SelectionExpr): SelectionExpr = SelectionExpr((lhs.terms ++ rhs.terms)*)
-    def &(rhs: RelType): SelectionExpr =
-      val terms: Seq[SelectionTerm] = lhs.terms.map: term =>
+  extension (lhs: Or) 
+    def |(rhs: Term): Or = Or((lhs.terms :+ rhs)*)
+    def |(rhs: Or): Or = Or((lhs.terms ++ rhs.terms)*)
+    def &(rhs: RelType): Or =
+      val terms: Seq[Term] = lhs.terms.map: term =>
         (term, rhs) match
           case (e: Ent, rt: RelType) => EntLink(e, rt)
           case (et: EntType, rt: RelType) => EntTypeLink(et, rt)
           case pair => pair._1
-      SelectionExpr(terms*)
+      Or(terms*)
 
-  extension (lhs: SelectionTerm) 
-    def |(rhs: SelectionTerm): SelectionExpr = SelectionExpr(lhs,rhs)
-    def |(rhs: SelectionExpr): SelectionExpr = SelectionExpr((lhs +: rhs.terms)*)
+  extension (lhs: Term) 
+    def |(rhs: Term): Or = Or(lhs,rhs)
+    def |(rhs: Or): Or = Or((lhs +: rhs.terms)*)
 
-  def apply(s: Selection, m: Model): Model = 
+  def apply(s: Expr, m: Model): Model = 
     val hasTerm = s match 
-      case se: SelectionExpr => se.terms.toSet
-      case st: SelectionTerm => Set(st)
+      case se: Or => se.terms.toSet
+      case st: Term => Set(st)
 
     val pickedElems = m.elems.flatMap:
       elem => elem match
@@ -54,4 +52,3 @@ object selection:
 
     Model(pickedElems)
 
-     
