@@ -5,15 +5,15 @@ object path:
 
   extension (l1: Link) 
     def /(l2: Link): Vector[Link] = Vector(l1, l2)
-    def /(a: Attr[String]): StrAttrPath = StrAttrPath(Vector(l1), a)
-    def /(a: Attr[Int]):    IntAttrPath = IntAttrPath(Vector(l1), a)
+    def /(a: StrAttr): StrAttrPath = StrAttrPath(Vector(l1), a)
+    def /(a: IntAttr): IntAttrPath = IntAttrPath(Vector(l1), a)
     def /(a: StrAttrType): StrAttrTypePath = StrAttrTypePath(Vector(l1), a)
     def /(a: IntAttrType): IntAttrTypePath = IntAttrTypePath(Vector(l1), a)
 
   extension (ls: Vector[Link]) 
     def /(l: Link): Vector[Link] = ls :+ l
-    def /(a: Attr[String]): StrAttrPath = StrAttrPath(ls, a)
-    def /(a: Attr[Int]):    IntAttrPath = IntAttrPath(ls, a)
+    def /(a: StrAttr): StrAttrPath = StrAttrPath(ls, a)
+    def /(a: IntAttr): IntAttrPath = IntAttrPath(ls, a)
     def /(a: StrAttrType): StrAttrTypePath = StrAttrTypePath(ls, a)
     def /(a: IntAttrType): IntAttrTypePath = IntAttrTypePath(ls, a)
 
@@ -28,15 +28,16 @@ object path:
     def links: Vector[Link]
     def dest: Attr[T]
 
-  case class StrAttrPath(links: Vector[Link], dest: Attr[String]) extends AttrPath[String]
-  case class IntAttrPath(links: Vector[Link], dest: Attr[Int])    extends AttrPath[Int]
+  case class StrAttrPath(links: Vector[Link], dest: StrAttr) extends AttrPath[String]
+  case class IntAttrPath(links: Vector[Link], dest: IntAttr) extends AttrPath[Int]
 
   def apply[T](m: Model, p: StrAttrTypePath): Option[String] = 
     val sub = apply(m, p.links)
     apply(sub, p.dest)
 
-  def apply(m: Model, sat: StrAttrType): Option[String]  = 
-    m.elems.collectFirst{case sa: StrAttr if sa.at == sat => sa.value}
+  def apply(m: Model, at: StrAttrType): Option[String] = m.elems.collectFirst{case a: StrAttr if a.at == at => a.value}
+  def apply(m: Model, at: IntAttrType): Option[Int]    = m.elems.collectFirst{case a: IntAttr if a.at == at => a.value}
+
 
   def apply(m: Model, links: Seq[Link]): Model = links match
     case Seq() => Model()
