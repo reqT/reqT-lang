@@ -171,7 +171,7 @@ object meta:
         |
         |  case class EntTypeLink(et: EntType, rt: RelType)
         |
-        |  case class EntLink(e: Ent, rt: RelType):
+        |  case class EntLink(e: Ent, rt: RelType)
         |
         |  sealed trait Attr[T] extends Node:
         |    def at: AttrType[T]

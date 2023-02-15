@@ -57,7 +57,7 @@ object model:
   
   extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
   extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
-  extension (sat: IntAttrType) def apply(value: Int): IntAttr = IntAttr(sat, value)
+  extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
   extension (e: Ent)
     def binds(sub: Elem*): Rel = Rel(e, Binds, Model(sub*))
     def binds: EntLink = EntLink(e, Binds)
