@@ -68,8 +68,8 @@ EntityType ::= `Actor` | `App` | `Barrier` | `Breakpoint` | `Class` | `Component
 `Design` | `Domain` | `Epic` | `Event` | `Feature` | `Function` | `Goal` | `Idea` | `Interface` | 
 `Item` | `Issue` | `Label` | `Meta` | `Member` | `Module` | `MockUp` | `Product` | `Quality` | 
 `Relationship` | `Release` | `Req` | `Resource` | `Risk` | `Scenario` | `Screen` | `Section` | 
-`Service` | `Stakeholder` | `State` | `Story` | `System` | `Target` | `Task` | `Term` | `Test` | 
-`Ticket` | `UseCase` | `User` | `Variant` | `VariationPoint` | `WorkPackage`
+`Service` | `Stakeholder` | `State` | `UserStory` | `System` | `Target` | `Task` | `Term` | 
+`TestCase` | `Ticket` | `UseCase` | `User` | `Variant` | `VariationPoint` | `WorkPackage`
 
 IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | `Max` | `Min` | `Order` | `Prio` | 
 `Probability` | `Profit` | `Value`

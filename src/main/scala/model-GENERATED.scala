@@ -39,7 +39,7 @@ object model:
     def apply(elems: Elem*): Model = Model(elems.toVector)
 
   enum EntType extends NodeType:
-    case Actor,App,Barrier,Breakpoint,Class,Component,Configuration,Data,Design,Domain,Epic,Event,Feature,Function,Goal,Idea,Interface,Item,Issue,Label,Meta,Member,Module,MockUp,Product,Quality,Relationship,Release,Req,Resource,Risk,Scenario,Screen,Section,Service,Stakeholder,State,Story,System,Target,Task,Term,Test,Ticket,UseCase,User,Variant,VariationPoint,WorkPackage
+    case Actor,App,Barrier,Breakpoint,Class,Component,Configuration,Data,Design,Domain,Epic,Event,Feature,Function,Goal,Idea,Interface,Item,Issue,Label,Meta,Member,Module,MockUp,Product,Quality,Relationship,Release,Req,Resource,Risk,Scenario,Screen,Section,Service,Stakeholder,State,UserStory,System,Target,Task,Term,TestCase,Ticket,UseCase,User,Variant,VariationPoint,WorkPackage
   
   enum StrAttrType extends AttrType[String]:
     case Comment,Deprecated,Example,Expectation,Err,FileName,Gist,Image,Input,Output,Spec,Status,Text,Title,Why
