@@ -179,6 +179,8 @@ object meta:
         |
         |  final case class StrAttr(at: StrAttrType, value: String) extends Attr[String]
         |  final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int]
+        |  final case class Undefined[T](at: AttrType[T]) extends Attr[T]:
+        |    def value: T = throw new java.util.NoSuchElementException
         |
         |  final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
         |    def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }

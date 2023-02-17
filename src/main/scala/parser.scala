@@ -41,6 +41,16 @@ object parser:
     def wrap(n: Int = 72): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
   end extension
 
+  extension (sc: StringContext)
+    def m(args: Any*): Model = 
+      val strings: Iterator[String] = sc.parts.iterator
+      val expressions: Iterator[Any] = args.iterator
+      val sb = StringBuilder(strings.next)
+      while strings.hasNext do
+          sb.append(expressions.next.toString)
+          sb.append(strings.next)
+      sb.toString.toModel
+
   def parseModel(input: String): Model = Model(parseElems(input, 0)*)
 
   def parseElems(input: String, baseLevel: Int): List[Elem] = 
@@ -98,10 +108,10 @@ object parser:
           case f if first.isIntAttrType => 
             val second: Option[String] = words.lift(1)
             val numOpt: Option[Int] = second.flatMap(_.toIntOption)
-            val ia: Attr[Int] = intAttrTypes(f).apply(numOpt.getOrElse(0))
+            val ia: Attr[Int] = if numOpt.isDefined then intAttrTypes(f).apply(numOpt.get) else Undefined(intAttrTypes(f))
             elems.append(ia)
             val afterNumOnThisLine = 
-              restOfLine.stripLeading.drop(if numOpt.isDefined then 1 else 0).trim
+              restOfLine.stripLeading.drop(if numOpt.isDefined && second.isDefined then second.get.length else 0).trim
             if afterNumOnThisLine.length > 0 then 
               elems.appendAll(parseElems(afterNumOnThisLine, level))
 
@@ -119,7 +129,7 @@ object parser:
               val idStart = wordsWithId.lift(1).getOrElse(Ent.emptyId) 
 
               val extraIfText: String = extraElemsOnThisLine match
-                case List(StrAttr(Text,s)) => s
+                case List(StrAttr(Text,s)) => s.toString
                 case _ => "" 
               
               val idExtra = 

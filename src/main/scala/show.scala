@@ -16,6 +16,7 @@ object show:
     given showElemAsScala: ShowAsScala[Elem] with 
       override def showAsScala(e: Elem): String = e match 
         case e: Ent     => s"${e.et.toString}(${e.id.toScala})"
+        case u: Undefined[?] => u.toString
         case a: Attr[? <: Int | String] => s"${a.at.toString}(${a.value.toScala})"
         case r: Rel     => 
           s"""${r.e.toScala}.${r.rt.toString.toLowerCase}(${r.sub.elems.map(_.toScala).mkString(",")})"""
@@ -27,3 +28,5 @@ object show:
 
     given showAnyAsScala: ShowAsScala[ElemType] with
       override def showAsScala(et: ElemType): String = et.toString
+
+  extension (m: Model) def toText: String = ??? 
