@@ -13,6 +13,11 @@ object path:
     def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](ls, a)
     def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](ls, a)
 
+  object Root:
+    def /(link: Link): Vector[Link] = Vector(link)
+    def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)
+    def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](Vector(), a)
+
   sealed trait Path[T]:
     def links: Vector[Link]
     def dest: AttrType[T] | Attr[T]

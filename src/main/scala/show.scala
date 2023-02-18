@@ -28,5 +28,3 @@ object show:
 
     given showAnyAsScala: ShowAsScala[ElemType] with
       override def showAsScala(et: ElemType): String = et.toString
-
-  extension (m: Model) def toText: String = ??? 

@@ -3,7 +3,8 @@ package reqt
 object parser:
   import meta.*
   extension (s: String)
-    def toModel = parser.parseModel(s)
+    def toModel = parseModel(s)
+    def m       = parseModel(s)
     def toLines: Array[String] = s.split("\n")
     def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
 
