@@ -24,7 +24,7 @@ object show:
     given showModelAsScala: ShowAsScala[Model] with 
       override def showAsScala(m: Model): String = 
         // TODO: make pretty indentation and nice line wrapping if long/deep model
-        m.elems.map(_.toScala).mkString("Model(",",",")")
+        m.elems.map(_.toScala).mkString("Model(\n  ",",\n  ","\n)")
 
     given showAnyAsScala: ShowAsScala[ElemType] with
       override def showAsScala(et: ElemType): String = et.toString

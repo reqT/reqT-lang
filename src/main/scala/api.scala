@@ -9,3 +9,5 @@ export path.*
 extension (elems: Vector[Elem]) 
   def toModel = Model(elems)
   def m = Model(elems)
+
+extension (s: String) def p = println(s)

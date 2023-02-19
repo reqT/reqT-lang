@@ -3,37 +3,60 @@ package reqt
 trait ModelOps:
   self: Model =>
 
+  /** The number of elems at top level plus the sizes of all sub models **/
   def size: Int =
-    var n = 0
-    ???
-    
+    var n = elems.size
+    elems.foreach:
+      case n: Node => 
+      case r: Rel => n += r.sub.size
+    n
 
-  /** A Model with elems of other Model to elems of this Model. **/
+  /** A new Model with elems of other Model to elems of this Model. **/
   def ++(other: Model): Model = Model(elems ++ other.elems)
 
-  /** A Model with elem e appended to this Model. **/  
+  /** A new Model with elem e appended to this Model. **/  
   def +(e: Elem): Model = Model(elems :+ e)
-  
-  /** A Model with de-duplicated elems at all levels **/
-  def distinct: Model = 
-    Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.distinct) }.distinct) 
 
-  /** A Model with the top level nodes of this Model. */
-  def tip: Model = 
-    Model(elems.collect { case n: Node => n case Rel(e, _, _) => e })
+  def nodes: Vector[Node] = 
+    elems.flatMap:
+      case n: Node => Vector(n) 
+      case Rel(e, r, m) => Vector(e) ++ m.nodes
+
+  def undefined: Vector[Undefined[?]] = nodes.collect{ case u: Undefined[?] => u }
+  
+  /** A new Model with deep de-duplication of its elems. **/
+  def distinct: Model =
+    Model(elems.map:
+      case n: Node => n 
+      case Rel(e, r, m) => Rel(e, r, m.distinct)
+    .distinct) 
+
+  def sorted: Model = 
+    Model(elems.map:
+      case n: Node => n 
+      case Rel(e, r, m) => Rel(e, r, m.sorted)
+    .sortBy(_.toScala)) 
+
+  /** All empty relations at any depth are replaced by its entity. */
+  def cutEmptyRelations: Model =
+    Model(elems.map:
+      case n: Node => n 
+      case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.cutEmptyRelations) else e
+    )
+
+  /** A Model with the nodes but not relations at the top of this Model. */
+  def tip: Model = cut(0)
   
   /** A Model with the tip of this Model and the tip of its sub-models. */
-  def top: Model = 
-    Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.tip) })
+  def top: Model = cut(1)
 
   def sub: Model =
     elems.collect { case Rel(e, r, sub) => sub }.foldLeft(Model())(_ ++ _)
 
-  def level(n: Int): Model = n match
-    case 0 => tip
-    case 1 => top
-    case 2 => Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.top) })
-    case 3 => Model(elems.collect { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.level(n - 1)) })
+  /** Cut all relations so that no relations is deeper than depth. cut(0) == tip, cut(1) == top **/
+  def cut(depth : Int): Model = 
+    if depth <= 0 then  Model(elems.map { case n: Node => n case Rel(e, _, _) => e }) 
+    else Model(elems.map { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.cut(depth - 1)) })
 
   /** A Model with elems deeply filtered according to a selection expression. **/
   infix def keep(s: selection.Expr): Model = selection(s, this)
@@ -70,15 +93,30 @@ trait ModelOps:
   def /[T](p: AttrPath[T]): Boolean =  self / p.links / p.dest
 
   def txt: String = 
+    val MaxLen = 72
     def loop(level: Int, m: Model, sb: StringBuilder): Unit = 
       val indent = "  " * level 
       for e <- m.elems do e match
         case Undefined(at) => sb.append(s"$indent$at\n")
+
         case a: Attr[?] => sb.append(s"$indent${a.at} ${a.value}\n")
+        
         case e: Ent     => sb.append(s"$indent${e.et} ${e.id}\n")
-        case Rel(e, rt, sub) => 
+        
+        case Rel(e, rt, Model(Vector(e2: Ent))) 
+          if !e.id.contains('\n') && e.id.length + indent.length < MaxLen => // a one-liner
+          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase} ${e2.et} ${e2.id}\n")
+        
+        case Rel(e, rt, Model(Vector(u: Undefined[?]))) => // a one-liner
+          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase} ${u.at}\n")
+        
+        case Rel(e, rt, Model(Vector(a: Attr[?]))) 
+          if !a.value.toString.contains('\n') && a.value.toString.length + indent.length < MaxLen => // a one-liner
+          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase} ${a.at} ${a.value}\n")
+        
+        case Rel(e, rt, sub) => // put sub on indented new line 
           sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase}\n")
-          loop(level + 1, sub, sb)
+          if sub.elems.length > 0 then loop(level + 1, sub, sb)
     end loop
     val sb = StringBuilder()
     loop(0, self, sb)
