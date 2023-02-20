@@ -3,8 +3,6 @@ package reqt
 object parser:
   import meta.*
   extension (s: String)
-    def toModel = parseModel(s)
-    def m       = parseModel(s)
     def toLines: Array[String] = s.split("\n")
     def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
 
@@ -50,7 +48,7 @@ object parser:
       while strings.hasNext do
           sb.append(expressions.next.toString)
           sb.append(strings.next)
-      sb.toString.toModel
+      parseModel(sb.toString)
 
   def parseModel(input: String): Model = Model(parseElems(input, 0)*)
 
