@@ -21,9 +21,12 @@ meta := (Test / run).toTask("").value
 
 lazy val build = taskKey[Unit]("build all the things")
 build := Def.sequential(
+        Compile / clean,
         meta,
-        Test / test,
+        Compile / clean,
+        Compile / compile,
         Compile / packageBin,
+        Test / test,
       ).value
 
 lazy val hello = taskKey[Unit]("Prints welcome message")
