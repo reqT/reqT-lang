@@ -2,7 +2,9 @@ package reqt
 
 sealed trait Path[T]:
   def links: Vector[Link]
+
   def dest: AttrType[T] | Attr[T] | Nil.type
+  
   def linkElems: Vector[Link | Node] = dest match
     case Nil => links
     case at: AttrType[?] => links :+ Undefined(at)
