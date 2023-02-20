@@ -163,15 +163,15 @@ object meta:
         |  trait NodeType extends ElemType
         |  trait AttrType[T] extends NodeType
         |
-        |  final case class Ent private (et: EntType, id: String) extends Node
+        |  sealed trait Link
+        |  final case class EntLink(e: Ent, rt: RelType) extends Link
+        |  final case class Ent private (et: EntType, id: String) extends Node, Link
         |  object Ent:
         |    val emptyId = "???"
         |    def apply(et: EntType, id: String): Ent = 
         |      new Ent(et, if id.isEmpty then emptyId else id)
         |
-        |  case class EntTypeLink(et: EntType, rt: RelType)
-        |
-        |  case class EntLink(e: Ent, rt: RelType)
+        |  final case class LinkType(et: EntType, rt: RelType) 
         |
         |  sealed trait Attr[T] extends Node:
         |    def at: AttrType[T]

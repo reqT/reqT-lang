@@ -2,10 +2,10 @@ package reqt
 
 object selection:
   extension (et: Ent)      def &(rt: RelType)  = EntLink(et,rt)
-  extension (et: EntType)  def &(rt: RelType)  = EntTypeLink(et,rt)
+  extension (et: EntType)  def &(rt: RelType)  = LinkType(et,rt)
 
   type Expr = Term | Or
-  type Term = Elem | ElemType | EntLink | EntTypeLink
+  type Term = Elem | ElemType | EntLink | LinkType
 
   case class Or(terms: Term*):
     override def toString = terms.mkString(" | ")
@@ -17,7 +17,7 @@ object selection:
       val terms: Seq[Term] = lhs.terms.map: term =>
         (term, rhs) match
           case (e: Ent, rt: RelType) => EntLink(e, rt)
-          case (et: EntType, rt: RelType) => EntTypeLink(et, rt)
+          case (et: EntType, rt: RelType) => LinkType(et, rt)
           case pair => pair._1
       Or(terms*)
 

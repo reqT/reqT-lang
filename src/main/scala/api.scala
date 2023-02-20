@@ -3,7 +3,9 @@ package reqt
 export core.*
 export show.toScala
 export selection.*
-export path.*
+export Path.*
+
+export parser.m
 
 extension (elems: Vector[Elem]) 
   def toModel = Model(elems)

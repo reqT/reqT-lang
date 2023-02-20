@@ -62,11 +62,11 @@ trait ModelOps:
   infix def keep(s: selection.Expr): Model = selection(s, this)
 
   /** A sub-model of Link **/
-  def /(link: Link): Model = self / Vector(link)
+  def /(link: Link): Model = self / LinkPath(Vector(link))
 
-  /** A deep sub-model recursing into a sequence of links **/
-  def /(links: Vector[Link]): Model = 
-    links match
+  /** A deep sub-model recursing into a sequence of links in a LinkPath. **/
+  def /(p: LinkPath): Model = 
+    p.links match
       case Vector() => self
 
       case Vector(link) => 
@@ -77,8 +77,7 @@ trait ModelOps:
 
       case Vector(link, rest*) => 
         val m2 = self / link
-        m2 / rest.toVector
-
+        m2 / LinkPath(rest.toVector)
 
   def /[T](a: Attr[T]): Boolean = elems.exists(_ == a)
 
@@ -88,9 +87,9 @@ trait ModelOps:
 
   def /(ut: Undefined.type): Vector[Undefined[?]] = elems.collect{case u: Undefined[?] => u} 
 
-  def /[T](p: AttrTypePath[T]): Vector[T] =  self / p.links / p.dest
+  def /[T](p: AttrTypePath[T]): Vector[T] =  self / LinkPath(p.links) / p.dest
 
-  def /[T](p: AttrPath[T]): Boolean =  self / p.links / p.dest
+  def /[T](p: AttrPath[T]): Boolean =  self / LinkPath(p.links) / p.dest
 
   def txt: String = 
     val MaxLen = 72
