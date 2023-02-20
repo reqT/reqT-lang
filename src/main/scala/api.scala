@@ -1,6 +1,6 @@
 package reqt
 
-export model.*
+export core.*
 export show.toScala
 export selection.*
 export path.*

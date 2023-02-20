@@ -2,7 +2,7 @@
 // or by `println(reqt.meta.generate)` in repl and copy-paste
 package reqt
 
-object model:
+object core:
   sealed trait Elem
   sealed trait Node extends Elem
 
