@@ -35,7 +35,7 @@ trait ModelOps:
     Model(elems.map:
       case n: Node => n 
       case Rel(e, r, m) => Rel(e, r, m.sorted)
-    .sortBy(_.toScala)) 
+    .sortBy(_.show)) 
 
   /** All empty relations at any depth are replaced by its entity. */
   def cutEmptyRelations: Model =

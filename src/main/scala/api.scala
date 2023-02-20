@@ -1,7 +1,7 @@
 package reqt
 
 export lang.*
-export show.toScala
+export Show.show
 export selection.*
 export Path.*
 
