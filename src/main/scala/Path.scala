@@ -12,6 +12,7 @@ sealed trait Path[T]:
 
 object Path:
   final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends Path[T]
+  
   final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends Path[T]
 
   final case class LinkPath(links: Vector[Link]) extends Path[Nil.type]:
