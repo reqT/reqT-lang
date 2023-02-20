@@ -155,7 +155,7 @@ object meta:
         |// or by `println(reqt.meta.generate)` in repl and copy-paste
         |package reqt
         |
-        |object core:
+        |object lang:
         |  sealed trait Elem
         |  sealed trait Node extends Elem
         |

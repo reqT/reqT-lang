@@ -2,10 +2,10 @@ extension (s: String) infix def saveTo(f: String) =
   val pw = java.io.PrintWriter(java.io.File(f), "UTF-8")
   try pw.write(s) finally pw.close()
 
-val modelFile = "src/main/scala/core-GENERATED.scala"
+val modelFile = "src/main/scala/lang-GENERATED.scala"
 val langSpecFile = "langSpec-GENERATED.md"
 
-@main def generateMeta = 
+@main def generateLang = 
   println(s"Generating $modelFile")
   reqt.meta.generate saveTo modelFile
   println(s"Generating $langSpecFile")
