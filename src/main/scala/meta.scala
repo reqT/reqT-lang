@@ -105,7 +105,7 @@ object meta:
     "Prio" -> "The level of importance of an entity. Short for priority." ,
     "Probability" -> "The likelihood that something (e.g. a risk) occurs." ,
     "Profit" -> "The gain or return of some entity, e.g. in monetary terms." ,
-    "Value" -> "An amount. An estimate of worth.",
+    "Value" -> "Some general integer value.",
   ).sorted
 
   val relationConcepts = ArraySeq[(String,String)](
