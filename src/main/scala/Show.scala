@@ -6,19 +6,21 @@ trait Show[-A]:
 object Show:
   extension [A](a: A)(using s: Show[A]) 
     def show: String = s.show(a)
+  
+  given showInt: Show[Int] with
+    override def show(a: Int): String = a.toString
 
-  given showIntString: Show[Int | String] with 
-    override def show(a: Int | String): String = a match 
-      case s: String => if s.contains('"') || s.contains('\n') then s"\"\"\"$s\"\"\"" else s"\"$s\""
-      case i: Int  => i.toString
+  given showString: Show[String] with
+    override def show(a: String): String = 
+      if a.contains('"') || a.contains('\n') then s"\"\"\"$a\"\"\"" else s"\"$a\""
 
   given showElem: Show[Elem] with 
     override def show(e: Elem): String = e match 
-      case e: Ent     => s"${e.et.toString}(${e.id.show})"
+      case Ent(et, id)     => s"${et.toString}(${id.show})"
       case u: Undefined[?] => u.toString
-      case a: Attr[? <: Int | String] => s"${a.at.toString}(${a.value.show})"
-      case r: Rel     => 
-        s"""${r.e.show}.${r.rt.toString.toLowerCase}(${r.sub.elems.map(_.show).mkString(",")})"""
+      case IntAttr(at, v)  => s"${at.toString}(${v.show})"
+      case StrAttr(at, v)  => s"${at.toString}(${v.show})"
+      case Rel(e, rt, sub) => s"""${e.show}.${rt.toString.toLowerCase}(${sub.elems.map(_.show).mkString(",")})"""
   
   given showModel: Show[Model] with 
     override def show(m: Model): String = 
