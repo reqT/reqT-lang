@@ -66,7 +66,7 @@ object meta:
     FunctionalReq -> "UserStory" -> "A short description of what a user does or needs. Short for user story." ,
 
     QualityReq -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level." ,
-    QualityReq -> "Breakpoint" -> "A point of change. An important aspect of a (non-linear) relation between quality and benefit.",
+    QualityReq -> "Breakpoint" -> "A point of change, representing an important shift in the relation between quality and benefit.",
     QualityReq -> "Quality" -> "An aspect of system quality, distinguishing characteristic or degree of goodness.",
     QualityReq -> "Target" -> "A desired quality level or quality goal." ,
 
@@ -83,9 +83,9 @@ object meta:
     "Example" -> "A description that illustrates some entity by a typical instance." ,
     "Expectation" -> "A required output of a test in order to be counted as passed." ,
     "Failure" -> "A description of an error that prevents the normal execution of a system.",
-    "Location" -> "A location of a resource such as a web address or a path to a file of persistent data." ,
     "Input" -> "Data consumed by an entity, " ,
     "Label" -> "A descriptive name used to classify something.",
+    "Location" -> "A location of a resource such as a web address or a path to a file of persistent data." ,
     "Output" -> "Data produced by an entity, e.g. a function or a test." ,
     "Spec" -> "A definition of an entity. Short for specification" ,
     "Text" -> "An paragraph or general description.", 
