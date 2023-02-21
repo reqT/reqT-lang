@@ -3,75 +3,94 @@ package reqt
 import scala.collection.immutable.ArraySeq
 
 object meta:
-  val entityConcepts = ArraySeq[(String,String)](
-    "Actor" -> "A human or machine that communicates with a system.",
-    "App" -> "A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application." ,
-    "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level." ,
-    "Breakpoint" -> "A point of change. An important aspect of a (non-linear) relation between quality and benefit.",
-    "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",
-    "Component" -> "A composable part of a system. A reusable, interchangeable system unit or functionality." ,
-    "Configuration" -> "A specific combination of variants." ,
-    "Data" -> "Information stored in a system." ,
-    "Design" -> "A specific realization or high-level implementation description (of a system part).",
-    "Domain" -> "The application area of a product with its surrounding entities.",
-    "Epic" -> "A large user story or a collection of stories." ,
-    "Event" -> "Something that can happen in the domain and/or in the system.",
-    "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
-    "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific." ,
-    "Goal" -> "An intention of a stakeholder or desired system property." ,
-    "Idea" -> "A concept or thought (potentially interesting)." ,
-    "Interface" -> "A defined way to interact with a system." ,
-    "Item" -> " An article in a collection, enumeration, or series.",
-    "Issue" -> "Something needed to be fixed." ,
-    "Label" -> "A descriptive name used to identify something.",
-    "Meta" -> "A prefix used on a concept to mean beyond or about its own concept, e.g. metadata is data about data.",
-    "Member" -> "An entity that is part of another entity, eg. a field in a in a class." ,
-    "Module" -> "A collection of coherent functions and interfaces.",
-    "MockUp" -> "A prototype with limited functionality used to demonstrate a design idea.",
-    "Product" -> "Something offered to a market." ,
-    "Quality" -> "A distinguishing characteristic or degree of goodness.",
-    "Relationship" -> "A specific way that entities are connected." ,
-    "Release" -> "A specific version of a system offered at a specific time to end users." ,
-    "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
-    "Resource" -> "A capability of, or support for development." ,
-    "Risk" -> "Something negative that may happen." ,
-    "Scenario" -> "A (vivid) description of a (possible future) system usage." ,
-    "Screen" -> "A design of (a part of) a user interface." ,
-    "Section" -> "A part of a (requirements) document." ,
-    "Service" -> "Actions performed by systems and/or humans to provide results to stakeholders." ,
-    "Stakeholder" -> "Someone with a stake in the system development or usage." ,
-    "State" -> "A mode or condition of something in the domain and/or in the system. A configuration of data.",
-    "UserStory" -> "A short description of what a user does or needs. Short for user story." ,
-    "System" -> "A set of interacting software and/or hardware components." ,
-    "Target" -> "A desired quality level or goal ." ,
-    "Task" -> "A piece of work (that users do, maybe supported by a system)." ,
-    "Term" -> "A word or group of words having a particular meaning.",
-    "TestCase" -> "A procedure to check if requirements are met." ,
-    "Ticket" -> "(Development) work awaiting to be completed." ,
-    "UseCase" -> "A list of steps defining interactions between actors and a system to achieve a goal." ,
-    "User" -> "A human interacting with a system." ,
-    "Variant" -> "An object or system property that can be chosen from a set of options." ,
-    "VariationPoint" -> "An opportunity of choice among variants.",
-    "WorkPackage" -> "A collection of (development) work tasks.",
+  enum EntGroup:
+    case ReqContext, GeneralReq, DataReq, FunctionalReq, QualityReq, DesignReq, VariabilityReq
+  import EntGroup.* 
+
+  ///since reqt 3.1.7:  
+  // Removed Meta, Term, Item, Ticket (use Issue instead), WorkPackage (use Issue instead), Module (use Component instead)
+  // removed Status attribute, use Label instead
+  // Changed since reqt 3.1.7: Story -> UserStory, Test -> TestCase, MockUp -> Prototype, Relationship -> Relation, 
+  //    Image is an entity not an attribute  to be paired by a Location attribute that has its filename such as file://
+
+  // ??? Class -> Entity or DataType??, Member -> Attribute | Operation ??? Data -> DataType
+  // ??? should Example be an Entity instead of an Attribute???
+  // ??? remove: Domain ??? use Section instead, 
+  // ??? remove Module ??? use Component instead
+  // ??? remove Configuration ???
+  // ?? remove Epic ?? you can have UserStories inside UserStorys or else use Section
+  // ??? remove Screen, use Prototype instead
+  // ??? remove Service use Function or Feature instead
+  // ??? use only one of these: App Product System
+  // ??? replace actor with User or System 
+  //?? Use one of these: Scenario UserStory UseCase
+  // change relation superOf to superTypeOf ???  remove the is relation as it is reduntant to superOf
+  // remove Gist use Text or Spec instead
+  // add string attr Type to be used for example to type a relatesTo
+  // should label be a StrAttr???
+
+  val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
+    ReqContext -> "Product" -> "Something offered to users or customers on a market, e.g. a software app or an embedded system." ,
+    ReqContext -> "Release" -> "A specific version of a system offered at a specific time to end users." ,
+    ReqContext -> "Resource" -> "A capability of, or support for product development, e.g. a development team or testing equipment." ,
+    ReqContext -> "Risk" -> "Something negative that may happen." ,
+    ReqContext -> "Section" -> "A part of a (requirements) document or a subdomain." ,
+    ReqContext -> "Stakeholder" -> "Someone with a stake in the system development or usage." ,
+    ReqContext -> "System" -> "A set of interacting computer software or hardware components." ,
+    ReqContext -> "User" -> "A human interacting with a system." ,
+
+    GeneralReq -> "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
+    GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property." ,
+    GeneralReq -> "Idea" -> "A concept or thought (potentially interesting)." ,
+    GeneralReq -> "Image" -> "A visual representation, picture or diagram." ,
+    GeneralReq -> "Issue" -> "Something needed to be fixed or work awaiting to be completed." ,
+    GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
+    GeneralReq -> "TestCase" -> "A procedure to check if requirements are met." ,
+
+    DataReq -> "DataMember" -> "An an attribute (field) that is part of a datatype." ,
+    DataReq -> "DataType" -> "An information entity stored in a system." ,
+    DataReq -> "Relationship" -> "A specific way that data types are connected." ,
+
+    DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality." ,
+    DesignReq -> "Design" -> "A specific realization. A description of an implementation.",
+    DesignReq -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
+    DesignReq -> "Screen" -> "A design of (a part of) a user interface." ,
+
+    FunctionalReq -> "Event" -> "Something that can happen in the domain and/or in the system.",
+    FunctionalReq -> "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific." ,
+    FunctionalReq -> "Interface" -> "A defined way to interact with a system." ,
+    FunctionalReq -> "State" -> "A mode or condition of something in the domain and/or in the system. A configuration of data.",
+    FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system." ,
+    FunctionalReq -> "UseCase" -> "A list of steps defining interactions between actors and a system to achieve a goal." ,
+    FunctionalReq -> "UserStory" -> "A short description of what a user does or needs. Short for user story." ,
+
+    QualityReq -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level." ,
+    QualityReq -> "Breakpoint" -> "A point of change. An important aspect of a (non-linear) relation between quality and benefit.",
+    QualityReq -> "Quality" -> "An aspect of system quality, distinguishing characteristic or degree of goodness.",
+    QualityReq -> "Target" -> "A desired quality level or quality goal." ,
+
+    VariabilityReq -> "Configuration" -> "A specific combination of variants." ,
+    VariabilityReq -> "Variant" -> "An object or system property that can be chosen from a set of options." ,
+    VariabilityReq -> "VariationPoint" -> "An opportunity of choice among variants.",
   )
+
+  val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
 
   val strAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note that explains or discusses some entity." ,
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation." ,
-    "Example" -> "A note that illustrates some entity by a  typical instance." ,
-    "Expectation" -> "The required output of a test in order to be counted as passed." ,
-    "Err" -> "An error message explaining a failure.",
-    "FileName" -> "The name of a storage of serialized, persistent data." ,
-    "Gist" -> "A short and simple description of an entity, e.g. a function or a test." ,
-    "Image" -> "(The name of) a picture of an entity." ,
+    "Example" -> "A description that illustrates some entity by a typical instance." ,
+    "Expectation" -> "A required output of a test in order to be counted as passed." ,
+    "Failure" -> "A description of an error that prevents the normal execution of a system.",
+    "Location" -> "A location of a resource such as a web address or a path to a file of persistent data." ,
     "Input" -> "Data consumed by an entity, " ,
+    "Label" -> "A descriptive name used to classify something.",
     "Output" -> "Data produced by an entity, e.g. a function or a test." ,
-    "Spec" -> "A (detailed) definition of an entity. Short for specification" ,
-    "Status" -> "A level of refinement of an entity (e.g. a feature) in the development process. ", 
-    "Text" -> "A sequence of words (in natural language).", 
-    "Title" -> "A general or descriptive heading.", 
+    "Spec" -> "A definition of an entity. Short for specification" ,
+    "Text" -> "An paragraph or general description.", 
+    "Title" -> "A short descriptive heading.", 
     "Why" -> "A description of intention. Rationale.",
-  )
+  ).sorted
 
   val intAttrConcepts = ArraySeq[(String,String)](
     "Benefit" -> "A characterization of a good or helpful result or effect (e.g. of a feature)." ,
@@ -86,7 +105,7 @@ object meta:
     "Probability" -> "The likelihood that something (e.g. a risk) occurs." ,
     "Profit" -> "The gain or return of some entity, e.g. in monetary terms." ,
     "Value" -> "An amount. An estimate of worth.",
-  )
+  ).sorted
 
   val relationConcepts = ArraySeq[(String,String)](
     "binds" -> "Ties a value to an option. A configuration binds a variation point." ,
@@ -104,15 +123,15 @@ object meta:
     "requires" -> "Requested combination. An entity is required (or wished) by another entity." ,
     "superOf" -> "Super-typing, generalization, includes another, more specific entity." ,
     "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
-  )
+  ).sorted
 
   case class Concept(name: String, description: String, abstractType: String)
 
   val concepts: ArraySeq[Concept] = 
-    entityConcepts.map((n, d) => Concept(n, d, "EntityType")) ++
+    (entityConcepts.map((n, d) => Concept(n, d, "EntityType")) ++
     strAttrConcepts.map((n, d) => Concept(n,  d, "StrAttrType")) ++
     intAttrConcepts.map((n, d) => Concept(n,  d, "IntAttrType")) ++
-    relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))
+    relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))).sortBy(_.name)
 
   val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
 
@@ -124,11 +143,11 @@ object meta:
 
   extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
 
-  val entityNames: ArraySeq[String] = entityConcepts.names
-  val strAttrNames: ArraySeq[String] = strAttrConcepts.names
-  val intAttrNames: ArraySeq[String] = intAttrConcepts.names
+  val entityNames: ArraySeq[String]   = entityConcepts.names
+  val strAttrNames: ArraySeq[String]  = strAttrConcepts.names
+  val intAttrNames: ArraySeq[String]  = intAttrConcepts.names
   val relationNames: ArraySeq[String] = relationConcepts.names
-  val conceptNames: ArraySeq[String] = concepts.map(_.name)
+  val conceptNames: ArraySeq[String]  = concepts.map(_.name)
 
   val isConceptName: Set[String] = conceptNames.toSet
 
