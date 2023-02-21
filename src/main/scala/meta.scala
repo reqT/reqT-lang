@@ -12,6 +12,7 @@ object meta:
   // removed Status attribute, use Label instead
   // Changed since reqt 3.1.7: Story -> UserStory, Test -> TestCase, MockUp -> Prototype, Relationship -> Relation, 
   //    Image is an entity not an attribute  to be paired by a Location attribute that has its filename such as file://
+  // remove the is relation as it is redundant to superOf
 
   // ??? Class -> Entity or DataType??, Member -> Attribute | Operation ??? Data -> DataType
   // ??? should Example be an Entity instead of an Attribute???
@@ -110,18 +111,17 @@ object meta:
   val relationConcepts = ArraySeq[(String,String)](
     "binds" -> "Ties a value to an option. A configuration binds a variation point." ,
     "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity." ,
-    "excludes" -> "Prevents a combination. An entity excludes another entity." ,
-    "has" -> "Expresses containment, substructure. An entity contains another entity." ,
-    "helps" -> "Positive influence. A goal helps to fulfil another goal." ,
+    "excludes" -> "Prevents an entity combination. One feature excludes another in a release." ,
+    "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity." ,
+    "helps" -> "Positive influence. A goal supports the fulfillment of another goal." ,
     "hurts" -> "Negative influence. A goal hinders another goal." ,
-    "impacts" -> "Some influence. A new feature impacts an existing component." ,
-    "implements" -> "Realisation of. A module implements a feature." ,
-    "interactsWith" -> "Communication. A user interacts with an interface." ,
-    "is" -> "Sub-typing, specialization, part of another, more general entity." ,
+    "impacts" -> "Some influence on another entity. A new feature impacts an existing component." ,
+    "implements" -> "Realisation of an entity, e.g. a module implements a feature." ,
+    "interactsWith" -> "Communication among entities, e.g. a user interacts with an interface." ,
     "precedes" -> "Temporal ordering. A feature precedes (is implemented before) another feature." ,
-    "relatesTo" -> "General relation. An entity is related to another entity." ,
-    "requires" -> "Requested combination. An entity is required (or wished) by another entity." ,
-    "superOf" -> "Super-typing, generalization, includes another, more specific entity." ,
+    "relatesTo" -> "Some general relation to another entity." ,
+    "requires" -> "A requested combination. One function requires that a another function is also implemented." ,
+    "supertypeOf" -> "Super-typing, generalization, includes another more specific entity. One data type is a supertype of another." ,
     "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
   ).sorted
 

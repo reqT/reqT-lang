@@ -41,16 +41,16 @@ object lang:
     def apply(elems: Elem*): Model = Model(elems.toVector)
 
   enum EntType extends NodeType:
-    case Actor,App,Barrier,Breakpoint,Class,Component,Configuration,Data,Design,Domain,Epic,Event,Feature,Function,Goal,Idea,Interface,Item,Issue,Label,Meta,Member,Module,MockUp,Product,Quality,Relationship,Release,Req,Resource,Risk,Scenario,Screen,Section,Service,Stakeholder,State,UserStory,System,Target,Task,Term,TestCase,Ticket,UseCase,User,Variant,VariationPoint,WorkPackage
+    case Barrier,Breakpoint,Component,Configuration,DataMember,DataType,Design,Event,Feature,Function,Goal,Idea,Image,Interface,Issue,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Screen,Section,Stakeholder,State,System,Target,Task,TestCase,UseCase,User,UserStory,Variant,VariationPoint
   
   enum StrAttrType extends AttrType[String]:
-    case Comment,Deprecated,Example,Expectation,Err,FileName,Gist,Image,Input,Output,Spec,Status,Text,Title,Why
+    case Comment,Deprecated,Example,Expectation,Failure,Input,Label,Location,Output,Spec,Text,Title,Why
   
   enum IntAttrType extends AttrType[Int]:
     case Benefit,Capacity,Cost,Damage,Frequency,Max,Min,Order,Prio,Probability,Profit,Value
   
   enum RelType extends ElemType:
-    case Binds,Deprecates,Excludes,Has,Helps,Hurts,Impacts,Implements,InteractsWith,Is,Precedes,RelatesTo,Requires,SuperOf,Verifies
+    case Binds,Deprecates,Excludes,Has,Helps,Hurts,Impacts,Implements,InteractsWith,Precedes,RelatesTo,Requires,SupertypeOf,Verifies
   
   export EntType.*
   export StrAttrType.*
@@ -88,9 +88,6 @@ object lang:
     def interactsWith(sub: Elem*): Rel = Rel(e, InteractsWith, Model(sub*))
     def interactsWith: EntLink = EntLink(e, InteractsWith)
 
-    def is(sub: Elem*): Rel = Rel(e, Is, Model(sub*))
-    def is: EntLink = EntLink(e, Is)
-
     def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
     def precedes: EntLink = EntLink(e, Precedes)
 
@@ -100,8 +97,8 @@ object lang:
     def requires(sub: Elem*): Rel = Rel(e, Requires, Model(sub*))
     def requires: EntLink = EntLink(e, Requires)
 
-    def superOf(sub: Elem*): Rel = Rel(e, SuperOf, Model(sub*))
-    def superOf: EntLink = EntLink(e, SuperOf)
+    def supertypeOf(sub: Elem*): Rel = Rel(e, SupertypeOf, Model(sub*))
+    def supertypeOf: EntLink = EntLink(e, SupertypeOf)
 
     def verifies(sub: Elem*): Rel = Rel(e, Verifies, Model(sub*))
     def verifies: EntLink = EntLink(e, Verifies)

@@ -64,21 +64,20 @@ MultiLineRelation ::= Entity RelationType SubModel
 
 SubModel ::= (Indent(j > i) Elem)* Outdent(i)
 
-EntityType ::= `Actor` | `App` | `Barrier` | `Breakpoint` | `Class` | `Component` | `Configuration` | `Data` | 
-`Design` | `Domain` | `Epic` | `Event` | `Feature` | `Function` | `Goal` | `Idea` | `Interface` | 
-`Item` | `Issue` | `Label` | `Meta` | `Member` | `Module` | `MockUp` | `Product` | `Quality` | 
-`Relationship` | `Release` | `Req` | `Resource` | `Risk` | `Scenario` | `Screen` | `Section` | 
-`Service` | `Stakeholder` | `State` | `UserStory` | `System` | `Target` | `Task` | `Term` | 
-`TestCase` | `Ticket` | `UseCase` | `User` | `Variant` | `VariationPoint` | `WorkPackage`
+EntityType ::= `Barrier` | `Breakpoint` | `Component` | `Configuration` | `DataMember` | `DataType` | 
+`Design` | `Event` | `Feature` | `Function` | `Goal` | `Idea` | `Image` | `Interface` | `Issue` | 
+`Product` | `Prototype` | `Quality` | `Relationship` | `Release` | `Req` | `Resource` | `Risk` 
+| `Screen` | `Section` | `Stakeholder` | `State` | `System` | `Target` | `Task` | `TestCase` | 
+`UseCase` | `User` | `UserStory` | `Variant` | `VariationPoint`
 
 IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | `Max` | `Min` | `Order` | `Prio` | 
 `Probability` | `Profit` | `Value`
 
-StrAttributeType ::= `Comment` | `Deprecated` | `Example` | `Expectation` | `Err` | `FileName` | `Gist` | `Image` | 
-`Input` | `Output` | `Spec` | `Status` | `Text` | `Title` | `Why`
+StrAttributeType ::= `Comment` | `Deprecated` | `Example` | `Expectation` | `Failure` | `Input` | `Label` | 
+`Location` | `Output` | `Spec` | `Text` | `Title` | `Why`
 
 RelationType ::= `Binds` | `Deprecates` | `Excludes` | `Has` | `Helps` | `Hurts` | `Impacts` | `Implements` | 
-`InteractsWith` | `Is` | `Precedes` | `RelatesTo` | `Requires` | `SuperOf` | `Verifies`
+`InteractsWith` | `Precedes` | `RelatesTo` | `Requires` | `SupertypeOf` | `Verifies`
 ```
 
 ## Special Parsing Rules
