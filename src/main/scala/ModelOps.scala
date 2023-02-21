@@ -1,6 +1,6 @@
 package reqt
 
-trait ModelOps:
+transparent trait ModelOps:
   self: Model =>
 
   /** The number of elems at top level plus the sizes of all sub models **/
