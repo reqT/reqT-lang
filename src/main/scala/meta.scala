@@ -49,7 +49,7 @@ object meta:
     GeneralReq -> "TestCase" -> "A procedure to check if requirements are met." ,
 
     DataReq -> "DataMember" -> "An an attribute (field) that is part of a datatype." ,
-    DataReq -> "DataType" -> "An information entity stored in a system." ,
+    DataReq -> "DataType" -> "An information entity processed by a system." ,
     DataReq -> "Relationship" -> "A specific way that data types are connected." ,
 
     DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality." ,
