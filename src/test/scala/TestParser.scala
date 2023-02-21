@@ -16,7 +16,7 @@ class TestParser extends munit.FunSuite:
     assert("xxx\n yyy".toModel == Model(Text("xxx\n yyy"))) 
 
   test("Illegal IntAttr  "):
-    assert("Prio x y z".toModel == Model(Prio(0), Text("x y z"))) 
+    assert("Prio x y z".toModel == Model(Undefined(Prio), Text("x y z"))) 
 
   test("Simple IntAttr   "):
     assert("Prio 1".toModel == Model(Prio(1))) 
