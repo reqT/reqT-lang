@@ -64,11 +64,11 @@ MultiLineRelation ::= Entity RelationType SubModel
 
 SubModel ::= (Indent(j > i) Elem)* Outdent(i)
 
-EntityType ::= `Barrier` | `Breakpoint` | `Component` | `Configuration` | `DataMember` | `DataType` | 
-`Design` | `Event` | `Feature` | `Function` | `Goal` | `Idea` | `Image` | `Interface` | `Issue` | 
-`Product` | `Prototype` | `Quality` | `Relationship` | `Release` | `Req` | `Resource` | `Risk` 
-| `Screen` | `Section` | `Stakeholder` | `State` | `System` | `Target` | `Task` | `TestCase` | 
-`UseCase` | `User` | `UserStory` | `Variant` | `VariationPoint`
+EntityType ::= `Barrier` | `Breakpoint` | `Component` | `Configuration` | `DataType` | `Design` | `Event` | 
+`Feature` | `Field` | `Function` | `Goal` | `Idea` | `Image` | `Interface` | `Issue` | `Product` 
+| `Prototype` | `Quality` | `Relationship` | `Release` | `Req` | `Resource` | `Risk` | `Screen` 
+| `Section` | `Stakeholder` | `State` | `System` | `Target` | `Task` | `TestCase` | `UseCase` | 
+`User` | `UserStory` | `Variant` | `VariationPoint`
 
 IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | `Max` | `Min` | `Order` | `Prio` | 
 `Probability` | `Profit` | `Value`
@@ -76,8 +76,8 @@ IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | 
 StrAttributeType ::= `Comment` | `Deprecated` | `Example` | `Expectation` | `Failure` | `Input` | `Label` | 
 `Location` | `Output` | `Spec` | `Text` | `Title` | `Why`
 
-RelationType ::= `Binds` | `Deprecates` | `Excludes` | `Has` | `Helps` | `Hurts` | `Impacts` | `Implements` | 
-`InteractsWith` | `Precedes` | `RelatesTo` | `Requires` | `SupertypeOf` | `Verifies`
+RelationType ::= `Binds` | `Deprecates` | `Excludes` | `Has` | `Helps` | `Hurts` | `Implements` | `Precedes` | 
+`RelatesTo` | `Requires` | `SupertypeOf` | `Verifies`
 ```
 
 ## Special Parsing Rules

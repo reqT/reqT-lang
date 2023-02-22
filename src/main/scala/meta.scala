@@ -7,121 +7,111 @@ object meta:
     case ReqContext, GeneralReq, DataReq, FunctionalReq, QualityReq, DesignReq, VariabilityReq
   import EntGroup.* 
 
-  ///since reqt 3.1.7:  
-  // Removed Meta, Term, Item, Ticket (use Issue instead), WorkPackage (use Issue instead), Module (use Component instead)
-  // removed Status attribute, use Label instead
-  // Changed since reqt 3.1.7: Story -> UserStory, Test -> TestCase, MockUp -> Prototype, Relationship -> Relation, 
-  //    Image is an entity not an attribute  to be paired by a Location attribute that has its filename such as file://
-  // remove the is relation as it is redundant to superOf
-
-  // ??? Class -> Entity or DataType??, Member -> Attribute | Operation ??? Data -> DataType
-  // ??? should Example be an Entity instead of an Attribute???
-  // ??? remove: Domain ??? use Section instead, 
-  // ??? remove Module ??? use Component instead
-  // ??? remove Configuration ???
-  // ?? remove Epic ?? you can have UserStories inside UserStorys or else use Section
-  // ??? remove Screen, use Prototype instead
-  // ??? remove Service use Function or Feature instead
-  // ??? use only one of these: App Product System
-  // ??? replace actor with User or System 
-  //?? Use one of these: Scenario UserStory UseCase
-  // change relation superOf to superTypeOf ???  remove the is relation as it is reduntant to superOf
-  // remove Gist use Text or Spec instead
-  // add string attr Type to be used for example to type a relatesTo
-  // should label be a StrAttr???
+  /* since reqt 3.1.7:  
+  -- Deleted entities: 
+  Actor (use System or User), App (use Product or System), Class (use DataType), Data (use DataType), Domain (use Section), Epic (use Section), Item (use Text or Label), Member (use Field or Function), Meta (use Type), MockUp (use Prototype), Module (use Component), Scenario (use UseCase or UserStory), Service (use Function or Feature), Story (use UserStory), Term (use Text or Label), Test (use TestCase), Ticket (use Issue), WorkPackage (use Section or Issue)
+    ++ Added entities:
+  DataType, Field, Image, Prototype, TestCase, UserStory
+    -- Deleted attributes: 
+  Code, Constraints, FileName (use Location), Gist (use Spec or Text), Image (use entity Image and Location), Status (use Label)
+    ++ Added attributes:
+  Failure, Label, Location
+    -- Deleted relations: 
+  impacts (use relatesTo), interactsWith (use relatesTo or has), is (use supertypeOf in reverse order), superOf (use supertypeOf)
+    ++ Added relations:
+  supertypeOf
+  */
 
   val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
-    ReqContext -> "Product" -> "Something offered to users or customers on a market, e.g. a software app or an embedded system." ,
-    ReqContext -> "Release" -> "A specific version of a system offered at a specific time to end users." ,
-    ReqContext -> "Resource" -> "A capability of, or support for product development, e.g. a development team or testing equipment." ,
-    ReqContext -> "Risk" -> "Something negative that may happen." ,
-    ReqContext -> "Section" -> "A part of a (requirements) document or a subdomain." ,
-    ReqContext -> "Stakeholder" -> "Someone with a stake in the system development or usage." ,
-    ReqContext -> "System" -> "A set of interacting computer software or hardware components." ,
-    ReqContext -> "User" -> "A human interacting with a system." ,
+    ReqContext -> "Product" -> "Something offered to users or customers, e.g. a software app or an embedded system.",
+    ReqContext -> "Release" -> "A specific version of a product offered at a specific time to end users.",
+    ReqContext -> "Resource" -> "A capability of, or support for product development, e.g. a development team or some testing equipment.",
+    ReqContext -> "Risk" -> "Something negative that may happen.",
+    ReqContext -> "Section" -> "A part of a requirements document or a subdomain.",
+    ReqContext -> "Stakeholder" -> "A role, person or legal entity with a stake in the development or operation of a product.",
+    ReqContext -> "System" -> "A set of interacting computer software or hardware components.",
+    ReqContext -> "User" -> "A human interacting with a system.",
 
     GeneralReq -> "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
-    GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property." ,
-    GeneralReq -> "Idea" -> "A concept or thought (potentially interesting)." ,
-    GeneralReq -> "Image" -> "A visual representation, picture or diagram." ,
-    GeneralReq -> "Issue" -> "Something needed to be fixed or work awaiting to be completed." ,
+    GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property.",
+    GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
+    GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
+    GeneralReq -> "Issue" -> "Something needed to be fixed or work awaiting to be completed.",
     GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
-    GeneralReq -> "TestCase" -> "A procedure to check if requirements are met." ,
+    GeneralReq -> "TestCase" -> "A procedure to check if requirements are met.",
 
-    DataReq -> "DataMember" -> "An an attribute (field) that is part of a datatype." ,
-    DataReq -> "DataType" -> "An information entity processed by a system." ,
-    DataReq -> "Relationship" -> "A specific way that data types are connected." ,
+    DataReq -> "DataType" -> "An entity or record stored in or processed by a system.",
+    DataReq -> "Field" -> "An attribute that is part of a data type.",
+    DataReq -> "Relationship" -> "A specific way that data types are connected.",
 
-    DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality." ,
+    DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
     DesignReq -> "Design" -> "A specific realization. A description of an implementation.",
     DesignReq -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
-    DesignReq -> "Screen" -> "A design of (a part of) a user interface." ,
+    DesignReq -> "Screen" -> "A design of (a part of) a user interface.",
 
     FunctionalReq -> "Event" -> "Something that can happen in the domain and/or in the system.",
-    FunctionalReq -> "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific." ,
-    FunctionalReq -> "Interface" -> "A defined way to interact with a system." ,
+    FunctionalReq -> "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific.",
+    FunctionalReq -> "Interface" -> "A defined way to interact with a system.",
     FunctionalReq -> "State" -> "A mode or condition of something in the domain and/or in the system. A configuration of data.",
-    FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system." ,
-    FunctionalReq -> "UseCase" -> "A list of steps defining interactions between actors and a system to achieve a goal." ,
-    FunctionalReq -> "UserStory" -> "A short description of what a user does or needs. Short for user story." ,
+    FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system.",
+    FunctionalReq -> "UseCase" -> "A list of steps defining interactions between actors and a system to achieve a goal.",
+    FunctionalReq -> "UserStory" -> "A short description of what a user does or needs. Short for user story.",
 
-    QualityReq -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level." ,
+    QualityReq -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level.",
     QualityReq -> "Breakpoint" -> "A point of change, representing an important shift in the relation between quality and benefit.",
     QualityReq -> "Quality" -> "An aspect of system quality, distinguishing characteristic or degree of goodness.",
-    QualityReq -> "Target" -> "A desired quality level or quality goal." ,
+    QualityReq -> "Target" -> "A desired quality level or quality goal.",
 
-    VariabilityReq -> "Configuration" -> "A specific combination of variants." ,
-    VariabilityReq -> "Variant" -> "An object or system property that can be chosen from a set of options." ,
+    VariabilityReq -> "Configuration" -> "A specific combination of variants.",
+    VariabilityReq -> "Variant" -> "An object or system property that can be chosen from a set of options.",
     VariabilityReq -> "VariationPoint" -> "An opportunity of choice among variants.",
   )
 
   val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
 
   val strAttrConcepts = ArraySeq[(String,String)](
-    "Comment" -> "A note that explains or discusses some entity." ,
-    "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation." ,
-    "Example" -> "A description that illustrates some entity by a typical instance." ,
-    "Expectation" -> "A required output of a test in order to be counted as passed." ,
+    "Comment" -> "A note that explains or discusses some entity.",
+    "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
+    "Example" -> "A description that illustrates some entity by a typical instance.",
+    "Expectation" -> "A required output of a test in order to be counted as passed.",
     "Failure" -> "A description of an error that prevents the normal execution of a system.",
-    "Input" -> "Data consumed by an entity, " ,
-    "Label" -> "A descriptive name used to classify something.",
-    "Location" -> "A location of a resource such as a web address or a path to a file of persistent data." ,
-    "Output" -> "Data produced by an entity, e.g. a function or a test." ,
-    "Spec" -> "A definition of an entity. Short for specification" ,
+    "Input" -> "Data consumed by an entity, ",
+    "Label" -> "A descriptive tag used to classify something.",
+    "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
+    "Output" -> "Data produced by an entity, e.g. a function or a test.",
+    "Spec" -> "A definition of an entity. Short for specification",
     "Text" -> "An paragraph or general description.", 
     "Title" -> "A short descriptive heading.", 
     "Why" -> "A description of intention. Rationale.",
   ).sorted
 
   val intAttrConcepts = ArraySeq[(String,String)](
-    "Benefit" -> "A characterization of a good or helpful result or effect (e.g. of a feature)." ,
-    "Capacity" -> "The largest amount that can be held or contained (e.g. by a resource)." ,
-    "Cost" -> "The expenditure of something, such as time or effort, necessary for the implementation of an entity." ,
-    "Damage" -> "A characterization of the negative consequences if some entity (e.g. a risk) occurs." ,
-    "Frequency" -> "The rate of occurrence of some entity. " ,
-    "Max" -> "The maximum estimated or assigned (relative) value." ,
-    "Min" -> "The minimum estimated or assigned (relative) value." ,
-    "Order" -> "The ordinal number of an entity (1st, 2nd, ...)." ,
-    "Prio" -> "The level of importance of an entity. Short for priority." ,
-    "Probability" -> "The likelihood that something (e.g. a risk) occurs." ,
-    "Profit" -> "The gain or return of some entity, e.g. in monetary terms." ,
+    "Benefit" -> "A characterization of a good or helpful result or effect (e.g. of a feature).",
+    "Capacity" -> "The largest amount that can be held or contained (e.g. by a resource).",
+    "Cost" -> "The expenditure of something, such as time or effort, necessary for the implementation of an entity.",
+    "Damage" -> "A characterization of the negative consequences if some entity (e.g. a risk) occurs.",
+    "Frequency" -> "The rate of occurrence of some entity. ",
+    "Max" -> "The maximum estimated or assigned (relative) value.",
+    "Min" -> "The minimum estimated or assigned (relative) value.",
+    "Order" -> "The ordinal number of an entity (1st, 2nd, ...).",
+    "Prio" -> "The level of importance of an entity. Short for priority.",
+    "Probability" -> "The likelihood that something (e.g. a risk) occurs.",
+    "Profit" -> "The gain or return of some entity, e.g. in monetary terms.",
     "Value" -> "Some general integer value.",
   ).sorted
 
   val relationConcepts = ArraySeq[(String,String)](
-    "binds" -> "Ties a value to an option. A configuration binds a variation point." ,
-    "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity." ,
-    "excludes" -> "Prevents an entity combination. One feature excludes another in a release." ,
-    "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity." ,
-    "helps" -> "Positive influence. A goal supports the fulfillment of another goal." ,
-    "hurts" -> "Negative influence. A goal hinders another goal." ,
-    "impacts" -> "Some influence on another entity. A new feature impacts an existing component." ,
-    "implements" -> "Realisation of an entity, e.g. a module implements a feature." ,
-    "interactsWith" -> "Communication among entities, e.g. a user interacts with an interface." ,
-    "precedes" -> "Temporal ordering. A feature precedes (is implemented before) another feature." ,
-    "relatesTo" -> "Some general relation to another entity." ,
-    "requires" -> "A requested combination. One function requires that a another function is also implemented." ,
-    "supertypeOf" -> "Super-typing, generalization, includes another more specific entity. One data type is a supertype of another." ,
+    "binds" -> "Ties a value to an option. A configuration binds a variation point.",
+    "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity.",
+    "excludes" -> "Prevents an entity combination. One feature excludes another in a release.",
+    "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity.",
+    "helps" -> "Positive influence. A goal supports the fulfillment of another goal.",
+    "hurts" -> "Negative influence. A goal hinders another goal.",
+    "implements" -> "Realisation of an entity, e.g. a module implements a feature.",
+    "precedes" -> "Temporal ordering. A feature precedes (is implemented before) another feature.",
+    "relatesTo" -> "Some general relation to another entity.",
+    "requires" -> "A requested combination. One function requires that a another function is also implemented.",
+    "supertypeOf" -> "Super-typing, generalization, includes another more specific entity. One data entity is a supertype of another.",
     "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
   ).sorted
 

@@ -41,7 +41,7 @@ object lang:
     def apply(elems: Elem*): Model = Model(elems.toVector)
 
   enum EntType extends NodeType:
-    case Barrier,Breakpoint,Component,Configuration,DataMember,DataType,Design,Event,Feature,Function,Goal,Idea,Image,Interface,Issue,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Screen,Section,Stakeholder,State,System,Target,Task,TestCase,UseCase,User,UserStory,Variant,VariationPoint
+    case Barrier,Breakpoint,Component,Configuration,DataType,Design,Event,Feature,Field,Function,Goal,Idea,Image,Interface,Issue,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Screen,Section,Stakeholder,State,System,Target,Task,TestCase,UseCase,User,UserStory,Variant,VariationPoint
   
   enum StrAttrType extends AttrType[String]:
     case Comment,Deprecated,Example,Expectation,Failure,Input,Label,Location,Output,Spec,Text,Title,Why
@@ -50,7 +50,7 @@ object lang:
     case Benefit,Capacity,Cost,Damage,Frequency,Max,Min,Order,Prio,Probability,Profit,Value
   
   enum RelType extends ElemType:
-    case Binds,Deprecates,Excludes,Has,Helps,Hurts,Impacts,Implements,InteractsWith,Precedes,RelatesTo,Requires,SupertypeOf,Verifies
+    case Binds,Deprecates,Excludes,Has,Helps,Hurts,Implements,Precedes,RelatesTo,Requires,SupertypeOf,Verifies
   
   export EntType.*
   export StrAttrType.*
@@ -79,14 +79,8 @@ object lang:
     def hurts(sub: Elem*): Rel = Rel(e, Hurts, Model(sub*))
     def hurts: EntLink = EntLink(e, Hurts)
 
-    def impacts(sub: Elem*): Rel = Rel(e, Impacts, Model(sub*))
-    def impacts: EntLink = EntLink(e, Impacts)
-
     def implements(sub: Elem*): Rel = Rel(e, Implements, Model(sub*))
     def implements: EntLink = EntLink(e, Implements)
-
-    def interactsWith(sub: Elem*): Rel = Rel(e, InteractsWith, Model(sub*))
-    def interactsWith: EntLink = EntLink(e, InteractsWith)
 
     def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
     def precedes: EntLink = EntLink(e, Precedes)
