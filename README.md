@@ -1,3 +1,5 @@
+[![Scala CI](https://github.com/reqT/reqT-lang/actions/workflows/scala.yml/badge.svg)](https://github.com/reqT/reqT-lang/actions/workflows/scala.yml)
+
 # reqt-lang
 
 * The reqt language helps to structure natural-language requirements into semi-formal models using common requirements engineering concepts. 
