@@ -23,6 +23,6 @@ You can manage your requirements with the reqT-lang library, the Scala compiler 
 
 ## How to build the reqT-lang library
 
-* You need `sbt` at least version 1.8.x on your path
+* You need the [`sbt`](https://www.scala-sbt.org/) build tool of [this version](https://github.com/reqT/reqT-lang/blob/main/project/build.properties) or higher on your path.
 
 * Run `sbt build`
