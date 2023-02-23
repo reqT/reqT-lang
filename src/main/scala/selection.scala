@@ -1,5 +1,7 @@
 package reqt
 
+import reqt.api.*
+
 object selection:
   extension (et: Ent)      def &(rt: RelType)  = EntLink(et,rt)
   extension (et: EntType)  def &(rt: RelType)  = LinkType(et,rt)

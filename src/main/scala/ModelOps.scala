@@ -1,5 +1,7 @@
 package reqt
 
+import reqt.api.*
+
 transparent trait ModelOps:
   self: Model =>
 

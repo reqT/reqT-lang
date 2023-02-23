@@ -1,5 +1,7 @@
 package reqt
 
+import reqt.api.*
+
 sealed trait Path[T]:
   def links: Vector[Link]
 

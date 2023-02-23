@@ -1,5 +1,7 @@
 package reqt
 
+import reqt.api.*
+
 object parser:
   import meta.*
   extension (s: String)

@@ -1,6 +1,7 @@
 package reqt
 
 import scala.collection.immutable.ArraySeq
+import reqt.api.*
 
 object meta:
   enum EntGroup:
