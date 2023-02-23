@@ -8,9 +8,9 @@
 
 * reqT-lang is used by the command line and desktop tool [reqT](https://github.com/reqT).
 
-* The reqT-lang library includes a parser and other utilities for the reqt language. The reqt parser produces an immutable tree-like data type called `Model` that is expressed using a Scala-embedded DSL. 
+* The reqT-lang library includes a parser and other utilities for the reqT language. The reqT parser produces an immutable tree-like data type called `Model` that is expressed using a Scala-embedded DSL. 
 
-* With the reqt Scala-embedded DSL you can analyze and transform your requirements models using the power of the Scala standard library and the extensive open source ecosystem of Scala, Java and Javascript. 
+* With the reqT Scala-embedded DSL you can analyze and transform your requirements models using the power of the Scala standard library and the extensive open source ecosystem of Scala, Java and Javascript. 
 
 ## How to use reqT-lang as a library
 
