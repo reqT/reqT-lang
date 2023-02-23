@@ -4,7 +4,7 @@ ThisBuild / scalaVersion := "3.3.0-RC2"
 
 ThisBuild / organization := "io.github.reqt"
 
-console / initialCommands := """import reqt.*"""
+console / initialCommands := """import reqt.api.*"""
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
