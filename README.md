@@ -1,15 +1,28 @@
 [![Scala CI](https://github.com/reqT/reqT-lang/actions/workflows/scala.yml/badge.svg)](https://github.com/reqT/reqT-lang/actions/workflows/scala.yml)
 
-# reqt-lang
+# reqT-lang
 
-* The reqt language helps to structure natural-language requirements into semi-formal models using common requirements engineering concepts. 
+* reqT-lang is a library and language for software requirements modelling.
 
-* The reqt language is a core part of the reqT tool for software requirements modelling.
+* reqT-lang helps you structure requirements into semi-formal natural-language models using common requirements engineering concepts. 
 
-* This repo includes a Scala library with a parser and other utilities for the reqt language. The reqt parser produces an immutable tree data structure called `Model` that is expressed using a Scala-embedded DSL, which is also part of this library. 
+* reqT-lang is used by the command line and desktop tool [reqT](https://github.com/reqT).
+
+* The reqT-lang library includes a parser and other utilities for the reqt language. The reqt parser produces an immutable tree-like data type called `Model` that is expressed using a Scala-embedded DSL. 
 
 * With the reqt Scala-embedded DSL you can analyze and transform your requirements models using the power of the Scala standard library and the extensive open source ecosystem of Scala, Java and Javascript. 
 
-## How to build
+## How to use reqT-lang as a library
 
-`sbt build`
+You can manage your requirements with the reqT-lang library, the Scala compiler and your favorite editor, e.g. in VS Code with the Scala Metals extension.
+
+### Use reqT-lang with scala-cli
+
+### Use reqT-lang with sbt
+
+
+## How to build the reqT-lang library
+
+* You need `sbt` at least version 1.8.x on your path
+
+* Run `sbt build`
