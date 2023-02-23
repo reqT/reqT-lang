@@ -2,7 +2,7 @@
 
 # reqT-lang
 
-* reqT-lang is a library and language for software requirements modelling.
+* reqT-lang is a library and language for software requirements modelling written in Scala.
 
 * reqT-lang helps you structure requirements into semi-formal natural-language models using common requirements engineering concepts. 
 
@@ -25,4 +25,4 @@ You can manage your requirements with the reqT-lang library, the Scala compiler 
 
 * You need the [`sbt`](https://www.scala-sbt.org/) build tool of [this version](https://github.com/reqT/reqT-lang/blob/main/project/build.properties) or higher on your path.
 
-* Run `sbt build`
+* Run `sbt build` in terminal.
