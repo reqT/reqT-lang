@@ -23,24 +23,24 @@ object meta:
   */
 
   val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
-    ReqContext -> "Product" -> "Something offered to users or customers, e.g. a software app or an embedded system.",
+    ReqContext -> "Product" -> "An artifact offered to users or customers in an application domain, e.g. a software app or an embedded system.",
     ReqContext -> "Release" -> "A specific version of a product offered at a specific time to end users.",
     ReqContext -> "Resource" -> "A capability of, or support for product development, e.g. a development team or some testing equipment.",
     ReqContext -> "Risk" -> "Something negative that may happen.",
     ReqContext -> "Section" -> "A part of a requirements document or a subdomain.",
     ReqContext -> "Stakeholder" -> "A role, person or legal entity with a stake in the development or operation of a product.",
-    ReqContext -> "System" -> "A set of interacting computer software or hardware components.",
+    ReqContext -> "System" -> "A set of software or hardware components interacting with users or systems.",
     ReqContext -> "User" -> "A human interacting with a system.",
 
     GeneralReq -> "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
     GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property.",
     GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
     GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
-    GeneralReq -> "Issue" -> "Something needed to be fixed or work awaiting to be completed.",
+    GeneralReq -> "Issue" -> "Something needed to be fixed or work to do.",
     GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
     GeneralReq -> "TestCase" -> "A procedure to check if requirements are met.",
 
-    DataReq -> "DataType" -> "An entity or record stored in or processed by a system.",
+    DataReq -> "DataType" -> "An entity or a record stored in or processed by a system.",
     DataReq -> "Field" -> "An attribute that is part of a data type.",
     DataReq -> "Relationship" -> "A specific way that data types are connected.",
 
