@@ -49,10 +49,10 @@ object meta:
     DesignReq -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
     DesignReq -> "Screen" -> "A design of (a part of) a user interface.",
 
-    FunctionalReq -> "Event" -> "Something that can happen in the domain and/or in the system.",
-    FunctionalReq -> "Function" -> "A description of how input data is mapped to output data. A capability of a system to do something specific.",
+    FunctionalReq -> "Event" -> "Something that can happen in the domain or in the system.",
+    FunctionalReq -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
     FunctionalReq -> "Interface" -> "A defined way to interact with a system.",
-    FunctionalReq -> "State" -> "A mode or condition of something in the domain and/or in the system. A configuration of data.",
+    FunctionalReq -> "State" -> "A mode or condition of something in the domain or in the system. A configuration of data.",
     FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system.",
     FunctionalReq -> "UseCase" -> "A list of steps defining interactions between actors and a system to achieve a goal.",
     FunctionalReq -> "UserStory" -> "A short description of what a user does or needs. Short for user story.",
