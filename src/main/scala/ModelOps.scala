@@ -1,7 +1,6 @@
 package reqt
 
-import reqt.api.*
-
+/** Operations of trait `Model` **/
 transparent trait ModelOps:
   self: Model =>
 
@@ -123,3 +122,6 @@ transparent trait ModelOps:
     loop(0, self, sb)
     sb.toString
 
+  def p: Unit = println(txt)
+
+  override def toString: String = elems.mkString("Model(",",",")")

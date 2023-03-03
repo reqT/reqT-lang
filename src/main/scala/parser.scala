@@ -1,10 +1,12 @@
 package reqt
 
-import reqt.api.*
+import meta.*
 
 object parser:
-  import meta.*
   extension (s: String)
+    def p = println(s)
+    def toModel = parser.parseModel(s)
+    def m       = parser.parseModel(s)
     def toLines: Array[String] = s.split("\n")
     def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
 

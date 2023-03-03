@@ -1,6 +1,16 @@
-//!GENERATE this file in sbt> Test / runMain generateMeta
-// or by `println(reqt.meta.generate)` in repl and copy-paste
+//--- THIS IS A GENERATED FILE! DO NOT EDIT `lang-GENERATED.scala` 
+//--- EDIT the code below by changing `def generate` in file meta.scala
+//--- GENERATE this file in sbt> `Test / runMain generateMeta`
+//--- or by `println(reqt.meta.generate)` and copy-paste
+
 package reqt
+
+// the exports below defines the surface api
+export lang.*
+export Show.show
+export selection.*
+export Path.*
+export parser.{m, toModel, p}
 
 object lang:
   sealed trait Elem
@@ -34,11 +44,8 @@ object lang:
     def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
     def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
 
-  final case class Model(elems: Vector[Elem]) extends ModelOps:
-    override def toString: String = elems.mkString("Model(",",",")")
-
-  object Model:
-    def apply(elems: Elem*): Model = Model(elems.toVector)
+  final case class Model(elems: Vector[Elem]) extends ModelOps
+  object Model extends ModelCompanionOps
 
   enum EntType extends NodeType:
     case Barrier,Breakpoint,Component,Configuration,DataType,Design,Event,Feature,Field,Function,Goal,Idea,Image,Interface,Issue,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Screen,Section,Stakeholder,State,System,Target,Task,TestCase,UseCase,User,UserStory,Variant,VariationPoint

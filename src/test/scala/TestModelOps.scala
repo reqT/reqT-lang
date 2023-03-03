@@ -1,7 +1,5 @@
 package reqt
 
-import reqt.api.*
-
 class TestModelOps extends munit.FunSuite:
 
   test("Concat empty models        "):

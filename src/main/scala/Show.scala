@@ -1,7 +1,5 @@
 package reqt
 
-import reqt.api.*
-
 trait Show[-A]:
   def show(a: A): String
 

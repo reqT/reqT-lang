@@ -1,7 +1,5 @@
 package reqt
 
-import reqt.api.*
-
 class TestParser extends munit.FunSuite:
   import Console.{RED as R, RESET as X}
 
