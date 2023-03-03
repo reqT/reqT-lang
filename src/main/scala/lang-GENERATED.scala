@@ -5,12 +5,16 @@
 
 package reqt
 
-// the exports below defines the surface api
+// the exports and extensions below defines the surface api
 export lang.*
 export Show.show
 export selection.*
 export Path.*
 export parser.{m, toModel, p}
+
+extension (elems: Vector[Elem]) 
+  def toModel = Model(elems)
+  def m       = Model(elems)
 
 object lang:
   sealed trait Elem
