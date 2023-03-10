@@ -70,11 +70,12 @@ object meta:
   val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
 
   val strAttrConcepts = ArraySeq[(String,String)](
-    "Comment" -> "A note that explains or discusses some entity.",
+    "Comment" -> "A note with a remark or a discussion on an entity.",
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
     "Example" -> "A description that illustrates some entity by a typical instance.",
     "Expectation" -> "A required output of a test in order to be counted as passed.",
     "Failure" -> "A description of an error that prevents the normal execution of a system.",
+    "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
     "Input" -> "Data consumed by an entity, ",
     "Label" -> "A descriptive tag used to classify something.",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
@@ -82,7 +83,7 @@ object meta:
     "Spec" -> "A definition of an entity. Short for specification",
     "Text" -> "An paragraph or general description.", 
     "Title" -> "A short descriptive heading.", 
-    "Why" -> "A description of intention. Rationale.",
+    "Why" -> "A description of intention or rationale of an entity.",
   ).sorted
 
   val intAttrConcepts = ArraySeq[(String,String)](
@@ -144,7 +145,7 @@ object meta:
   val entTypes: Map[String, EntType] = EntType.values.map(e => e.toString -> e).toMap
   val strAttrTypes: Map[String, StrAttrType] = StrAttrType.values.map(e => e.toString -> e).toMap
   val intAttrTypes: Map[String, IntAttrType] = IntAttrType.values.map(e => e.toString -> e).toMap
-  val relTypes: Map[String, RelType] = RelType.values.map(e => e.toString.toLowerCase -> e).toMap
+  val relTypes: Map[String, RelType] = RelType.values.map(e => e.toString.deCapitalize -> e).toMap
   val nodeTypes: Map[String, NodeType] = entTypes ++ strAttrTypes ++ intAttrTypes
   
   extension (s: String)
@@ -153,6 +154,7 @@ object meta:
     inline def isIntAttrType: Boolean = meta.intAttrTypes.isDefinedAt(s)
     inline def isNodeType: Boolean    = meta.nodeTypes.isDefinedAt(s)
     inline def isRelType: Boolean     = meta.relTypes.isDefinedAt(s)
+    def deCapitalize: String = s.take(1).toLowerCase ++ s.drop(1)
 
 
   def generate: String = 

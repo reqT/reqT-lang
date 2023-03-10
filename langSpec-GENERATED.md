@@ -73,7 +73,7 @@ EntityType ::= `Barrier` | `Breakpoint` | `Component` | `Configuration` | `DataT
 IntAttributeType ::= `Benefit` | `Capacity` | `Cost` | `Damage` | `Frequency` | `Max` | `Min` | `Order` | `Prio` | 
 `Probability` | `Profit` | `Value`
 
-StrAttributeType ::= `Comment` | `Deprecated` | `Example` | `Expectation` | `Failure` | `Input` | `Label` | 
+StrAttributeType ::= `Comment` | `Deprecated` | `Example` | `Expectation` | `Failure` | `Gist` | `Input` | `Label` | 
 `Location` | `Output` | `Spec` | `Text` | `Title` | `Why`
 
 RelationType ::= `Binds` | `Deprecates` | `Excludes` | `Has` | `Helps` | `Hurts` | `Implements` | `Precedes` | 

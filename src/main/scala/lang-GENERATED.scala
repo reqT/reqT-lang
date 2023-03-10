@@ -55,7 +55,7 @@ object lang:
     case Barrier,Breakpoint,Component,Configuration,DataType,Design,Event,Feature,Field,Function,Goal,Idea,Image,Interface,Issue,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Screen,Section,Stakeholder,State,System,Target,Task,TestCase,UseCase,User,UserStory,Variant,VariationPoint
   
   enum StrAttrType extends AttrType[String]:
-    case Comment,Deprecated,Example,Expectation,Failure,Input,Label,Location,Output,Spec,Text,Title,Why
+    case Comment,Deprecated,Example,Expectation,Failure,Gist,Input,Label,Location,Output,Spec,Text,Title,Why
   
   enum IntAttrType extends AttrType[Int]:
     case Benefit,Capacity,Cost,Damage,Frequency,Max,Min,Order,Prio,Probability,Profit,Value
