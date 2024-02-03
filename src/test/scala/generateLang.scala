@@ -4,7 +4,7 @@ extension (s: String) def saveTo(filePath: String) =
   val pw = java.io.PrintWriter(java.io.File(filePath), "UTF-8")
   try pw.write(s) finally pw.close()
 
-val modelFile = "src/main/scala/lang-GENERATED.scala"
+val modelFile = "src/main/scala/03-model-GENERATED.scala"
 val langSpecFile = "langSpec-GENERATED.md"
 
 @main def generateLang = 

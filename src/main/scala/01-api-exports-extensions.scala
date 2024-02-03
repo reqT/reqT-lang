@@ -6,8 +6,4 @@ export Show.show
 export selection.*
 export Path.*
 export parser.{m, toModel, p}
-
-extension (elems: Vector[Elem]) 
-  def toModel = Model(elems)
-  def m       = Model(elems)
-
+export Model.toModel
