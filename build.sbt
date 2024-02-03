@@ -1,6 +1,6 @@
-ThisBuild / version      := "4.0.0-M3"
+ThisBuild / version      := "4.0.0-M4"
 
-ThisBuild / scalaVersion := "3.3.0-RC3"
+ThisBuild / scalaVersion := "3.3.1"
 
 ThisBuild / organization := "io.github.reqt"
 

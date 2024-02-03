@@ -1,6 +1,6 @@
 package reqt
 
-object selection:
+object Selection:
   extension (et: Ent)      def &(rt: RelType)  = EntLink(et,rt)
   extension (et: EntType)  def &(rt: RelType)  = LinkType(et,rt)
 
@@ -52,4 +52,5 @@ object selection:
 
     Model(pickedElems)
   end select
+end Selection
 

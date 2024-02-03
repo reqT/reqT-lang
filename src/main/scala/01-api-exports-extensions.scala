@@ -2,8 +2,9 @@ package reqt
 
 // the exports and extensions below is part of the surface api
 
-export Show.show
-export selection.*
-export Path.*
-export parser.{m, toModel, p}
-export Model.toModel
+export Model.toModel       // extension method on Vector[Elem]
+export Show.show           // extension for pretty Model using enum types and apply 
+export Selection.*         // and/or-expressions for selecting Model parts 
+export ModelPath.*         // path factories for slash notation on Model
+export ModelParser.m       // string interpolator to parse markdown Model
+export StringExtensions.*  // some useful String extensions used by ModelParser

@@ -1,6 +1,6 @@
 package reqt
 
-sealed trait Path[T]:
+sealed trait ModelPath[T]:
   def links: Vector[Link]
 
   def dest: AttrType[T] | Attr[T] | Nil.type
@@ -10,12 +10,12 @@ sealed trait Path[T]:
     case at: AttrType[?] => links :+ Undefined(at)
     case a: Attr[?] => links :+ a
 
-object Path:
-  final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends Path[T]
+object ModelPath:
+  final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends ModelPath[T]
   
-  final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends Path[T]
+  final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends ModelPath[T]
 
-  final case class LinkPath(links: Vector[Link]) extends Path[Nil.type]:
+  final case class LinkPath(links: Vector[Link]) extends ModelPath[Nil.type]:
     def dest = Nil
 
   extension (l1: Link) 
