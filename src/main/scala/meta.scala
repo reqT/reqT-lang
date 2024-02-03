@@ -169,6 +169,9 @@ object meta:
         |
         |package reqt
         |
+        |final case class Model(elems: Vector[Elem]) extends ModelOps
+        |object Model extends ModelCompanionOps
+        |
         |sealed trait Elem
         |sealed trait Node extends Elem
         |
@@ -200,9 +203,6 @@ object meta:
         |  def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
         |  def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
         |  def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
-        |
-        |final case class Model(elems: Vector[Elem]) extends ModelOps
-        |object Model extends ModelCompanionOps
         |
         |enum EntType extends NodeType:
         |  case ${entityNames.mkString(",")}

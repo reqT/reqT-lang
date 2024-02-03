@@ -5,6 +5,9 @@
 
 package reqt
 
+final case class Model(elems: Vector[Elem]) extends ModelOps
+object Model extends ModelCompanionOps
+
 sealed trait Elem
 sealed trait Node extends Elem
 
@@ -36,9 +39,6 @@ final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
   def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
   def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
   def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
-
-final case class Model(elems: Vector[Elem]) extends ModelOps
-object Model extends ModelCompanionOps
 
 enum EntType extends NodeType:
   case Barrier,Breakpoint,Component,Configuration,DataType,Design,Event,Feature,Field,Function,Goal,Idea,Image,Interface,Issue,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Screen,Section,Stakeholder,State,System,Target,Task,TestCase,UseCase,User,UserStory,Variant,VariationPoint
