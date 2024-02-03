@@ -169,71 +169,59 @@ object meta:
         |
         |package reqt
         |
-        |// the exports and extensions below defines the surface api
-        |export lang.*
-        |export Show.show
-        |export selection.*
-        |export Path.*
-        |export parser.{m, toModel, p}
+        |sealed trait Elem
+        |sealed trait Node extends Elem
         |
-        |extension (elems: Vector[Elem]) 
-        |  def toModel = Model(elems)
-        |  def m       = Model(elems)
+        |trait ElemType
+        |trait NodeType extends ElemType
+        |trait AttrType[T] extends NodeType
         |
-        |object lang:
-        |  sealed trait Elem
-        |  sealed trait Node extends Elem
+        |sealed trait Link
+        |final case class EntLink(e: Ent, rt: RelType) extends Link
+        |final case class Ent private (et: EntType, id: String) extends Node, Link
+        |object Ent:
+        |  val emptyId = "???"
+        |  def apply(et: EntType, id: String): Ent = 
+        |    new Ent(et, if id.isEmpty then emptyId else id)
         |
-        |  trait ElemType
-        |  trait NodeType extends ElemType
-        |  trait AttrType[T] extends NodeType
+        |final case class LinkType(et: EntType, rt: RelType) 
         |
-        |  sealed trait Link
-        |  final case class EntLink(e: Ent, rt: RelType) extends Link
-        |  final case class Ent private (et: EntType, id: String) extends Node, Link
-        |  object Ent:
-        |    val emptyId = "???"
-        |    def apply(et: EntType, id: String): Ent = 
-        |      new Ent(et, if id.isEmpty then emptyId else id)
+        |sealed trait Attr[T] extends Node:
+        |  def at: AttrType[T]
+        |  def value: T
         |
-        |  final case class LinkType(et: EntType, rt: RelType) 
+        |final case class StrAttr(at: StrAttrType, value: String) extends Attr[String]
+        |final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int]
+        |final case class Undefined[T](at: AttrType[T]) extends Attr[T]:
+        |  def value: T = throw new java.util.NoSuchElementException
         |
-        |  sealed trait Attr[T] extends Node:
-        |    def at: AttrType[T]
-        |    def value: T
+        |final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
+        |  def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
+        |  def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
+        |  def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
         |
-        |  final case class StrAttr(at: StrAttrType, value: String) extends Attr[String]
-        |  final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int]
-        |  final case class Undefined[T](at: AttrType[T]) extends Attr[T]:
-        |    def value: T = throw new java.util.NoSuchElementException
+        |final case class Model(elems: Vector[Elem]) extends ModelOps
+        |object Model extends ModelCompanionOps
         |
-        |  final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
-        |    def subnodes: Vector[Node] = sub.elems.collect{ case n: Node => n }
-        |    def subrels: Vector[Rel] = sub.elems.collect{ case r: Rel => r }
-        |    def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
+        |enum EntType extends NodeType:
+        |  case ${entityNames.mkString(",")}
         |
-        |  final case class Model(elems: Vector[Elem]) extends ModelOps
-        |  object Model extends ModelCompanionOps
+        |enum StrAttrType extends AttrType[String]:
+        |  case ${strAttrNames.mkString(",")}
         |
-        |  enum EntType extends NodeType:
-        |    case ${entityNames.mkString(",")}
-        |  
-        |  enum StrAttrType extends AttrType[String]:
-        |    case ${strAttrNames.mkString(",")}
-        |  
-        |  enum IntAttrType extends AttrType[Int]:
-        |    case ${intAttrNames.mkString(",")}
-        |  
-        |  enum RelType extends ElemType:
-        |    case ${relationNames.map(_.capitalize).mkString(",")}
-        |  
-        |  export EntType.*
-        |  export StrAttrType.*
-        |  export IntAttrType.*
-        |  export RelType.*
-        |  
-        |  extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
-        |  extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
-        |  extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
-        |  extension (e: Ent)
+        |enum IntAttrType extends AttrType[Int]:
+        |  case ${intAttrNames.mkString(",")}
+        |
+        |enum RelType extends ElemType:
+        |  case ${relationNames.map(_.capitalize).mkString(",")}
+        |
+        |export EntType.*
+        |export StrAttrType.*
+        |export IntAttrType.*
+        |export RelType.*
+        |
+        |extension (et: EntType)      def apply(id: String): Ent = Ent(et, id)
+        |extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
+        |extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
+        |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(method).mkString("  ","\n  ", "").stripMargin
