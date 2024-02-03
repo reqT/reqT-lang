@@ -158,9 +158,9 @@ object meta:
 
 
   def generate: String = 
-    def method(n: String): String = 
-      s"|    def $n(sub: Elem*): Rel = Rel(e, ${n.capitalize}, Model(sub*))\n" +
-      s"|    def $n: EntLink = EntLink(e, ${n.capitalize})\n"
+    def entExtensions(name: String): String = 
+      s"|  def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
+      s"|  def $name: EntLink = EntLink(e, ${name.capitalize})\n"
 
     s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT `lang-GENERATED.scala` 
         |//--- EDIT the code below by changing `def generate` in file meta.scala
@@ -224,4 +224,4 @@ object meta:
         |extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
         |extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
         |extension (e: Ent)
-        |""".stripMargin ++ relationNames.map(method).mkString("  ","\n  ", "").stripMargin
+        |""".stripMargin ++ relationNames.map(entExtensions).mkString("","\n", "").stripMargin
