@@ -8,12 +8,13 @@ package reqt
 sealed trait Elem
 sealed trait Node extends Elem
 
-trait ElemType
-trait NodeType extends ElemType
-trait AttrType[T] extends NodeType
+sealed trait ElemType
+sealed trait NodeType extends ElemType
+sealed trait AttrType[T] extends NodeType
 
 sealed trait Link
 final case class EntLink(e: Ent, rt: RelType) extends Link
+
 final case class Ent private (et: EntType, id: String) extends Node, Link
 object Ent:
   val emptyId = "???"
