@@ -18,7 +18,7 @@ object StringExtensions:
       val initSpace = s.takeWhile(ch => ch.isSpaceChar || ch == '\t')
       initSpace.replace("\\t", "  ").length + base
 
-    def wrapLongLineAtWords(n: Int = 72): String = 
+    def wrapLongLineAtWords(n: Int): String = 
       val words = s.split(" ").iterator
       val sb = StringBuilder()
       var i = 0
@@ -39,5 +39,5 @@ object StringExtensions:
       end while
       sb.toString
 
-    def wrap(n: Int = 72): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
+    def wrap(n: Int): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
   end extension

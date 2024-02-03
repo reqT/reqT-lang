@@ -28,9 +28,8 @@ object showDeprecations:
   end old 
 
   def report = 
-    import parser.wrap
     extension (xs: Seq[String]) 
-      def p = xs.sorted.mkString(", ").wrap()
+      def p = xs.sorted.mkString(", ").wrap(72)
 
     s"""|
         |--++ CHANGES SINCE reqT ${old.version}

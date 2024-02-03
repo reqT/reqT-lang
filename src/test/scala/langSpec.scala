@@ -1,7 +1,5 @@
 package reqt
 
-import parser.wrap
-
 object langSpec: // save this file by sbt> Test / runMain generateLangSpec
   def specMarkDown: String = 
     s"""# Language Specification of reqt version 4.0
