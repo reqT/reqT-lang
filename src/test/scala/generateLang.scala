@@ -11,7 +11,7 @@ val langSpecFile = "langSpec-GENERATED.md"
   println(s"Generating $modelFile")
   reqt.meta.generate.saveTo(modelFile)
   println(s"Generating $langSpecFile")
-  reqt.langSpec.generateMarkDown.saveTo(langSpecFile)
+  reqt.langSpec.specMarkDown.saveTo(langSpecFile)
   showDeprecations(true)
 
 object showDeprecations:
