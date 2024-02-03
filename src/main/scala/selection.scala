@@ -25,7 +25,7 @@ object selection:
     def |(rhs: Term): Or = Or(lhs,rhs)
     def |(rhs: Or): Or = Or((lhs +: rhs.terms)*)
 
-  def apply(s: Expr, m: Model): Model = 
+  def select(s: Expr, m: Model): Model = 
     val hasTerm = s match 
       case se: Or => se.terms.toSet
       case st: Term => Set(st)
@@ -51,5 +51,5 @@ object selection:
         case _ => None
 
     Model(pickedElems)
-  end apply
+  end select
 

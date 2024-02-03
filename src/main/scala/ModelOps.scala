@@ -60,7 +60,7 @@ transparent trait ModelOps:
     else Model(elems.map { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.cut(depth - 1)) })
 
   /** A Model with elems deeply filtered according to a selection expression. **/
-  infix def keep(s: selection.Expr): Model = selection(s, this)
+  infix def keep(s: selection.Expr): Model = selection.select(s, this)
 
   /** A sub-model of Link **/
   def /(link: Link): Model = self / LinkPath(Vector(link))
