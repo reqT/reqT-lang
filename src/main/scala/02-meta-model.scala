@@ -205,16 +205,16 @@ object meta:
         |  def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
         |
         |enum EntType extends NodeType:
-        |  case ${entityNames.mkString(",")}
+        |  case ${entityNames.mkString(", ")}
         |
         |enum StrAttrType extends AttrType[String]:
-        |  case ${strAttrNames.mkString(",")}
+        |  case ${strAttrNames.mkString(", ")}
         |
         |enum IntAttrType extends AttrType[Int]:
-        |  case ${intAttrNames.mkString(",")}
+        |  case ${intAttrNames.mkString(", ")}
         |
         |enum RelType extends ElemType:
-        |  case ${relationNames.map(_.capitalize).mkString(",")}
+        |  case ${relationNames.map(_.capitalize).mkString(", ")}
         |
         |export EntType.*
         |export StrAttrType.*
