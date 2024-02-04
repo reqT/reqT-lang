@@ -149,12 +149,12 @@ object meta:
   val nodeTypes: Map[String, NodeType] = entTypes ++ strAttrTypes ++ intAttrTypes
   
   extension (s: String)
-    inline def isEntType: Boolean     = meta.entTypes.isDefinedAt(s)
-    inline def isStrAttrType: Boolean = meta.strAttrTypes.isDefinedAt(s)
-    inline def isIntAttrType: Boolean = meta.intAttrTypes.isDefinedAt(s)
-    inline def isNodeType: Boolean    = meta.nodeTypes.isDefinedAt(s)
-    inline def isRelType: Boolean     = meta.relTypes.isDefinedAt(s)
-    def deCapitalize: String = s.take(1).toLowerCase ++ s.drop(1)
+    inline def isEntType: Boolean     = entTypes.isDefinedAt(s)
+    inline def isStrAttrType: Boolean = strAttrTypes.isDefinedAt(s)
+    inline def isIntAttrType: Boolean = intAttrTypes.isDefinedAt(s)
+    inline def isNodeType: Boolean    = nodeTypes.isDefinedAt(s)
+    inline def isRelType: Boolean     = relTypes.isDefinedAt(s)
+    inline def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
 
 
   def generate: String = 
@@ -162,10 +162,10 @@ object meta:
       s"|  def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
       s"|  def $name: EntLink = EntLink(e, ${name.capitalize})\n"
 
-    s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT `lang-GENERATED.scala` 
-        |//--- EDIT the code below by changing `def generate` in file meta.scala
-        |//--- GENERATE this file in sbt> `Test / runMain generateMeta`
-        |//--- or by `println(reqt.meta.generate)` and copy-paste
+    s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT AS CHANGES ARE LOST ON RE-GENERATION 
+        |//--- Edit the code below by changing `def generate` in reqt.meta
+        |//--- Generate this file in sbt> `meta`
+        |//--- or by `println(reqt.meta.generate)` in sbt console and copy-paste
         |
         |package reqt
         |

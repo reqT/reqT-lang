@@ -1,7 +1,7 @@
-//--- THIS IS A GENERATED FILE! DO NOT EDIT `lang-GENERATED.scala` 
-//--- EDIT the code below by changing `def generate` in file meta.scala
-//--- GENERATE this file in sbt> `Test / runMain generateMeta`
-//--- or by `println(reqt.meta.generate)` and copy-paste
+//--- THIS IS A GENERATED FILE! DO NOT EDIT AS CHANGES ARE LOST ON RE-GENERATION 
+//--- Edit the code below by changing `def generate` in reqt.meta
+//--- Generate this file in sbt> `meta`
+//--- or by `println(reqt.meta.generate)` in sbt console and copy-paste
 
 package reqt
 

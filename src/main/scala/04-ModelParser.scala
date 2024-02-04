@@ -2,7 +2,9 @@ package reqt
 
 object ModelParser:
   import meta.*
-  import StringExtensions.*
+
+  extension (s: String)
+    def toModel = ModelParser.parseModel(s)
   
   extension (sc: StringContext)
     def m(args: Any*): Model = 
@@ -41,7 +43,7 @@ object ModelParser:
           var more = i
           while more + 1 < lines.length 
             && (lines(more + 1).level(baseLevel) > level) 
-            && lines(more + 1).isTextLine 
+            && !(lines(more + 1).isElemStart) 
           do more += 1
           more
 

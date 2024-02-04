@@ -2,17 +2,14 @@ package reqt
 
 object StringExtensions:
   extension (s: String)
-    def toModel = ModelParser.parseModel(s)
-
-    def p = println(s)
     def toLines: Array[String] = s.split("\n")
     def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
+
+    def deCapitalize: String = s.take(1).toLowerCase ++ s.drop(1)
 
     def skipIndent: String     = s.dropWhile(ch => ch.isSpaceChar || ch == '\t')
     def skipFirstWord: String  = s.dropWhile(ch => !(ch.isSpaceChar || ch == '\t'))
     def skipFirstToken: String = s.skipIndent.skipFirstWord.trim
-    def isElemStart: Boolean = meta.isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
-    def isTextLine: Boolean = !isElemStart
 
     def level(base: Int): Int = 
       val initSpace = s.takeWhile(ch => ch.isSpaceChar || ch == '\t')

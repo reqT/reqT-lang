@@ -7,4 +7,7 @@ export Show.show           // extension for pretty Model using enum types and ap
 export Selection.*         // and/or-expressions for selecting Model parts 
 export ModelPath.*         // path factories for slash notation on Model
 export ModelParser.m       // string interpolator to parse markdown Model
-export StringExtensions.*  // some useful String extensions used by ModelParser
+export ModelParser.toModel // string extension to parse markdown Model
+export StringExtensions.*  // general extensions only depending on Scala stdlib
+
+
