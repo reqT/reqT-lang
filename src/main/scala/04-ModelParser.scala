@@ -24,7 +24,7 @@ object ModelParser:
 
   def parseLines(fromIndex: Int, untilIndex: Int, lines: Array[String], baseLevel: Int): List[Elem] = 
     //println(s"parseLines(fromIndex=$fromIndex, untilIndex=$untilIndex, lines=$lines, baseLevel=$baseLevel)")
-    val elems = List.empty[Elem].toBuffer
+    val elems = scala.collection.mutable.Buffer.empty[Elem]
     var i = fromIndex
     while i < untilIndex do
 
