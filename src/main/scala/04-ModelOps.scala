@@ -95,7 +95,7 @@ transparent trait ModelOps:
   def mergeAdjacentText = Model(elems.mergeAdjacentStrAttr(Text, "\n"))
 
   def toMarkdown: String = // recurse into model and un-parse as markdown
-    val MaxLen = 72
+    val MaxLen = 72  // Limit for creating one-liners in pretty markdown; TODO: should this be hardcoded???
     def loop(level: Int, m: Model, sb: StringBuilder): Unit = 
       val indent = "  " * level 
       for e <- m.elems do e match
