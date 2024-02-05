@@ -7,21 +7,6 @@ object meta:
     case ReqContext, GeneralReq, DataReq, FunctionalReq, QualityReq, DesignReq, VariabilityReq
   import EntGroup.* 
 
-  /* since reqt 3.1.7:  
-  -- Deleted entities: 
-  Actor (use System or User), App (use Product or System), Class (use DataType), Data (use DataType), Domain (use Section), Epic (use Section), Item (use Text or Label), Member (use Field or Function), Meta (use Type), MockUp (use Prototype), Module (use Component), Scenario (use UseCase or UserStory), Service (use Function or Feature), Story (use UserStory), Term (use Text or Label), Test (use TestCase), Ticket (use Issue), WorkPackage (use Section or Issue)
-    ++ Added entities:
-  DataType, Field, Image, Prototype, TestCase, UserStory
-    -- Deleted attributes: 
-  Code, Constraints, FileName (use Location), Gist (use Spec or Text), Image (use entity Image and Location), Status (use Label)
-    ++ Added attributes:
-  Failure, Label, Location
-    -- Deleted relations: 
-  impacts (use relatesTo), interactsWith (use relatesTo or has), is (use supertypeOf in reverse order), superOf (use supertypeOf)
-    ++ Added relations:
-  supertypeOf
-  */
-
   val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
     ReqContext -> "Product" -> "An artifact offered to users or customers in an application domain, e.g. a software app or an embedded system.",
     ReqContext -> "Release" -> "A specific version of a product offered at a specific time to end users.",
@@ -76,13 +61,13 @@ object meta:
     "Expectation" -> "A required output of a test in order to be counted as passed.",
     "Failure" -> "A description of an error that prevents the normal execution of a system.",
     "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
+    "Heading" -> "A title, subtitle, or topic. Should starts with one or more # to indicate level 1 to 6.",
     "Input" -> "Data consumed by an entity, ",
     "Label" -> "A descriptive tag used to classify something.",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
     "Output" -> "Data produced by an entity, e.g. a function or a test.",
     "Spec" -> "A definition of an entity. Short for specification",
     "Text" -> "An paragraph or general description.", 
-    "Title" -> "A short descriptive heading.", 
     "Why" -> "A description of intention or rationale of an entity.",
   ).sorted
 
