@@ -92,36 +92,43 @@ transparent trait ModelOps:
 
   def /[T](p: AttrPath[T]): Boolean =  self / LinkPath(p.links) / p.dest
 
-  def txt: String = 
+  def mergeAdjacentText = Model(elems.mergeAdjacentStrAttr(Text, "\n"))
+
+  def toMarkdown: String = // recurse into model and un-parse as markdown
     val MaxLen = 72
     def loop(level: Int, m: Model, sb: StringBuilder): Unit = 
       val indent = "  " * level 
       for e <- m.elems do e match
-        case Undefined(at) => sb.append(s"$indent$at\n")
+        case Undefined(at) => 
+          sb.append(s"$indent* $at\n")
 
-        case a: Attr[?] => sb.append(s"$indent${a.at} ${a.value}\n")
+        case a: Attr[?] => 
+          if a.at == Text then sb.append(s"$indent${a.value}\n") 
+          else if a.at == Heading && a.value.toString.trim.startsWith("#") then sb.append(s"$indent${a.value}\n")
+          else sb.append(s"$indent* ${a.at} ${a.value}\n")
         
-        case e: Ent     => sb.append(s"$indent${e.et} ${e.id}\n")
+        case e: Ent => 
+          sb.append(s"$indent* ${e.et} ${e.id}\n")
         
         case Rel(e, rt, Model(Vector(e2: Ent))) 
           if !e.id.contains('\n') && e.id.length + indent.length < MaxLen => // a one-liner
-          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase} ${e2.et} ${e2.id}\n")
+            sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize} ${e2.et} ${e2.id}\n")
         
         case Rel(e, rt, Model(Vector(u: Undefined[?]))) => // a one-liner
-          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase} ${u.at}\n")
+          sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize} ${u.at}\n")
         
         case Rel(e, rt, Model(Vector(a: Attr[?]))) 
           if !a.value.toString.contains('\n') && a.value.toString.length + indent.length < MaxLen => // a one-liner
-          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase} ${a.at} ${a.value}\n")
+            sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize} ${a.at} ${a.value}\n")
         
         case Rel(e, rt, sub) => // put sub on indented new line 
-          sb.append(s"$indent${e.et} ${e.id} ${rt.toString.toLowerCase}\n")
+          sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize}\n")
           if sub.elems.length > 0 then loop(level + 1, sub, sb)
     end loop
+
     val sb = StringBuilder()
     loop(0, self, sb)
     sb.toString
-
-  def p: Unit = println(txt)
+  end toMarkdown
 
   override def toString: String = elems.mkString("Model(",",",")")

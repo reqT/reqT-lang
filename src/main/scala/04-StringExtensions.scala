@@ -2,6 +2,8 @@ package reqt
 
 object StringExtensions:
   extension (s: String)
+    def p: Unit = println(s)
+
     def toLines: Array[String] = s.split("\n")
     def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
 

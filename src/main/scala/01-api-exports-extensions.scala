@@ -2,7 +2,10 @@ package reqt
 
 // the exports and extensions below is part of the surface api
 
-export Model.toModel       // extension method on Vector[Elem]
+// extension methods on Vector[Elem]
+export Model.toModel       
+export Model.mergeAdjacentStrAttr
+
 export Show.show           // extension for pretty Model using enum types and apply 
 export Selection.*         // and/or-expressions for selecting Model parts 
 export ModelPath.*         // path factories for slash notation on Model

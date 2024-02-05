@@ -23,7 +23,7 @@ object ModelParser:
     parseLines(0, lines.length, lines, baseLevel)
 
   def parseLines(fromIndex: Int, untilIndex: Int, lines: Array[String], baseLevel: Int): List[Elem] = 
-    //println(s"parseLines(fromIndex=$fromIndex, untilIndex=$untilIndex, lines=$lines, baseLevel=$baseLevel)")
+    //println(s">>> debug:\nparseLines(fromIndex=$fromIndex, untilIndex=$untilIndex, lines=$lines, baseLevel=$baseLevel)")
     val elems = scala.collection.mutable.Buffer.empty[Elem]
     var i = fromIndex
     while i < untilIndex do
@@ -37,57 +37,85 @@ object ModelParser:
       if words.nonEmpty then
 
         val first = words.head
-        val restOfLine = line.skipFirstToken
+        val isFirstHeading = first.startsWith("#") 
+        val isFirstBulletElem = first == "*" && words.length > 1
+        
+        extension (s: String)
+          def removeLeadingBullet = s.replaceFirst("\\*\\s+","")
+          
+        
 
-        inline def endOfTextBlock: Int =
+        def endOfTextBlock: Int =
           var more = i
           while more + 1 < lines.length 
             && (lines(more + 1).level(baseLevel) > level) 
-            && !(lines(more + 1).isElemStart) 
+            && !(lines(more + 1).trim.startsWith("*")) 
           do more += 1
           more
 
-        inline def endOfBlock: Int =
+        def endOfBlock: Int =
           var more = i
           while more + 1 < lines.length 
             && (lines(more + 1).level(baseLevel) > level) 
           do more += 1
           more
 
-        inline def takeLines(toIndex: Int): Array[String] =
+        def takeLines(toIndex: Int): Array[String] =
           if toIndex > i then 
             val result = lines.slice(i + 1, toIndex + 1) 
             i = toIndex
             result
           else Array()
 
-        first match
-          case f if first.isStrAttrType => 
+        def appendUntilEnd(sa: StrAttrType): Unit =
+          val j = endOfTextBlock
+          val value = if j > i then takeLines(endOfTextBlock).mkString(s"$line\n","\n","") else line
+          elems.append(sa.apply(value.removeLeadingBullet))
+
+        if isFirstHeading then appendUntilEnd(Heading)
+        else if !isFirstBulletElem then 
+          //println(s""">>> isFirstBulletElem==false first=="$first"""")
+          appendUntilEnd(Text)
+        else // we know it starts with <indent> *
+          val secondWord = words(1)
+          val restOfLine = line.removeLeadingBullet.skipFirstToken
+
+          secondWord match
+          case w if w.isStrAttrType => 
             val j = endOfTextBlock // check if more lines with just indented text
             val extra = if j > i then takeLines(j).mkString("\n","\n","") else ""
             val value: String = restOfLine ++ extra
-            val sa = strAttrTypes(f).apply(value)
+            val sa = strAttrTypes(w).apply(value)
             elems.append(sa)
 
+          case w if w.isIntAttrType => 
+            val thirdOpt: Option[String] = words.lift(2)
+            val numOpt: Option[Int] = thirdOpt.flatMap(_.toIntOption)
+            val ia: Attr[Int] = 
+              if numOpt.isDefined then intAttrTypes(w).apply(numOpt.get) 
+              else Undefined(intAttrTypes(w))
             
-          case f if first.isIntAttrType => 
-            val second: Option[String] = words.lift(1)
-            val numOpt: Option[Int] = second.flatMap(_.toIntOption)
-            val ia: Attr[Int] = if numOpt.isDefined then intAttrTypes(f).apply(numOpt.get) else Undefined(intAttrTypes(f))
             elems.append(ia)
+            
             val afterNumOnThisLine = 
-              restOfLine.stripLeading.drop(if numOpt.isDefined && second.isDefined then second.get.length else 0).trim
-            if afterNumOnThisLine.length > 0 then 
-              elems.appendAll(parseElems(afterNumOnThisLine, level))
+              restOfLine
+                .stripLeading
+                .drop(if numOpt.isDefined && thirdOpt.isDefined then thirdOpt.get.length else 0)
+                .trim
+            
+            if afterNumOnThisLine.length > 0 then elems.appendAll(parseElems(afterNumOnThisLine, level))
 
-          case f if first.isEntType =>
-            val ent: EntType = entTypes(f) 
-            val r: Int = words.indexWhere(w => relTypes.isDefinedAt(w))
+          case w if w.isEntType =>
+            val ent: EntType = entTypes(w) 
+            val thirdOpt: Option[String] = words.lift(2)
+            val r: Int = words.indexWhere(s => relTypes.isDefinedAt(s))
 
             if r == -1 then // there is no RelType given
-              val wordsWithId = words.lift(1) match
-                case Some(id) if isConceptName(id) => words(0) +: Ent.emptyId +: words.drop(1)
-                case _ => words  
+              val wordsWithId = thirdOpt match
+                case Some(id) if isConceptName(id) => // there is no id but a concept
+                   w +: Ent.emptyId +: words.drop(2)  // add empty id and then rest (drop leading * Ent)
+                case _ =>  // there is an id that does not start with a concept 
+                  words.drop(1)  // drop leading *
 
               val remainingWords = wordsWithId.drop(2)
               val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
@@ -116,29 +144,30 @@ object ModelParser:
               if elemsToAddInRel.nonEmpty then 
                 val rel = Rel(ent(id), Has, Model(elemsToAddInRel*))
                 elems.append(rel)
-              else 
-                elems.append(ent.apply(id))
-
+              else elems.append(ent.apply(id))
             else // this is a relation
+              //println(s""">>> debug: parsing relation""")
               val rt = relTypes(words(r))
-              val idMaybeEmpty = words.slice(1, r).mkString(" ")
+              val idMaybeEmpty = words.slice(2, r).mkString(" ")  // 2 as we want to skip leading *
               val id = if idMaybeEmpty.isEmpty then Ent.emptyId else idMaybeEmpty
               val remainingWords = words.slice(r + 1, words.length)
-              val extraElemsOnThisLine: List[Elem] = parseElems(remainingWords.mkString(" "), level)
+              //println(s""">>> debug: remainingWords.mkString(" ")=="${remainingWords.mkString(" ")}" """)
+              val extraElemsOnThisLine: List[Elem] = 
+                if remainingWords.isEmpty then List.empty else 
+                  //println(s">>> debug; recurse parseElems as if this was a new line starting with *")
+                  parseElems(remainingWords.mkString("* ", " ", ""), level)
               val j = endOfBlock
               val extraSubsequentElems: List[Elem] = 
                 if j == i then Nil else 
                   val subLines = takeLines(j)
+                  //println(s">>> debug; recurse parseLines ")
                   parseLines(0, subLines.length, subLines, baseLevel)
               val rel = Rel(ent(id), rt, Model((extraElemsOnThisLine ++ extraSubsequentElems)*))
               elems.append(rel)
 
-          case f => // everything else is a Text attribute
-            val j = endOfTextBlock
-            val value = if j > i then takeLines(endOfTextBlock).mkString(s"$line\n","\n","") else line
-            elems.append(Text(value))
-
-        end match
+          case _ => appendUntilEnd(Text)// everything else is a Text attribute
+          end match
+        end if
       end if
 
       i += 1  // goto next line
