@@ -34,8 +34,8 @@ object ModelParser:
       //println(s"level=$level")
       val words: Array[String] = line.toWords
 
-      if words.nonEmpty then
-
+      if words.isEmpty then elems.append(Text(""))  // Line is empty or white space only
+      else
         val first = words.head
         val isFirstHeading = first.startsWith("#") 
         val isFirstBulletElem = first == "*" && words.length > 1

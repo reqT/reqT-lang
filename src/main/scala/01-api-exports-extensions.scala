@@ -1,6 +1,6 @@
 package reqt
 
-// the exports and extensions below is part of the surface api
+// exports to shape the surface api
 
 // extension methods on Vector[Elem]
 export Model.toModel       
