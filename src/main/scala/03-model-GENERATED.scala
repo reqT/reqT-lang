@@ -5,8 +5,8 @@
 
 package reqt
 
-final case class Model(elems: Vector[Elem]) extends ModelOps
-object Model extends ModelCompanionOps
+final case class Model(elems: Vector[Elem]) extends ModelMembers
+object Model extends ModelCompanion
 
 sealed trait Elem
 sealed trait Node extends Elem

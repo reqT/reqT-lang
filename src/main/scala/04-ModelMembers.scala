@@ -1,7 +1,7 @@
 package reqt
 
 /** Operations of trait `Model` **/
-transparent trait ModelOps:
+transparent trait ModelMembers:
   self: Model =>
 
   /** The number of elems at top level plus the sizes of all sub models **/

@@ -1,6 +1,6 @@
 package reqt
 
-class TestParser extends munit.FunSuite:
+class TestMarkdownParser extends munit.FunSuite:
   import Console.{RED as R, RESET as X}
 
   test("Simple StrAttr   "):
@@ -29,6 +29,7 @@ class TestParser extends munit.FunSuite:
 
   test("Simple Ent       "):
     assert("* Feature  x ".toModel == Model(Feature("x"))) 
+    assert("* Feature  x ".toModel.toMarkdown == Model(Feature("x")).toMarkdown) 
 
   test("Simple Ent +extra"):
     assert("* Feature  x y ".toModel == Model(Feature("x y"))) 
@@ -75,5 +76,7 @@ class TestParser extends munit.FunSuite:
           |
           |""".stripMargin.toModel == 
         Model(
+          Text(""),
           Feature("x") has (Prio(1),Req("y")),
-          Req("z"))
+          Req("z")
+        )
