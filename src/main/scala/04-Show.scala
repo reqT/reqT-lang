@@ -37,13 +37,13 @@ object Show:
               sb.append(indent(indentLevel))
               if sub == Model.empty then 
                 sb.append(EntLink(e, rt).show) 
-                sb.append("()\n")
+                sb.append("(),\n")
                 loop(elems.drop(1), indentLevel)
               else 
                 sb.append(EntLink(e, rt).show)
                 sb.append("(\n")
                 loop(sub.elems, indentLevel + 1)
-                sb.append("\n" + indent(indentLevel) + "),\n")
+                sb.append(indent(indentLevel) + "),\n")
                 loop(elems.drop(1), indentLevel)
             case e => 
               sb.append(indent(indentLevel))
@@ -53,8 +53,8 @@ object Show:
       end loop
       loop(m.elems, 1)
       sb.append(")")
-      println("DEBUG:\n" + sb.toString)
-      m.elems.map(_.show).mkString("Model(\n  ",",\n  ","\n)")
+      //m.elems.map(_.show).mkString("Model(\n  ",",\n  ","\n)")
+      sb.toString
 
   given showElemType: Show[ElemType] with
     override def show(et: ElemType): String = et.toString
