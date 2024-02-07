@@ -44,7 +44,7 @@ object Show:
                 sb.append("(\n")
                 loop(sub.elems, indentLevel + 1)  // not tail-recursive
                 sb.append(indent(indentLevel))
-                sb.append("),\n"))
+                sb.append("),\n")
                 loop(elems.drop(1), indentLevel)
             case e => 
               sb.append(indent(indentLevel))
