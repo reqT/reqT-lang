@@ -42,7 +42,7 @@ object Show:
               else 
                 sb.append(EntLink(e, rt).show)
                 sb.append("(\n")
-                loop(sub.elems, indentLevel + 1)
+                loop(sub.elems, indentLevel + 1)  // not tail-recursive
                 sb.append(indent(indentLevel) + "),\n")
                 loop(elems.drop(1), indentLevel)
             case e => 
@@ -53,7 +53,6 @@ object Show:
       end loop
       loop(m.elems, 1)
       sb.append(")")
-      //m.elems.map(_.show).mkString("Model(\n  ",",\n  ","\n)")
       sb.toString
 
   given showElemType: Show[ElemType] with
