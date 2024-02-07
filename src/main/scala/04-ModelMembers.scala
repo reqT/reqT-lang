@@ -131,4 +131,6 @@ transparent trait ModelMembers:
     sb.toString
   end toMarkdown
 
+  def showCondensed: String = elems.map(_.show).mkString("Model(",",",")")
+
   override def toString: String = elems.mkString("Model(",",",")")
