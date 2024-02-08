@@ -1,1 +1,0 @@
-scala-cli repl . --scala-snippet "export reqt.api.*"
