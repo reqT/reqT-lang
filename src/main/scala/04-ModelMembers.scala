@@ -24,12 +24,19 @@ transparent trait ModelMembers:
       case Rel(e, r, m) => Vector(e) ++ m.nodes
 
   def undefined: Vector[Undefined[?]] = nodes.collect{ case u: Undefined[?] => u }
+
+  def ents: Vector[Ent] = nodes.collect { case e: Ent => e }
+  def attrs: Vector[Attr[?]] = nodes.collect { case a: Attr[?] => a }
+  def strAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
+  def intAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
   
-  /** A new Model with deep de-duplication of its elems. **/
-  def distinct: Model =
+  def ids: Vector[String] = ents.map(_.id)
+
+  /** A new Model with deep de-duplication of its elems per level. **/
+  def distinctLevels: Model =
     Model(elems.map:
       case n: Node => n 
-      case Rel(e, r, m) => Rel(e, r, m.distinct)
+      case Rel(e, r, m) => Rel(e, r, m.distinctLevels)
     .distinct) 
 
   def sorted: Model = 
