@@ -10,9 +10,11 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test
 
+lazy val nameOfThisBuild = "reqt-lang"
+
 lazy val `reqt-lang` = (project in file("."))
   .settings(
-    name := "reqt-lang",
+    name := nameOfThisBuild,
     scalacOptions := List("-encoding", "utf8", "-Werror", "-deprecation", "-unchecked")
   )
 
@@ -31,13 +33,13 @@ build := Def.sequential(
 
 lazy val hello = taskKey[Unit]("Prints welcome message")
 
-hello := println("""
-  *** Welcome to the reqt-lang build in sbt ***
+hello := println(s"""
+  *** Welcome to the $nameOfThisBuild build in sbt ***
 
-  type 'Test / run' to generate meta files 
+  type 'meta' to generate meta files, or use the underlying `Test / run` task
   type 'test' to run all tests
-  type 'package' to build jar in target/scala-x.y.z
-  type 'build' to do all of the above
+  type 'package' to build a jar in target/scala-x.y.z
+  type 'build' to do clean + all of the above
   type 'console' to enter the Scala REPL with reqt.* imported
   type 'hello' to see this message
 """)
