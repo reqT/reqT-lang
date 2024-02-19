@@ -26,3 +26,15 @@ You can manage your requirements with the reqT-lang library, the Scala compiler 
 * You need the [`sbt`](https://www.scala-sbt.org/) build tool of [this version](https://github.com/reqT/reqT-lang/blob/main/project/build.properties) or higher on your path.
 
 * Run `sbt build` in terminal.
+
+## How to publish
+
+For maintainers of https://github.com/reqT/reqT-lang
+
+* Bump version in `build.sbt` and reload build
+
+* Run `sbt package`
+
+* Create a release on  https://github.com/reqT/reqT-lang
+
+* Upload the jar in target/scala-x.y.z named something similar to reqT-lang_3-VERSION.jar
