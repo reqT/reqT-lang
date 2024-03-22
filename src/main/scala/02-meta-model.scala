@@ -61,7 +61,7 @@ object meta:
     "Expectation" -> "A required output of a test in order to be counted as passed.",
     "Failure" -> "A description of an error that prevents the normal execution of a system.",
     "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
-    "Heading" -> "A title, subtitle, or topic. Should starts with one or more # to indicate level 1 to 6.",
+    "Heading" -> "A title, subtitle, or topic. Use one or more leading # to indicate level 1 to 6.",
     "Input" -> "Data consumed by an entity, ",
     "Label" -> "A descriptive tag used to classify something.",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
