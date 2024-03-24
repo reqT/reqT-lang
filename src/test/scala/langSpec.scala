@@ -1,9 +1,9 @@
 package reqt
 
 object langSpec: // save this file by sbt> Test / runMain generateLangSpec
-  def specMarkDown: String = 
+  val specMarkDown: String = 
     s"""# Language Specification of reqt version 4.0
-## Preface
+## Introduction
 
 Reqt is a language for software requirements modelling.
 
@@ -14,16 +14,28 @@ A reqt Model is a sequence of elements, where each element can be either an enti
 
 Example:
 ```
-Comment A string attribute with informative text.
-Feature yyy has Prio 42
-Feature yyy requires Feature xxx
-Feature xxx has 
-  Prio 12
-  Spec An informal description
-       that is continued on the next line
-  UseCase zzz has
-    Prio 23
+* Comment A string attribute with informative text.
+* Feature yyy has Prio 42
+* Feature yyy requires Feature xxx
+* Feature xxx has 
+  * Prio 12
+  * Spec An informal description
+      that is continued on the next line
+  * UseCase zzz has
+    * Prio 23
 ```
+
+In markdown view the above is rendered like so:
+
+* Comment A string attribute with informative text.
+* Feature yyy has Prio 42
+* Feature yyy requires Feature xxx
+* Feature xxx has 
+  * Prio 12
+  * Spec An informal description
+      that is continued on the next line
+  * UseCase zzz has
+    * Prio 23
 
 ## Lexical Tokens
 
@@ -42,58 +54,73 @@ Each line is split into a sequence of the following tokens types:
 
 ## Model Syntax
 
+# Lexical Syntax
+
+The source code of a Model consists of Unicode text. 
+
+## Preprocessing
+
+The source code is pre-processed as follows: 
+* The source code is split by '\n' into a sequence of lines. 
+* Each line with index i is given an integer value `leading(i)` corresponding to the number of leading whitespace characters. 
+* The lexical analyzer inserts Indent(n) and Outdent(n) tokens that represent regions of indented code based on leading(i), where n denotes indent level.
+
+## Grammar
+
 A legal `reqt` model abides the following grammar, where `|` denotes alternative and `*` denotes zero or more: 
 ```
-Model ::= (Indent(i) Elem)*
+ElemStart ::= '* '
 
-Elem ::= Node | Relation
+Model ::= (Indent(n) ElemStart Elem)*
 
-Node ::= Attribute | Entity
+Elem ::= Node | Rel
 
-Attribute ::= IntAttribute |  StrAttribute
+Node ::= Attr | Ent
 
-IntAttribute ::= IntAttributeType Num
+Attr ::= IntAttr |  StrAttr
 
-StrAttribute ::= StrAttributeType (Word)*
+IntAttr ::= IntAttrType Num
 
-Entity ::= EntityType Id
+StrAttr ::= StrAttr (Word)*
+
+Ent ::= EntityType Id
 
 Id :: = Word
 
-Relation ::= SingleLineRelation | MultiLineRelation
+Rel ::= SingleLineRel | MultiLineRel
 
-SingleLineRelation ::= Entity RelationType Node
+SingleLineRel ::= Ent RelType Node
 
-MultiLineRelation ::= Entity RelationType SubModel
+MultiLineRel ::= Ent RelType SubModel
 
-SubModel ::= (Indent(j > i) Elem)* Outdent(i)
+SubModel ::= (Indent(n + 1) ElemStart Elem)* Outdent(n)
 
-EntityType ::= ${meta.entityNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
+EntityType ::= ${meta.entityNames.map(n => s"'$n'").mkString(" | ").wrap(80)}
 
-IntAttributeType ::= ${meta.intAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
+IntAttrType ::= ${meta.intAttrNames.map(n => s"'$n'").mkString(" | ").wrap(80)}
 
-StrAttributeType ::= ${meta.strAttrNames.map(n => s"`$n`").mkString(" | ").wrap(80)}
+StrAttr ::= ${meta.strAttrNames.map(n => s"'$n'").mkString(" | ").wrap(80)}
 
-RelationType ::= ${meta.relationNames.map(_.capitalize).map(n => s"`$n`").mkString(" | ").wrap(80)}
+RelType ::= ${meta.relationNames.map(_.capitalize).map(n => s"'$n'").mkString(" | ").wrap(80)}
 ```
 
 ## Special Parsing Rules
 
 The following rules provides exceptions to the above grammar: 
 
-1. An Id cannot be an `EntityType`, `IntAttributeType`, `StrAttributeType`, or `RelationType`.
-This gives the Error: "Reserved word cannot be used as Id of Entity."
+1. An Id cannot be an `EntityType`, `IntAttrType`, `StrAttributeType`, or `RelType`.
+This gives the Error: "Reserved word cannot be used as Id of Ent."
 
 2. The rest of the line after a `StrAttributeType` is part of its string value,
 as well as subsequent lines with a higher Indent level.
 
-3. The rest of the line after an `IntAttributeType` is part of its integer value. 
+3. The rest of the line after an `IntAttrType` is part of its integer value. 
 
 4. If a `Num` token have more tokens following on the same line then the following error is given:
 "Illegal extra tokens after integer value."
 
-4. An `IntAttribute`, `Entity` or `SingleLineRelation` cannot be followed by a subsequent line with a higher Indent level.
+4. An `IntAttribute`, `Ent` or `SingleLineRel` cannot be followed by a subsequent line with a higher Indent level.
 This gives the Error: "Higher indentation level is not allowed here."
 
-5. The elements following a `MultiLineRelation` that are on a higher Indent level are part of the (possibly empty) `SubModel`.
+5. The elements following a `MultiLineRel` that are on a higher Indent level are part of the (possibly empty) `SubModel`.
 """
