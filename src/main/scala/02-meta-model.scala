@@ -27,9 +27,9 @@ object meta:
     GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
 
 
-    DataReq -> "DataType" -> "An entity or a record stored in or processed by a system.",
-    DataReq -> "Field" -> "An attribute that is part of a data type.",
-    DataReq -> "Relationship" -> "A specific way that data types are connected.",
+    DataReq -> "DataType" -> "A data entity, class, type or record stored or processed by a system.", // OR Data OR DataEntity
+    DataReq -> "Field" -> "An attribute that is part of a data type.",  // Or DataField or DataAttribute
+    DataReq -> "Relationship" -> "A specific way that data types are connected.", // Or Association or Relation or DataRelation
 
     DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
     DesignReq -> "Design" -> "A specific realization. A description of an implementation.",
