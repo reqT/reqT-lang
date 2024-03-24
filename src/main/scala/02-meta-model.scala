@@ -24,6 +24,8 @@ object meta:
     GeneralReq -> "Issue" -> "Something needed to be fixed or work to do.",
     GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
     GeneralReq -> "TestCase" -> "A procedure to check if requirements are met.",
+    GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
+
 
     DataReq -> "DataType" -> "An entity or a record stored in or processed by a system.",
     DataReq -> "Field" -> "An attribute that is part of a data type.",
@@ -63,7 +65,6 @@ object meta:
     "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
     "Heading" -> "A title, subtitle, or topic. Use one or more leading # to indicate level 1 to 6.",
     "Input" -> "Data consumed by an entity, ",
-    "Label" -> "A descriptive tag used to classify something.",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
     "Output" -> "Data produced by an entity, e.g. a function or a test.",
     "Spec" -> "A definition of an entity. Short for specification",
