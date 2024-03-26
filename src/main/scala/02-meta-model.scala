@@ -115,18 +115,21 @@ object meta:
   case class Concept(name: String, description: String, abstractType: String)
 
   val concepts: ArraySeq[Concept] = 
-    (entityConcepts.map((n, d) => Concept(n, d, "EntityType")) ++
+    (entityConceptGroups.map((gn, d) => Concept(gn._2, d, s"EntityType,${gn._1}")) ++
     strAttrConcepts.map((n, d) => Concept(n,  d, "StrAttrType")) ++
     intAttrConcepts.map((n, d) => Concept(n,  d, "IntAttrType")) ++
     relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))).sortBy(_.name)
 
   val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
 
-  def describe(name: String): String = conceptMap.get(name) match
-    case Some(Concept(name, descr, abstractType)) => s"$descr [$abstractType]"
-    case None => s"Unknown concept: $name"
-  
-  extension (concept: Any) def help: String = describe(concept.toString)
+  def describe(str: String): (String, String) = 
+    val lower = str.toLowerCase
+    val opt: Option[Concept] = conceptMap.get(lower)
+    (if opt.isDefined then opt else conceptMap.get(lower.capitalize)) match
+      case Some(Concept(name, descr, abstractType)) => name -> s"$descr [$abstractType]"
+      case None => str -> s"Unknown concept"
+    
+  extension (concept: Any) def help: String = describe(concept.toString)._2
 
   extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
 
