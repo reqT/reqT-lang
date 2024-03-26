@@ -1,0 +1,83 @@
+concept	type	description
+Barrier	EntityType:QualityReq	Something that makes it difficult to achieve a goal or a higher quality level.
+Benefit	IntAttrType	A characterization of a good or helpful result or effect (e.g. of a feature).
+Breakpoint	EntityType:QualityReq	A point of change, representing an important shift in the relation between quality and benefit.
+Capacity	IntAttrType	An amount that can be held or contained (e.g. by a resource).
+Class	EntityType:DataReq	An extensible template for creating objects. A set of objects with certain attributes in common. A category.
+Comment	StrAttrType	A note with a remark or a discussion on an entity.
+Component	EntityType:DesignReq	A composable part of a system architecture. A reusable, interchangeable system unit or functionality.
+Configuration	EntityType:VariabilityReq	A specific combination of variants.
+Constraints	StrAttrType	A collection of propositions that constrain a solution space or restrict possible attribute values.
+Cost	IntAttrType	An expenditure of something, such as time or effort, necessary for the implementation of an entity.
+Damage	IntAttrType	A characterization of the negative consequences if some entity (e.g. a risk) occurs.
+Data	EntityType:DataReq	A data entity, type, class, or record stored or processed by a system.
+Deprecated	StrAttrType	A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.
+Design	EntityType:DesignReq	A specific realization. A description of an implementation.
+Domain	EntityType:ReqContext	The application area of a product with its surrounding entities, e.g. users or other systems.
+Epic	EntityType:GeneralReq	A coherent collection of features, stories, use cases or issues. A large part of a release.
+Event	EntityType:FunctionalReq	Something that can happen in the domain or in the system.
+Example	StrAttrType	A description that illustrates some entity by a typical instance.
+Expectation	StrAttrType	A required output of a test in order to be counted as passed.
+Failure	StrAttrType	An error that prevents the normal execution of a system.
+Feature	EntityType:GeneralReq	A releasable characteristic of a product. A high-level, coherent bundle of requirements.
+Frequency	IntAttrType	A number of occurrences per time unit. 
+Function	EntityType:FunctionalReq	A description of how input is mapped to output. A capability of a system to do something specific.
+Gist	StrAttrType	A short and simple description. A summary capturing the essence of an entity.
+Goal	EntityType:GeneralReq	An intention of a stakeholder or desired system property.
+Idea	EntityType:GeneralReq	A concept or thought (potentially interesting).
+Image	EntityType:GeneralReq	A visual representation, picture or diagram.
+Input	StrAttrType	Data consumed by an entity, 
+Interface	EntityType:GeneralReq	A defined way to interact with a system.
+Issue	EntityType:GeneralReq	Something needed to be fixed or work to do.
+Label	EntityType:GeneralReq	A descriptive tag used to classify something.
+Location	StrAttrType	A location of a resource such as a web address or a path to a file of persistent data.
+Max	IntAttrType	A maximum estimated or assigned value.
+Member	EntityType:DataReq	A data entity that is part of another entity, eg. a field or method in a class
+Min	IntAttrType	A minimum estimated or assigned value.
+Module	EntityType:DesignReq	A collection of coherent functions and interfaces.
+Order	IntAttrType	An ordinal number of an entity (1st, 2nd, ...).
+Output	StrAttrType	Data produced by an entity, e.g. a function or a test.
+Prio	IntAttrType	A level of importance of an entity. Short for priority.
+Probability	IntAttrType	A likelihood expressed as whole percentages that something (e.g. a risk) occurs.
+Product	EntityType:ReqContext	An artifact offered to users or customers, e.g. an app, service or  embedded system.
+Profit	IntAttrType	A gain or return of some entity, e.g. in monetary terms.
+Prototype	EntityType:DesignReq	A system with limited functionality used to demonstrate a design idea.
+Quality	EntityType:QualityReq	An aspect of system quality, distinguishing characteristic or degree of goodness.
+Relationship	EntityType:DataReq	A specific way that data types are connected.
+Release	EntityType:ReqContext	A specific version of a product offered to end users at a specific time.
+Req	EntityType:GeneralReq	Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.
+Resource	EntityType:ReqContext	A capability of, or support for product development, e.g. a development team or some testing equipment.
+Risk	EntityType:ReqContext	Something negative that may happen.
+Screen	EntityType:DesignReq	A design of (a part of) a user interface.
+Section	EntityType:ReqContext	A part of a requirements document.
+Spec	StrAttrType	A definition of an entity. Short for specification
+Stakeholder	EntityType:ReqContext	A role, person or legal entity with a stake in the development or operation of a product.
+State	EntityType:FunctionalReq	A mode or condition of something in the domain or in the system. A configuration of data.
+Story	EntityType:FunctionalReq	A description of what a user persona wants in order to achieve a goal. Short for user story.
+System	EntityType:ReqContext	A set of software or hardware components interacting with users or systems.
+Target	EntityType:QualityReq	A desired quality level or quality goal.
+Task	EntityType:FunctionalReq	A piece of work by users, potentially supported by a system.
+Term	EntityType:ReqContext	A word or group of words having a particular meaning in a particular domain.
+Test	EntityType:GeneralReq	A procedure to check if requirements are met.
+Text	StrAttrType	An paragraph or general description.
+Title	StrAttrType	A general or descriptive heading. One or more leading # indicate heading level.
+UseCase	EntityType:FunctionalReq	A goal-fulfilling interaction between users and a product in a specific usage context.
+User	EntityType:ReqContext	A human interacting with a system.
+Value	IntAttrType	Some general integer value.
+Variant	EntityType:VariabilityReq	An object or system property that can be chosen from a set of options.
+VariationPoint	EntityType:VariabilityReq	An opportunity of choice among variants.
+Why	StrAttrType	A description of intention or rationale of an entity.
+binds	RelationType	Ties a value to an option. A configuration binds a variation point.
+deprecates	RelationType	Makes outdated. An entity deprecates (supersedes) another entity.
+excludes	RelationType	Prevents an entity combination. One feature excludes another in a release.
+has	RelationType	Expresses containment, substructure, composition or aggregation. An entity contains another entity.
+helps	RelationType	Positive influence. A goal supports the fulfillment of another goal.
+hurts	RelationType	Negative influence. A goal hinders another goal.
+impacts	RelationType	Some unspecific influence. A new feature impacts an existing component.
+implements	RelationType	Realisation of an entity, e.g. a component implements a feature.
+inherits	RelationType	One entity inherits properties of another entity. A specialization, extension or subtype relation. 
+interacts	RelationType	A communication relation. A user interacts with an interface.
+precedes	RelationType	Temporal ordering. A feature precedes (should be implemented before) another feature.
+relates	RelationType	Some general, unspecific relation to another entity.
+requires	RelationType	A requested combination. One function requires that a another function is also implemented.
+verifies	RelationType	Gives evidence of correctness. A test verifies the implementation of a feature.

@@ -122,14 +122,24 @@ object meta:
 
   val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
 
-  def describe(str: String): (String, String) = 
+  def describe(str: String): (String, Option[String]) = 
     val lower = str.toLowerCase
     val opt: Option[Concept] = conceptMap.get(lower)
     (if opt.isDefined then opt else conceptMap.get(lower.capitalize)) match
-      case Some(Concept(name, descr, abstractType)) => name -> s"$descr [$abstractType]"
-      case None => str -> s"Unknown concept"
+      case Some(Concept(name, descr, abstractType)) => name -> Some(s"$descr [$abstractType]")
+      case None => str -> None
+
+  def similarConcepts(c: String, n: Int = 5): Seq[String] = conceptNames
+      //.map(n => c.toLowerCase.sorted.diff(n.toLowerCase.sorted) -> n) //not as good as Levenshtein 
+      .map(n => (if n.startsWith(c.toLowerCase.capitalize) then 1 else c.editDistanceTo(n)) -> n) 
+      .sortBy(_._1)
+      .take(n)
+      .map(_._2)
+
+  extension (concept: Any) def help: String = 
+    val (c, dOpt) = describe(concept.toString)
+    dOpt.getOrElse(s"Unknown concept: $concept. Did you mean: ${similarConcepts(c).mkString(", ")}")
     
-  extension (concept: Any) def help: String = describe(concept.toString)._2
 
   extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
 
@@ -159,6 +169,10 @@ object meta:
     def isRelType: Boolean     = relTypes.isDefinedAt(s)
     def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
 
+  def matrix: Seq[Seq[String]] = for Concept(n, d, t) <- concepts yield Seq(n, t, d) 
+
+  def csv(delim: String = ";"): String = 
+    s"concept${delim}type${delim}description\n" + matrix.map(_.mkString(delim)).mkString("\n")
 
   def generate: String = 
     def entExtensions(name: String): String = 
