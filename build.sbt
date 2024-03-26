@@ -1,6 +1,6 @@
 ThisBuild / version      := "4.0.0-RC2"
 
-ThisBuild / scalaVersion := "3.3.3"
+ThisBuild / scalaVersion := "3.3.3"  // use LTS
 
 ThisBuild / organization := "io.github.reqt"
 
