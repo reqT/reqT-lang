@@ -92,20 +92,21 @@ MultiLineRel ::= Ent RelType SubModel
 
 SubModel ::= (Indent(n + 1) ElemStart Elem)* Outdent(n)
 
-EntityType ::= 'Barrier' | 'Breakpoint' | 'Component' | 'Configuration' | 'DataType' | 'Design' | 'Event' | 
-'Feature' | 'Field' | 'Function' | 'Goal' | 'Idea' | 'Image' | 'Interface' | 'Issue' | 'Label' | 
-'Product' | 'Prototype' | 'Quality' | 'Relationship' | 'Release' | 'Req' | 'Resource' | 'Risk' 
-| 'Screen' | 'Section' | 'Stakeholder' | 'State' | 'System' | 'Target' | 'Task' | 'TestCase' | 
-'UseCase' | 'User' | 'UserStory' | 'Variant' | 'VariationPoint'
+EntityType ::= 'Barrier' | 'Breakpoint' | 'Class' | 'Component' | 'Configuration' | 'Data' | 'Design' | 
+'Domain' | 'Epic' | 'Event' | 'Feature' | 'Function' | 'Goal' | 'Idea' | 'Image' | 'Interface' | 
+'Issue' | 'Label' | 'Member' | 'Module' | 'Product' | 'Prototype' | 'Quality' | 'Relationship' 
+| 'Release' | 'Req' | 'Resource' | 'Risk' | 'Screen' | 'Section' | 'Stakeholder' | 'State' | 
+'Story' | 'System' | 'Target' | 'Task' | 'Term' | 'Test' | 'UseCase' | 'User' | 'Variant' | 
+'VariationPoint'
 
 IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Order' | 'Prio' | 
 'Probability' | 'Profit' | 'Value'
 
-StrAttr ::= 'Comment' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 'Heading' | 
-'Input' | 'Location' | 'Output' | 'Spec' | 'Text' | 'Why'
+StrAttr ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 
+'Input' | 'Location' | 'Output' | 'Spec' | 'Text' | 'Title' | 'Why'
 
-RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Implements' | 'Precedes' | 
-'RelatesTo' | 'Requires' | 'SupertypeOf' | 'Verifies'
+RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Impacts' | 'Implements' | 
+'Inherits' | 'Interacts' | 'Precedes' | 'Relates' | 'Requires' | 'Verifies'
 ```
 
 ## Special Parsing Rules

@@ -8,13 +8,15 @@ object meta:
   import EntGroup.* 
 
   val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
-    ReqContext -> "Product" -> "An artifact offered to users or customers in an application domain, e.g. a software app or an embedded system.",
-    ReqContext -> "Release" -> "A specific version of a product offered at a specific time to end users.",
+    ReqContext -> "Domain" -> "The application area of a product with its surrounding entities, e.g. users or other systems.",
+    ReqContext -> "Product" -> "An artifact offered to users or customers, e.g. an app, service or  embedded system.",
+    ReqContext -> "Release" -> "A specific version of a product offered to end users at a specific time.",
     ReqContext -> "Resource" -> "A capability of, or support for product development, e.g. a development team or some testing equipment.",
     ReqContext -> "Risk" -> "Something negative that may happen.",
-    ReqContext -> "Section" -> "A part of a requirements document or a subdomain.",
+    ReqContext -> "Section" -> "A part of a requirements document.",
     ReqContext -> "Stakeholder" -> "A role, person or legal entity with a stake in the development or operation of a product.",
     ReqContext -> "System" -> "A set of software or hardware components interacting with users or systems.",
+    ReqContext -> "Term" -> "A word or group of words having a particular meaning in a particular domain.",
     ReqContext -> "User" -> "A human interacting with a system.",
 
     GeneralReq -> "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
@@ -23,26 +25,31 @@ object meta:
     GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
     GeneralReq -> "Issue" -> "Something needed to be fixed or work to do.",
     GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
-    GeneralReq -> "TestCase" -> "A procedure to check if requirements are met.",
+    GeneralReq -> "Test" -> "A procedure to check if requirements are met.",  // Or TestCase ?
     GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
 
 
-    DataReq -> "DataType" -> "A data entity, class, type or record stored or processed by a system.", // OR Data OR DataEntity
-    DataReq -> "Field" -> "An attribute that is part of a data type.",  // Or DataField or DataAttribute
+    DataReq -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // OR Data OR DataEntity OR DataType?
+    DataReq -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
+    DataReq -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a in a class",  // Or DataField or DataAttribute or DataProperty
     DataReq -> "Relationship" -> "A specific way that data types are connected.", // Or Association or Relation or DataRelation
 
     DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
+    // https://softwareengineering.stackexchange.com/questions/178927/is-there-a-difference-between-a-component-and-a-module
     DesignReq -> "Design" -> "A specific realization. A description of an implementation.",
+    DesignReq -> "Module" -> "A collection of coherent functions and interfaces.",
     DesignReq -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
     DesignReq -> "Screen" -> "A design of (a part of) a user interface.",
 
+    FunctionalReq -> "Epic" -> "A coherent collection of stories, use cases or issues. A large part of a release.",
+    // https://www.atlassian.com/agile/project-management/epics-stories-themes
     FunctionalReq -> "Event" -> "Something that can happen in the domain or in the system.",
     FunctionalReq -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
     FunctionalReq -> "Interface" -> "A defined way to interact with a system.",
     FunctionalReq -> "State" -> "A mode or condition of something in the domain or in the system. A configuration of data.",
     FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system.",
-    FunctionalReq -> "UseCase" -> "A list of steps defining interactions between actors and a system to achieve a goal.",
-    FunctionalReq -> "UserStory" -> "A short description of what a user does or needs. Short for user story.",
+    FunctionalReq -> "UseCase" -> "A goal-fulfilling interaction between users and a product in a specific usage context.",
+    FunctionalReq -> "Story" -> "A description of what a user persona wants in order to achieve a goal. Short for user story.",
 
     QualityReq -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level.",
     QualityReq -> "Breakpoint" -> "A point of change, representing an important shift in the relation between quality and benefit.",
@@ -58,12 +65,13 @@ object meta:
 
   val strAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note with a remark or a discussion on an entity.",
+    "Constraints" -> "A collection of propositions that constrain a solution space or restrict possible attribute values.",
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
     "Example" -> "A description that illustrates some entity by a typical instance.",
     "Expectation" -> "A required output of a test in order to be counted as passed.",
-    "Failure" -> "A description of an error that prevents the normal execution of a system.",
+    "Failure" -> "An error that prevents the normal execution of a system.",
     "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
-    "Heading" -> "A title, subtitle, or topic. Use one or more leading # to indicate level 1 to 6.",
+    "Title" -> "A general or descriptive heading. One or more leading # indicate heading level.",
     "Input" -> "Data consumed by an entity, ",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
     "Output" -> "Data produced by an entity, e.g. a function or a test.",
@@ -94,11 +102,13 @@ object meta:
     "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity.",
     "helps" -> "Positive influence. A goal supports the fulfillment of another goal.",
     "hurts" -> "Negative influence. A goal hinders another goal.",
+    "impacts" -> "Some unspecific influence. A new feature impacts an existing component.",
     "implements" -> "Realisation of an entity, e.g. a component implements a feature.",
-    "precedes" -> "Temporal ordering. A feature precedes (is implemented before) another feature.",
-    "relatesTo" -> "Some general relation to another entity.",
+    "interacts" -> "A communication relation. A user interacts with an interface.",
+    "precedes" -> "Temporal ordering. A feature precedes (should be implemented before) another feature.",
+    "relates" -> "Some general, unspecific relation to another entity.",
     "requires" -> "A requested combination. One function requires that a another function is also implemented.",
-    "supertypeOf" -> "Super-typing, generalization, includes another more specific entity. One data entity is a supertype of another.",
+    "inherits" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
     "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
   ).sorted
 

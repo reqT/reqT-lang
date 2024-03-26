@@ -111,7 +111,8 @@ transparent trait ModelMembers:
 
         case a: Attr[?] => 
           if a.at == Text then sb.append(s"$indent${a.value}\n") 
-          else if a.at == Heading && a.value.toString.trim.startsWith("#") then sb.append(s"$indent${a.value}\n")
+          else if a.at == Title && a.value.toString.trim.startsWith("#") then 
+            sb.append(s"$indent${a.value.toString.trim}\n")
           else sb.append(s"$indent* ${a.at} ${a.value}\n")
         
         case e: Ent => 

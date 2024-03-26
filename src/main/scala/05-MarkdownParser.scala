@@ -75,7 +75,7 @@ object MarkdownParser:
           val value = if j > i then takeLines(endOfTextBlock).mkString(s"$line\n","\n","") else line
           elems.append(sa.apply(value.removeLeadingBullet))
 
-        if isFirstHeading then appendUntilEnd(Heading)
+        if isFirstHeading then appendUntilEnd(Title)
         else if !isFirstBulletElem then 
           debugMsg(s"""isFirstBulletElem==false first=="$first"""")
           appendUntilEnd(Text)
