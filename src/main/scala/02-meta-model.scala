@@ -152,12 +152,12 @@ object meta:
   val nodeTypes: Map[String, NodeType] = entTypes ++ strAttrTypes ++ intAttrTypes
   
   extension (s: String)
-    inline def isEntType: Boolean     = entTypes.isDefinedAt(s)
-    inline def isStrAttrType: Boolean = strAttrTypes.isDefinedAt(s)
-    inline def isIntAttrType: Boolean = intAttrTypes.isDefinedAt(s)
-    inline def isNodeType: Boolean    = nodeTypes.isDefinedAt(s)
-    inline def isRelType: Boolean     = relTypes.isDefinedAt(s)
-    inline def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
+    def isEntType: Boolean     = entTypes.isDefinedAt(s)
+    def isStrAttrType: Boolean = strAttrTypes.isDefinedAt(s)
+    def isIntAttrType: Boolean = intAttrTypes.isDefinedAt(s)
+    def isNodeType: Boolean    = nodeTypes.isDefinedAt(s)
+    def isRelType: Boolean     = relTypes.isDefinedAt(s)
+    def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
 
 
   def generate: String = 
