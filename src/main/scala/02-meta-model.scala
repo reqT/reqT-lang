@@ -21,7 +21,7 @@ object meta:
 
     GeneralReq -> "Epic" -> "A coherent collection of features, stories, use cases or issues. A large part of a release.",
     // https://www.atlassian.com/agile/project-management/epics-stories-themes
-    GeneralReq -> "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
+    GeneralReq -> "Feature" -> "A releasable characteristic of a product. A high-level, coherent bundle of requirements.",
     GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property.",
     GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
     GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
