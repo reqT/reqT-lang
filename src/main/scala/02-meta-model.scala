@@ -133,6 +133,10 @@ object meta:
 
   extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
 
+  extension (concept: Any) def findEntGroup: Option[EntGroup] = 
+    val normalized = concept.toString.toLowerCase.capitalize
+    entityConceptGroups.find((gn, d) => gn._2 == normalized).map((gn, d) => gn._1)
+
   val entityNames: ArraySeq[String]   = entityConcepts.names
   val strAttrNames: ArraySeq[String]  = strAttrConcepts.names
   val intAttrNames: ArraySeq[String]  = intAttrConcepts.names
