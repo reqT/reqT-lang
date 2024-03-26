@@ -115,7 +115,7 @@ object meta:
   case class Concept(name: String, description: String, abstractType: String)
 
   val concepts: ArraySeq[Concept] = 
-    (entityConceptGroups.map((gn, d) => Concept(gn._2, d, s"EntityType,${gn._1}")) ++
+    (entityConceptGroups.map((gn, d) => Concept(gn._2, d, s"EntityType:${gn._1}")) ++
     strAttrConcepts.map((n, d) => Concept(n,  d, "StrAttrType")) ++
     intAttrConcepts.map((n, d) => Concept(n,  d, "IntAttrType")) ++
     relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))).sortBy(_.name)
