@@ -31,7 +31,7 @@ object meta:
 
     DataReq -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // OR Data OR DataEntity OR DataType?
     DataReq -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
-    DataReq -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a in a class",  // Or DataField or DataAttribute or DataProperty
+    DataReq -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a class",  // Or DataField or DataAttribute or DataProperty
     DataReq -> "Relationship" -> "A specific way that data types are connected.", // Or Association or Relation or DataRelation
 
     DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
