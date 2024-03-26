@@ -24,15 +24,15 @@ object meta:
     GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
     GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
     GeneralReq -> "Issue" -> "Something needed to be fixed or work to do.",
+    GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
     GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
     GeneralReq -> "Test" -> "A procedure to check if requirements are met.",  // Or TestCase ?
-    GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
 
 
-    DataReq -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // OR Data OR DataEntity OR DataType?
+    DataReq -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // or Data or DataEntity or DataType?
     DataReq -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
-    DataReq -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a class",  // Or DataField or DataAttribute or DataProperty
-    DataReq -> "Relationship" -> "A specific way that data types are connected.", // Or Association or Relation or DataRelation
+    DataReq -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a class",  // or DataField or DataAttribute or DataProperty
+    DataReq -> "Relationship" -> "A specific way that data types are connected.", // or Association or Relation or DataRelation
 
     DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
     // https://softwareengineering.stackexchange.com/questions/178927/is-there-a-difference-between-a-component-and-a-module
