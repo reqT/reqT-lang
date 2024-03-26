@@ -31,7 +31,11 @@ sealed trait Attr[T] extends Node:
   def value: T
 
 final case class StrAttr(at: StrAttrType, value: String) extends Attr[String]
-final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int]
+case object StrAttr extends meta.ConceptGroup
+
+final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int], meta.ConceptGroup
+case object IntAttr extends meta.ConceptGroup
+
 final case class Undefined[T](at: AttrType[T]) extends Attr[T]:
   def value: T = throw new java.util.NoSuchElementException
 

@@ -3,62 +3,68 @@ package reqt
 import scala.collection.immutable.ArraySeq
 
 object meta:
-  enum EntGroup:
-    case ReqContext, GeneralReq, DataReq, FunctionalReq, QualityReq, DesignReq, VariabilityReq
+  trait ConceptGroup
+
+  enum EntGroup extends ConceptGroup:
+    case ContextEnt, GeneralEnt, DataEnt, FunctionalEnt, QualityEnt, DesignEnt, VariabilityEnt
   import EntGroup.* 
 
+  enum RelGroup extends ConceptGroup:
+    case GeneralRel, GoalRel, VariabilityRel, ClassRel, DependencyRel, ContextRel 
+  import RelGroup.* 
+
   val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
-    ReqContext -> "Domain" -> "The application area of a product with its surrounding entities, e.g. users or other systems.",
-    ReqContext -> "Product" -> "An artifact offered to users or customers, e.g. an app, service or  embedded system.",
-    ReqContext -> "Release" -> "A specific version of a product offered to end users at a specific time.",
-    ReqContext -> "Resource" -> "A capability of, or support for product development, e.g. a development team or some testing equipment.",
-    ReqContext -> "Risk" -> "Something negative that may happen.",
-    ReqContext -> "Section" -> "A part of a requirements document.",
-    ReqContext -> "Stakeholder" -> "A role, person or legal entity with a stake in the development or operation of a product.",
-    ReqContext -> "System" -> "A set of software or hardware components interacting with users or systems.",
-    ReqContext -> "Term" -> "A word or group of words having a particular meaning in a particular domain.",
-    ReqContext -> "User" -> "A human interacting with a system.",
+    ContextEnt -> "Domain" -> "The application area of a product with its surrounding entities, e.g. users or other systems.",
+    ContextEnt -> "Product" -> "An artifact offered to users or customers, e.g. an app, service or  embedded system.",
+    ContextEnt -> "Release" -> "A specific version of a product offered to end users at a specific time.",
+    ContextEnt -> "Resource" -> "A capability of, or support for product development, e.g. a development team or some testing equipment.",
+    ContextEnt -> "Risk" -> "Something negative that may happen.",
+    ContextEnt -> "Section" -> "A part of a requirements document.",
+    ContextEnt -> "Stakeholder" -> "A role, person or legal entity with a stake in the development or operation of a product.",
+    ContextEnt -> "System" -> "A set of software or hardware components interacting with users or systems.",
+    ContextEnt -> "Term" -> "A word or group of words having a particular meaning in a particular domain.",
+    ContextEnt -> "User" -> "A human interacting with a system.",
 
-    GeneralReq -> "Epic" -> "A coherent collection of features, stories, use cases or issues. A large part of a release.",
+    GeneralEnt -> "Epic" -> "A coherent collection of features, stories, use cases or issues. A large part of a release.",
     // https://www.atlassian.com/agile/project-management/epics-stories-themes
-    GeneralReq -> "Feature" -> "A releasable characteristic of a product. A high-level, coherent bundle of requirements.",
-    GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property.",
-    GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
-    GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
-    GeneralReq -> "Interface" -> "A defined way to interact with a system.",
-    GeneralReq -> "Issue" -> "Something needed to be fixed or work to do.",
-    GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
-    GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
-    GeneralReq -> "Test" -> "A procedure to check if requirements are met.",  // Or TestCase ?
+    GeneralEnt -> "Feature" -> "A releasable characteristic of a product. A high-level, coherent bundle of requirements.",
+    GeneralEnt -> "Goal" -> "An intention of a stakeholder or desired system property.",
+    GeneralEnt -> "Idea" -> "A concept or thought (potentially interesting).",
+    GeneralEnt -> "Image" -> "A visual representation, picture or diagram.",
+    GeneralEnt -> "Interface" -> "A defined way to interact with a system.",
+    GeneralEnt -> "Issue" -> "Something needed to be fixed or work to do.",
+    GeneralEnt -> "Label" -> "A descriptive tag used to classify something.",
+    GeneralEnt -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
+    GeneralEnt -> "Test" -> "A procedure to check if requirements are met.",  // Or TestCase ?
 
 
-    DataReq -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // or Data or DataEntity or DataType?
-    DataReq -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
-    DataReq -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a class",  // or DataField or DataAttribute or DataProperty
-    DataReq -> "Relationship" -> "A specific way that data types are connected.", // or Association or Relation or DataRelation
+    DataEnt -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // or Data or DataEntity or DataType?
+    DataEnt -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
+    DataEnt -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a class",  // or DataField or DataAttribute or DataProperty
+    DataEnt -> "Relationship" -> "A specific way that data types are connected.", // or Association or Relation or DataRelation
 
-    DesignReq -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
+    DesignEnt -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
     // https://softwareengineering.stackexchange.com/questions/178927/is-there-a-difference-between-a-component-and-a-module
-    DesignReq -> "Design" -> "A specific realization. A description of an implementation.",
-    DesignReq -> "Module" -> "A collection of coherent functions and interfaces.",
-    DesignReq -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
-    DesignReq -> "Screen" -> "A design of (a part of) a user interface.",
+    DesignEnt -> "Design" -> "A specific realization. A description of an implementation.",
+    DesignEnt -> "Module" -> "A collection of coherent functions and interfaces.",
+    DesignEnt -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
+    DesignEnt -> "Screen" -> "A design of (a part of) a user interface.",
 
-    FunctionalReq -> "Event" -> "Something that can happen in the domain or in the system.",
-    FunctionalReq -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
-    FunctionalReq -> "State" -> "A mode or condition of something in the domain or in the system. A configuration of data.",
-    FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system.",
-    FunctionalReq -> "UseCase" -> "A goal-fulfilling interaction between users and a product in a specific usage context.",
-    FunctionalReq -> "Story" -> "A description of what a user persona wants in order to achieve a goal. Short for user story.",
+    FunctionalEnt -> "Event" -> "Something that can happen in the domain or in the system.",
+    FunctionalEnt -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
+    FunctionalEnt -> "State" -> "A mode or condition of something in the domain or in the system. A configuration of data.",
+    FunctionalEnt -> "Task" -> "A piece of work by users, potentially supported by a system.",
+    FunctionalEnt -> "UseCase" -> "A goal-fulfilling interaction between users and a product in a specific usage context.",
+    FunctionalEnt -> "Story" -> "A description of what a user persona wants in order to achieve a goal. Short for user story.",
 
-    QualityReq -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level.",
-    QualityReq -> "Breakpoint" -> "A point of change, representing an important shift in the relation between quality and benefit.",
-    QualityReq -> "Quality" -> "An aspect of system quality, distinguishing characteristic or degree of goodness.",
-    QualityReq -> "Target" -> "A desired quality level or quality goal.",
+    QualityEnt -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level.",
+    QualityEnt -> "Breakpoint" -> "A point of change, representing an important shift in the relation between quality and benefit.",
+    QualityEnt -> "Quality" -> "An aspect of system quality, distinguishing characteristic or degree of goodness.",
+    QualityEnt -> "Target" -> "A desired quality level or quality goal.",
 
-    VariabilityReq -> "Configuration" -> "A specific combination of variants.",
-    VariabilityReq -> "Variant" -> "An object or system property that can be chosen from a set of options.",
-    VariabilityReq -> "VariationPoint" -> "An opportunity of choice among variants.",
+    VariabilityEnt -> "Configuration" -> "A specific combination of variants.",
+    VariabilityEnt -> "Variant" -> "An object or system property that can be chosen from a set of options.",
+    VariabilityEnt -> "VariationPoint" -> "An opportunity of choice among variants.",
   )
 
   val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
@@ -95,38 +101,47 @@ object meta:
     "Value" -> "Some general integer value.",
   ).sorted
 
-  val relationConcepts = ArraySeq[(String,String)](
-    "binds" -> "Ties a value to an option. A configuration binds a variation point.",
-    "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity.",
-    "excludes" -> "Prevents an entity combination. One feature excludes another in a release.",
-    "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity.",
-    "helps" -> "Positive influence. A goal supports the fulfillment of another goal.",
-    "hurts" -> "Negative influence. A goal hinders another goal.",
-    "impacts" -> "Some unspecific influence. A new feature impacts an existing component.",
-    "implements" -> "Realisation of an entity, e.g. a component implements a feature.",
-    "interacts" -> "A communication relation. A user interacts with an interface.",
-    "precedes" -> "Temporal ordering. A feature precedes (should be implemented before) another feature.",
-    "relates" -> "Some general, unspecific relation to another entity.",
-    "requires" -> "A requested combination. One function requires that a another function is also implemented.",
-    "inherits" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
-    "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
-  ).sorted
+  val relationConceptGroups = ArraySeq[((RelGroup,String),String)](
+    ClassRel -> "inherits" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
+    ContextRel -> "interacts" -> "A communication relation. A user interacts with an interface.",
+    DependencyRel -> "excludes" -> "Prevents an entity combination. One feature excludes another in a release.",
+    DependencyRel -> "implements" -> "Realisation of an entity, e.g. a component implements a feature.",
+    DependencyRel -> "precedes" -> "Temporal ordering. A feature precedes (should be implemented before) another feature.",
+    DependencyRel -> "requires" -> "A requested combination. One function requires that a another function is also implemented.",
+    DependencyRel -> "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
+    GeneralRel -> "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity.",
+    GeneralRel -> "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity.",
+    GeneralRel -> "impacts" -> "Some unspecific influence. A new feature impacts an existing component.",
+    GeneralRel -> "relates" -> "Some general, unspecific relation to another entity.",
+    GoalRel -> "helps" -> "Positive influence. A goal supports the fulfillment of another goal.",
+    GoalRel -> "hurts" -> "Negative influence. A goal hinders another goal.",
+    VariabilityRel -> "binds" -> "Ties a value to an option. A configuration binds a variation point.",
+  )
 
-  case class Concept(name: String, description: String, abstractType: String)
+  val relationConcepts: ArraySeq[(String,String)] = relationConceptGroups.map((gn, d) => gn._2 -> d).sorted
 
-  val concepts: ArraySeq[Concept] = 
-    (entityConceptGroups.map((gn, d) => Concept(gn._2, d, s"EntityType:${gn._1}")) ++
-    strAttrConcepts.map((n, d) => Concept(n,  d, "StrAttrType")) ++
-    intAttrConcepts.map((n, d) => Concept(n,  d, "IntAttrType")) ++
-    relationConcepts.map((n, d) => Concept(n,  d, "RelationType"))).sortBy(_.name)
+  case class Concept(name: String, descr: String, tpe: String, group: String)
+
+  val concepts: ArraySeq[Concept] = (
+    entityConceptGroups.map{case ((g,n), d) => Concept(n, d, "EntType", g.toString)} ++
+    strAttrConcepts.map((n, d) => Concept(n,  d, "Attr","StrAttr")) ++
+    intAttrConcepts.map((n, d) => Concept(n,  d, "Attr","IntAttr")) ++
+    relationConceptGroups.map{case ((g,n), d) => Concept(n,  d, "RelType", g.toString)}
+  ).sortBy(_.name)
 
   val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
+
+  val groupMap: Map[String, ConceptGroup] = 
+    (entityConceptGroups.map{case ((g,n),d) => (n, g)} 
+      ++ relationConceptGroups.map{case ((g,n),d) => (n.capitalize, g)} 
+      ++ strAttrConcepts.map{case (n, d) => (n,StrAttr) }
+      ++ intAttrConcepts.map{case (n, d) => (n, IntAttr) }).toMap
 
   def describe(str: String): (String, Option[String]) = 
     val lower = str.toLowerCase
     val opt: Option[Concept] = conceptMap.get(lower)
     (if opt.isDefined then opt else conceptMap.get(lower.capitalize)) match
-      case Some(Concept(name, descr, abstractType)) => name -> Some(s"$descr [$abstractType]")
+      case Some(Concept(name, descr, tpe, group)) => name -> Some(s"$descr [$tpe:$group]")
       case None => str -> None
 
   def similarConcepts(c: String, n: Int = 5): Seq[String] = conceptNames
@@ -136,21 +151,19 @@ object meta:
       .take(n)
       .map(_._2)
 
-  extension (concept: Any) def help: String = 
-    val (c, dOpt) = describe(concept.toString)
-    dOpt.getOrElse(s"Unknown concept: $concept. Did you mean: ${similarConcepts(c).mkString(", ")}")
+  extension (concept: Any) 
+    def help: String = 
+      val (c, dOpt) = describe(concept.toString)
+      dOpt.getOrElse(s"Unknown concept: $concept. Did you mean: ${similarConcepts(c).mkString(", ")}")
     
+    def findConceptGroup: Option[ConceptGroup] = 
+      val normalized = concept.toString.toLowerCase.capitalize
+      groupMap.get(normalized)
 
-  extension (concepts: ArraySeq[(String, String)]) def names: ArraySeq[String] = concepts.map(_._1)
-
-  extension (concept: Any) def findEntGroup: Option[EntGroup] = 
-    val normalized = concept.toString.toLowerCase.capitalize
-    entityConceptGroups.find((gn, d) => gn._2 == normalized).map((gn, d) => gn._1)
-
-  val entityNames: ArraySeq[String]   = entityConcepts.names
-  val strAttrNames: ArraySeq[String]  = strAttrConcepts.names
-  val intAttrNames: ArraySeq[String]  = intAttrConcepts.names
-  val relationNames: ArraySeq[String] = relationConcepts.names
+  val entityNames: ArraySeq[String]   = entityConcepts.map(_._1)
+  val strAttrNames: ArraySeq[String]  = strAttrConcepts.map(_._1)
+  val intAttrNames: ArraySeq[String]  = intAttrConcepts.map(_._1)
+  val relationNames: ArraySeq[String] = relationConcepts.map(_._1)
   val conceptNames: ArraySeq[String]  = concepts.map(_.name)
 
   val isConceptName: Set[String] = conceptNames.toSet
@@ -165,14 +178,15 @@ object meta:
     def isEntType: Boolean     = entTypes.isDefinedAt(s)
     def isStrAttrType: Boolean = strAttrTypes.isDefinedAt(s)
     def isIntAttrType: Boolean = intAttrTypes.isDefinedAt(s)
+    def isAttrType: Boolean = isStrAttrType || isIntAttrType
     def isNodeType: Boolean    = nodeTypes.isDefinedAt(s)
     def isRelType: Boolean     = relTypes.isDefinedAt(s)
     def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
 
-  def matrix: Seq[Seq[String]] = for Concept(n, d, t) <- concepts yield Seq(n, t, d) 
+  def matrix: Seq[Seq[String]] = for Concept(n, d, t, g) <- concepts yield Seq(n, t, g, d) 
 
   def csv(delim: String = ";"): String = 
-    s"concept${delim}type${delim}description\n" + matrix.map(_.mkString(delim)).mkString("\n")
+    s"concept${delim}type${delim}group${delim}description\n" + matrix.map(_.mkString(delim)).mkString("\n")
 
   def generate: String = 
     def entExtensions(name: String): String = 
@@ -212,7 +226,11 @@ object meta:
         |  def value: T
         |
         |final case class StrAttr(at: StrAttrType, value: String) extends Attr[String]
-        |final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int]
+        |case object StrAttr extends meta.ConceptGroup
+        |
+        |final case class IntAttr(at: IntAttrType, value: Int) extends Attr[Int], meta.ConceptGroup
+        |case object IntAttr extends meta.ConceptGroup
+        |
         |final case class Undefined[T](at: AttrType[T]) extends Attr[T]:
         |  def value: T = throw new java.util.NoSuchElementException
         |
