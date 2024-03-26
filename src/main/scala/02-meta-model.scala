@@ -19,6 +19,8 @@ object meta:
     ReqContext -> "Term" -> "A word or group of words having a particular meaning in a particular domain.",
     ReqContext -> "User" -> "A human interacting with a system.",
 
+    GeneralReq -> "Epic" -> "A coherent collection of features, stories, use cases or issues. A large part of a release.",
+    // https://www.atlassian.com/agile/project-management/epics-stories-themes
     GeneralReq -> "Feature" -> "A releasable characteristic of a product. A (high-level, coherent) bundle of requirements.",
     GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property.",
     GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
@@ -41,8 +43,6 @@ object meta:
     DesignReq -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
     DesignReq -> "Screen" -> "A design of (a part of) a user interface.",
 
-    FunctionalReq -> "Epic" -> "A coherent collection of stories, use cases or issues. A large part of a release.",
-    // https://www.atlassian.com/agile/project-management/epics-stories-themes
     FunctionalReq -> "Event" -> "Something that can happen in the domain or in the system.",
     FunctionalReq -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
     FunctionalReq -> "Interface" -> "A defined way to interact with a system.",
