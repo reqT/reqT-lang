@@ -25,6 +25,7 @@ object meta:
     GeneralReq -> "Goal" -> "An intention of a stakeholder or desired system property.",
     GeneralReq -> "Idea" -> "A concept or thought (potentially interesting).",
     GeneralReq -> "Image" -> "A visual representation, picture or diagram.",
+    GeneralReq -> "Interface" -> "A defined way to interact with a system.",
     GeneralReq -> "Issue" -> "Something needed to be fixed or work to do.",
     GeneralReq -> "Label" -> "A descriptive tag used to classify something.",
     GeneralReq -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
@@ -45,7 +46,6 @@ object meta:
 
     FunctionalReq -> "Event" -> "Something that can happen in the domain or in the system.",
     FunctionalReq -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
-    FunctionalReq -> "Interface" -> "A defined way to interact with a system.",
     FunctionalReq -> "State" -> "A mode or condition of something in the domain or in the system. A configuration of data.",
     FunctionalReq -> "Task" -> "A piece of work by users, potentially supported by a system.",
     FunctionalReq -> "UseCase" -> "A goal-fulfilling interaction between users and a product in a specific usage context.",
