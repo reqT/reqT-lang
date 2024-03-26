@@ -15,4 +15,6 @@ export MarkdownParser.toModel // string extension to parse markdown Model
 
 export StringExtensions.* // general extensions only depending on Scala stdlib
 
+export meta.{help, describe}
+
 
