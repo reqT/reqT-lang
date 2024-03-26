@@ -18,6 +18,55 @@ You can manage your requirements with the reqT-lang library, the Scala compiler 
 
 ### Use reqT-lang with scala-cli
 
+* Install scala-cli from https://scala-cli.virtuslab.org/install
+
+* Create a file `hello-reqt.scala` with this code:
+```scala
+//> using scala 3.4
+//> using dep "reqt-lang:reqt-lang:4.0.0-RC2,url=https://github.com/reqT/reqT-lang/releases/download/4.0.0-RC2/reqt-lang_3-4.0.0-RC2.jar"
+
+import reqt.*
+
+extension (m: Model) 
+  def trim =
+    val empty = Text("")
+    val elems: Vector[Elem] = 
+      m.elems
+        .reverse.dropWhile(_ == empty)
+        .reverse.dropWhile(_ == empty)
+    Model(elems)
+
+@main def hello = 
+  println("hello reqt")
+  val m: Model = m"""
+    * Feature hello has
+      * Spec an informal greeting
+  """.trim
+  println(s"\nm.toString:\n$m")
+  println(s"\nm.show:\n${m.show}")
+  println(s"\nm.toMarkdown:\n${m.toMarkdown}")
+
+```
+
+* run with `scala-cli run hello-reqt.scala` and you should get this output:
+```
+hello reqt
+
+m.toString:
+Model(Rel(Ent(Feature,hello),Has,Model(StrAttr(Spec,an informal greeting))))
+
+m.show:
+Model(
+  Feature("hello").has(
+    Spec("an informal greeting"),
+  ),
+)
+
+m.toMarkdown:
+* Feature hello has Spec an informal greeting
+
+```
+
 ### Use reqT-lang with sbt
 
 
