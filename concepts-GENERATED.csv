@@ -53,10 +53,10 @@ Section	EntType	ContextEnt	A part of a requirements document.
 Spec	Attr	StrAttr	A definition of an entity. Short for specification
 Stakeholder	EntType	ContextEnt	A role, person or legal entity with a stake in the development or operation of a product.
 State	EntType	FunctionalEnt	A mode or condition of something in the domain or in the system. A configuration of data.
-Story	EntType	FunctionalEnt	A description of what a user persona wants in order to achieve a goal. Short for user story.
+Story	EntType	FunctionalEnt	A description of what a user wants in order to achieve a goal. Short for user story.
 System	EntType	ContextEnt	A set of software or hardware components interacting with users or systems.
 Target	EntType	QualityEnt	A desired quality level or quality goal.
-Task	EntType	FunctionalEnt	A piece of work by users, potentially supported by a system.
+Task	EntType	FunctionalEnt	A piece of work by users, potentially supported by a system. Short for user task
 Term	EntType	ContextEnt	A word or group of words having a particular meaning in a particular domain.
 Test	EntType	GeneralEnt	A procedure to check if requirements are met.
 Text	Attr	StrAttr	An paragraph or general description.

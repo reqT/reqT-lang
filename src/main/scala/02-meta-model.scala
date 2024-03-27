@@ -53,9 +53,9 @@ object meta:
     FunctionalEnt -> "Event" -> "Something that can happen in the domain or in the system.",
     FunctionalEnt -> "Function" -> "A description of how input is mapped to output. A capability of a system to do something specific.",
     FunctionalEnt -> "State" -> "A mode or condition of something in the domain or in the system. A configuration of data.",
-    FunctionalEnt -> "Task" -> "A piece of work by users, potentially supported by a system.",
+    FunctionalEnt -> "Task" -> "A piece of work by users, potentially supported by a system. Short for user task",
     FunctionalEnt -> "UseCase" -> "A goal-fulfilling interaction between users and a product in a specific usage context.",
-    FunctionalEnt -> "Story" -> "A description of what a user persona wants in order to achieve a goal. Short for user story.",
+    FunctionalEnt -> "Story" -> "A description of what a user wants in order to achieve a goal. Short for user story.",
 
     QualityEnt -> "Barrier" -> "Something that makes it difficult to achieve a goal or a higher quality level.",
     QualityEnt -> "Breakpoint" -> "A point of change, representing an important shift in the relation between quality and benefit.",
