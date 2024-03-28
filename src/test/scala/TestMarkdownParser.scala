@@ -66,12 +66,21 @@ class TestMarkdownParser extends munit.FunSuite:
           Req("y"),Req("z")
         )
 
-  test("Bad indent       "):
+  test("Colon-insensitive"):
+    assert:
+      "* Class: user: has: Spec: hej:".toModel ==
+        Model(
+          Class("user").has(
+            Spec("hej:"),
+          ),
+        )
+
+  test("Accept bad indent"):
     assert:
       s"""|
           |* Feature x
           |  * Prio 1
-          |   * Req y
+          |         * Req y
           |* Req z
           |
           |""".stripMargin.toModel == 

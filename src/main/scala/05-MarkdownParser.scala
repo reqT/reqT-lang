@@ -8,7 +8,9 @@ object MarkdownParser:
 
   extension (s: String)
     def toModel = MarkdownParser.parseModel(s)
-  
+      def removeLeadingBullet = s.replaceFirst("\\*\\s+","")
+      def stripColonSuffix = s.stripSuffix(":")
+
   extension (sc: StringContext)
     def m(args: Any*): Model = 
       val strings: Iterator[String] = sc.parts.iterator
@@ -45,9 +47,6 @@ object MarkdownParser:
         val isFirstHeading = first.startsWith("#") 
         val isFirstBulletElem = first == "*" && words.length > 1
         
-        extension (s: String)
-          def removeLeadingBullet = s.replaceFirst("\\*\\s+","")
-
         def endOfTextBlock: Int =
           var more = i
           while more + 1 < lines.length 
@@ -81,10 +80,10 @@ object MarkdownParser:
           appendUntilEnd(Text)
         else 
           debugMsg("""we know the line starts with "*" perhaps after some indentation""")
-          val secondWord = words(1)
+          val secondWordColonStripped = words(1).stripColonSuffix
           val restOfLine = line.removeLeadingBullet.skipFirstToken
 
-          secondWord match
+          secondWordColonStripped match
           case w if w.isStrAttrType => 
             debugMsg("case w if w.isStrAttrType => MATCHED")
             val j = endOfTextBlock // check if more lines with just indented text
@@ -115,7 +114,7 @@ object MarkdownParser:
             debugMsg("case w if w.isEntType => MATCHED")
             val ent: EntType = entTypes(w) 
             val thirdOpt: Option[String] = words.lift(2)
-            val r: Int = words.indexWhere(s => relTypes.isDefinedAt(s))
+            val r: Int = words.indexWhere(s => relTypes.isDefinedAt(s.stripColonSuffix))
 
             if r == -1 then 
               debugMsg(s"  there is no RelType given on this line")
@@ -164,9 +163,11 @@ object MarkdownParser:
               else elems.append(ent.apply(id))
             else // this is a relation
               debugMsg(s"""   parsing relation""")
-              val rt = relTypes(words(r))
+              val rt = relTypes(words(r).stripColonSuffix)
               val idMaybeEmpty = words.slice(2, r).mkString(" ")  // 2 as we want to skip leading *
-              val id = if idMaybeEmpty.isEmpty then Ent.emptyId else idMaybeEmpty
+              val id = 
+                if idMaybeEmpty.isEmpty then Ent.emptyId 
+                else idMaybeEmpty.stripColonSuffix // remove trailing colon in id because it is confusing 
               val remainingWords = words.slice(r + 1, words.length)
               debugMsg(s"""      remainingWords.mkString(" ")=="${remainingWords.mkString(" ")}" """)
               val extraElemsOnThisLine: List[Elem] = 
