@@ -101,8 +101,14 @@ transparent trait ModelMembers:
 
   def mergeAdjacentText = Model(elems.mergeAdjacentStrAttr(Text, "\n"))
 
-  def toMarkdown: String = // recurse into model and un-parse as markdown
+  def toMarkdown: String =
+    // TODO turn tweaks below into default args or context using MarkdownSettings
     val MaxLen = 72  // Limit for creating one-liners in pretty markdown; TODO: should this be hardcoded???
+    val isDetectOneLiner = false
+    val isInsertColon = true
+
+    val colonOpt = if isInsertColon then ":" else ""
+
     def loop(level: Int, m: Model, sb: StringBuilder): Unit = 
       val indent = "  " * level 
       for e <- m.elems do e match
@@ -112,25 +118,29 @@ transparent trait ModelMembers:
         case a: Attr[?] => 
           if a.at == Text then sb.append(s"$indent${a.value}\n") 
           else if a.at == Title && a.value.toString.trim.startsWith("#") then 
-            sb.append(s"$indent${a.value.toString.trim}\n")
-          else sb.append(s"$indent* ${a.at} ${a.value}\n")
+            sb.append(s"$indent${a.value.toString.trim}\n")  //never colon after title
+          else sb.append(s"$indent* ${a.at}$colonOpt ${a.value}\n")
         
         case e: Ent => 
-          sb.append(s"$indent* ${e.et} ${e.id}\n")
+          sb.append(s"$indent* ${e.et}$colonOpt ${e.id}\n")
         
         case Rel(e, rt, Model(Vector(e2: Ent))) 
-          if !e.id.contains('\n') && e.id.length + indent.length < MaxLen => // a one-liner
-            sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize} ${e2.et} ${e2.id}\n")
+          if isDetectOneLiner && !e.id.contains('\n') && e.id.length + indent.length < MaxLen 
+          => // a one-liner
+            sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${e2.et}$colonOpt ${e2.id}\n")
         
-        case Rel(e, rt, Model(Vector(u: Undefined[?]))) => // a one-liner
-          sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize} ${u.at}\n")
+        case Rel(e, rt, Model(Vector(u: Undefined[?]))) 
+          if isDetectOneLiner 
+          => // a one-liner
+          sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${u.at}\n")
         
         case Rel(e, rt, Model(Vector(a: Attr[?]))) 
-          if !a.value.toString.contains('\n') && a.value.toString.length + indent.length < MaxLen => // a one-liner
-            sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize} ${a.at} ${a.value}\n")
+          if isDetectOneLiner && !a.value.toString.contains('\n') && a.value.toString.length + indent.length < MaxLen 
+          => // a one-liner
+            sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${a.at}$colonOpt ${a.value}\n")
         
         case Rel(e, rt, sub) => // put sub on indented new line 
-          sb.append(s"$indent* ${e.et} ${e.id} ${rt.toString.deCapitalize}\n")
+          sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize}\n")
           if sub.elems.length > 0 then loop(level + 1, sub, sb)
     end loop
 
