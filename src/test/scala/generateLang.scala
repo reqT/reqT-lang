@@ -68,6 +68,7 @@ object showDeprecations:
       ("Deleted", "Entity", "Service")     -> "use Product, Feature or Function",
       ("Deleted", "Entity", "Ticket")      -> "use Issue",
       ("Deleted", "Entity", "WorkPackage") -> "use Issue, Epic or Section",
+      ("Added", "Entity", "Field") -> "more specific alternative to member", 
       ("Added", "Entity", "Image") -> "was attribute, use with attribute Location", 
       ("Added", "Entity", "Prototype") -> "instead of Mockup", 
       ("Deleted", "Attribute", "Code") -> "use Text with markdown code fences",
