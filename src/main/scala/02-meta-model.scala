@@ -40,7 +40,8 @@ object meta:
 
     DataEnt -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // or Data or DataEntity or DataType?
     DataEnt -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
-    DataEnt -> "Member" -> "A data entity that is part of another entity, eg. a field or method in a class",  // or DataField or DataAttribute or DataProperty
+    DataEnt -> "Field" -> "A data attribute that is part of another entity, such as a class",  // or DataField or DataAttribute or DataProperty
+    DataEnt -> "Member" -> "A data entity that is part of another entity. More specific alternatives: field, function.",  // or DataField or DataAttribute or DataProperty
     DataEnt -> "Relationship" -> "A specific way that data types are connected.", // or Association or Relation or DataRelation
 
     DesignEnt -> "Component" -> "A composable part of a system architecture. A reusable, interchangeable system unit or functionality.",
@@ -163,6 +164,7 @@ object meta:
   val entityNames: ArraySeq[String]   = entityConcepts.map(_._1)
   val strAttrNames: ArraySeq[String]  = strAttrConcepts.map(_._1)
   val intAttrNames: ArraySeq[String]  = intAttrConcepts.map(_._1)
+  val attributeNames: ArraySeq[String]     = (strAttrNames ++ intAttrNames).sorted
   val relationNames: ArraySeq[String] = relationConcepts.map(_._1)
   val conceptNames: ArraySeq[String]  = concepts.map(_.name)
 
@@ -181,7 +183,7 @@ object meta:
     def isAttrType: Boolean = isStrAttrType || isIntAttrType
     def isNodeType: Boolean    = nodeTypes.isDefinedAt(s)
     def isRelType: Boolean     = relTypes.isDefinedAt(s)
-    def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => !(ch.isSpaceChar || ch == '\t')))
+    def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => ch.isLetter)) //!(ch.isSpaceChar || ch == '\t')))
 
   def matrix: Seq[Seq[String]] = for Concept(n, d, t, g) <- concepts yield Seq(n, t, g, d) 
 

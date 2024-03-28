@@ -93,11 +93,11 @@ MultiLineRel ::= Ent RelType SubModel
 SubModel ::= (Indent(n + 1) ElemStart Elem)* Outdent(n)
 
 EntityType ::= 'Barrier' | 'Breakpoint' | 'Class' | 'Component' | 'Configuration' | 'Data' | 'Design' | 
-'Domain' | 'Epic' | 'Event' | 'Feature' | 'Function' | 'Goal' | 'Idea' | 'Image' | 'Interface' | 
-'Issue' | 'Label' | 'Member' | 'Module' | 'Product' | 'Prototype' | 'Quality' | 'Relationship' 
-| 'Release' | 'Req' | 'Resource' | 'Risk' | 'Screen' | 'Section' | 'Stakeholder' | 'State' | 
-'Story' | 'System' | 'Target' | 'Task' | 'Term' | 'Test' | 'UseCase' | 'User' | 'Variant' | 
-'VariationPoint'
+'Domain' | 'Epic' | 'Event' | 'Feature' | 'Field' | 'Function' | 'Goal' | 'Idea' | 'Image' | 
+'Interface' | 'Issue' | 'Label' | 'Member' | 'Module' | 'Product' | 'Prototype' | 'Quality' | 
+'Relationship' | 'Release' | 'Req' | 'Resource' | 'Risk' | 'Screen' | 'Section' | 
+'Stakeholder' | 'State' | 'Story' | 'System' | 'Target' | 'Task' | 'Term' | 'Test' | 'UseCase' | 
+'User' | 'Variant' | 'VariationPoint'
 
 IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Order' | 'Prio' | 
 'Probability' | 'Profit' | 'Value'

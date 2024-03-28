@@ -20,6 +20,7 @@ Example	Attr	StrAttr	A description that illustrates some entity by a typical ins
 Expectation	Attr	StrAttr	A required output of a test in order to be counted as passed.
 Failure	Attr	StrAttr	An error that prevents the normal execution of a system.
 Feature	EntType	GeneralEnt	A releasable characteristic of a product. A high-level, coherent bundle of requirements.
+Field	EntType	DataEnt	A data attribute that is part of another entity, such as a class
 Frequency	Attr	IntAttr	A number of occurrences per time unit. 
 Function	EntType	FunctionalEnt	A description of how input is mapped to output. A capability of a system to do something specific.
 Gist	Attr	StrAttr	A short and simple description. A summary capturing the essence of an entity.
@@ -32,7 +33,7 @@ Issue	EntType	GeneralEnt	Something needed to be fixed or work to do.
 Label	EntType	GeneralEnt	A descriptive tag used to classify something.
 Location	Attr	StrAttr	A location of a resource such as a web address or a path to a file of persistent data.
 Max	Attr	IntAttr	A maximum estimated or assigned value.
-Member	EntType	DataEnt	A data entity that is part of another entity, eg. a field or method in a class
+Member	EntType	DataEnt	A data entity that is part of another entity. More specific alternatives: field, function.
 Min	Attr	IntAttr	A minimum estimated or assigned value.
 Module	EntType	DesignEnt	A collection of coherent functions and interfaces.
 Order	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).

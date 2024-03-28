@@ -45,7 +45,7 @@ final case class Rel(e: Ent, rt: RelType, sub: Model) extends Elem:
   def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, rt, Model(n)) }
 
 enum EntType extends NodeType:
-  case Barrier, Breakpoint, Class, Component, Configuration, Data, Design, Domain, Epic, Event, Feature, Function, Goal, Idea, Image, Interface, Issue, Label, Member, Module, Product, Prototype, Quality, Relationship, Release, Req, Resource, Risk, Screen, Section, Stakeholder, State, Story, System, Target, Task, Term, Test, UseCase, User, Variant, VariationPoint
+  case Barrier, Breakpoint, Class, Component, Configuration, Data, Design, Domain, Epic, Event, Feature, Field, Function, Goal, Idea, Image, Interface, Issue, Label, Member, Module, Product, Prototype, Quality, Relationship, Release, Req, Resource, Risk, Screen, Section, Stakeholder, State, Story, System, Target, Task, Term, Test, UseCase, User, Variant, VariationPoint
 
 enum StrAttrType extends AttrType[String]:
   case Comment, Constraints, Deprecated, Example, Expectation, Failure, Gist, Input, Location, Output, Spec, Text, Title, Why
