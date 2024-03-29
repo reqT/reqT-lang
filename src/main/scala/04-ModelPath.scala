@@ -3,20 +3,24 @@ package reqt
 sealed trait ModelPath[T]:
   def links: Vector[Link]
 
-  def dest: AttrType[T] | Attr[T] | Nil.type
+  def dest: AttrType[T] | Attr[T] | ModelPath.Empty.type
   
   def linkElems: Vector[Link | Node] = dest match
-    case Nil => links
+    case ModelPath.Empty => links
     case at: AttrType[?] => links :+ Undefined(at)
     case a: Attr[?] => links :+ a
 
 object ModelPath:
+  case object Empty extends ModelPath[Nothing]:
+    val links = Vector()
+    def dest = this
+
   final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends ModelPath[T]
   
   final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends ModelPath[T]
 
-  final case class LinkPath(links: Vector[Link]) extends ModelPath[Nil.type]:
-    def dest = Nil
+  final case class LinkPath(links: Vector[Link]) extends ModelPath[ModelPath.Empty.type]:
+    def dest = ModelPath.Empty
 
   extension (l1: Link) 
     def /(l2: Link): LinkPath = LinkPath(Vector(l1, l2))
@@ -28,7 +32,8 @@ object ModelPath:
     def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](lp.links, a)
     def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](lp.links, a)
 
-  object Root:
+  case object Root:
     def /(link: Link): LinkPath = LinkPath(Vector(link))
     def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)
     def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](Vector(), a)
+  
