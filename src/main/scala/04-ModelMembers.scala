@@ -79,7 +79,9 @@ transparent trait ModelMembers:
 
       case Vector(link) => 
         val ms: Vector[Model] = link match 
-          case e: Ent      => elems.collect{ case r: Rel if r.e == e && r.rt == Has => r.sub}
+          //TODO: consider reqT3 behavior to default to Has if Ent: 
+          //case e: Ent      => elems.collect{ case r: Rel if r.e == e && r.rt == Has => r.sub}
+          case e: Ent      => elems.collect{ case r: Rel if r.e == e => r.sub}
           case el: EntLink => elems.collect{ case r: Rel if r.e == el.e && r.rt == el.rt => r.sub}
         ms.foldLeft(Model())(_ ++ _)
 
