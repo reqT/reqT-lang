@@ -41,7 +41,9 @@ object Selection:
           if sub.elems.nonEmpty then Some(Rel(r.e, r.rt, sub)) 
           else if 
             hasTerm(r.rt) ||  
+            hasTerm(r.e) || 
             hasTerm(r.e & r.rt) || 
+            hasTerm(r.e.et) ||
             hasTerm(r.e.et & r.rt) ||
             hasTerm(r) ||
             r.expandSubnodes.exists(rel => hasTerm(rel))
