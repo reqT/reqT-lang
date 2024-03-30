@@ -39,7 +39,7 @@ object Selection:
         case r: Rel => 
           val sub = r.sub.keep(s)
           if sub.elems.nonEmpty then Some(Rel(r.e, r.rt, sub)) 
-          else if 
+          else if // TODO: think more about what this means
             hasTerm(r.rt) ||  
             hasTerm(r.e) || 
             hasTerm(r.e & r.rt) || 
