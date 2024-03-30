@@ -28,7 +28,7 @@ transparent trait ModelMembers:
   def ents: Vector[Ent] = nodes.collect { case e: Ent => e }
   def attrs: Vector[Attr[?]] = nodes.collect { case a: Attr[?] => a }
   def strAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
-  def intAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
+  def intAttrs: Vector[IntAttr] = nodes.collect { case a: IntAttr => a }
   
   def ids: Vector[String] = ents.map(_.id)
 
@@ -151,6 +151,7 @@ transparent trait ModelMembers:
     sb.toString
   end toMarkdown
 
-  def showCondensed: String = elems.map(_.show).mkString("Model(",",",")")
+  def showCompact: String = elems.map(_.show).mkString("Model(",",",")")
+  def showLines: String = elems.map(_.show).mkString("Model(\n  ",",\n  ","\n)")
 
   override def toString: String = elems.mkString("Model(",",",")")
