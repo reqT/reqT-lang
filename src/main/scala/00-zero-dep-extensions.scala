@@ -40,15 +40,14 @@ object StringExtensions:
 
     def wrap(n: Int): String = s.split("\n").map(_.wrapLongLineAtWords(n)).mkString("\n")
 
-    def editDistanceTo(t: String): Int =  // 
+    def editDistanceTo(t: String): Int = 
+      //https://github.com/scala/scala/blob/4e03eb5a1c7dc2cb5274a453dbff38fef12f12f4/src/compiler/scala/tools/nsc/util/EditDistance.scala#L26
       val insertCost: Int = 1
       val deleteCost: Int = 1
       val subCost: Int = 1
       val matchCost: Int = 0
       val caseCost: Int = 1
       val transpositions: Boolean = false
-      //https://github.com/scala/scala/blob/4e03eb5a1c7dc2cb5274a453dbff38fef12f12f4/src/compiler/scala/tools/nsc/util/EditDistance.scala#L26
-      import java.lang.Character.{toLowerCase as lower }
       val n = s.length
       val m = t.length
       if (n == 0) return m
@@ -58,11 +57,15 @@ object StringExtensions:
       0 to n foreach (x => d(x)(0) = x)
       0 to m foreach (x => d(0)(x) = x)
 
-      for (i <- 1 to n; s_i = s(i - 1); j <- 1 to m) do
+      for 
+        i <- 1 to n
+        s_i = s(i - 1)
+        j <- 1 to m
+      do
         val t_j = t(j - 1)
         val cost = 
           if s_i == t_j then matchCost 
-          else if lower(s_i) == lower(t_j) then caseCost 
+          else if s_i.toLower == t_j.toLower then caseCost 
           else subCost
 
         val c1 = d(i - 1)(j) + deleteCost
@@ -75,6 +78,7 @@ object StringExtensions:
           if i > 1 && j > 1 && s(i - 1) == t(j - 2) && s(i - 2) == t(j - 1) then
             d(i)(j) = d(i)(j) min (d(i - 2)(j - 2) + cost)
         end if
+        
       end for
 
       d(n)(m)
