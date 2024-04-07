@@ -1,4 +1,4 @@
-ThisBuild / version      := "4.0.0-RC2"
+ThisBuild / version      := "4.0.0"
 
 ThisBuild / scalaVersion := "3.3.3"  // use LTS
 
@@ -18,7 +18,7 @@ lazy val `reqt-lang` = (project in file("."))
     scalacOptions := List("-encoding", "utf8", "-Werror", "-deprecation", "-unchecked")
   )
 
-lazy val meta = taskKey[Unit]("generate meta things")
+lazy val meta = taskKey[Unit]("generate meta model")
 meta := (Test / run).toTask("").value
 
 lazy val build = taskKey[Unit]("build all the things")
