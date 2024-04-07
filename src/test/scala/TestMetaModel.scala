@@ -9,6 +9,7 @@ class TestMetaModel extends munit.FunSuite:
   test("All meta model names consistent with concepts"):
     val names1 = 
       (entityConcepts ++ strAttrConcepts ++ intAttrConcepts ++ relationConcepts).map((name, descr) => name).sorted
+        ++ generalConcepts.map(_.name)
     val names2 = concepts.map(_.name).sorted
     assert((names2 diff names1).length == 0, s"missing in meta.concepts: ${(names2 diff names1).mkString(",")}") 
     assert((names1 diff names2).length == 0, s"missing in definitions: ${(names1 diff names2).mkString(",")}") 

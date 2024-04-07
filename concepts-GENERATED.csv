@@ -35,6 +35,7 @@ Location	Attr	StrAttr	A location of a resource such as a web address or a path t
 Max	Attr	IntAttr	A maximum estimated or assigned value.
 Member	EntType	DataEnt	A data entity that is part of another entity. More specific alternatives: field, function.
 Min	Attr	IntAttr	A minimum estimated or assigned value.
+Model	Model	General	A collection of model elements, which can be entities, attributes or relations.
 Module	EntType	DesignEnt	A collection of coherent functions and interfaces.
 Order	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).
 Output	Attr	StrAttr	Data produced by an entity, e.g. a function or a test.

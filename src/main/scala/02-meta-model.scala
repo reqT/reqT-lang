@@ -124,7 +124,6 @@ object meta:
   case class Concept(name: String, descr: String, tpe: String, group: String)
 
   val generalConcepts: Seq[Concept] = Seq(
-    Concept("reqt", "An open source tool and language for working with software requirements models.", "reqt.meta", "General"),
     Concept("Model", "A collection of model elements, which can be entities, attributes or relations.", "Model", "General")
   )
 
