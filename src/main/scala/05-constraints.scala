@@ -1,7 +1,7 @@
 package reqt 
 
-/** A Scala-embedded DSL for expressing integer constraint problems. */
-object constraints: 
+/** A Scala-embedded DSL for expressing integer constraint satisfaction problems. */
+object csp: 
   def constraints(cs: Constr*): Seq[Constr] = cs.toSeq 
 
   def intVars(n: Int): Seq[Var] = for i <- 0 until n yield IntVar(i)

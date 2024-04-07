@@ -35,11 +35,11 @@ transparent trait ModelCompanion:
     end loop
     if nbrTopLevelElems > 0 then loop(nbrTopLevelElems) else Model.empty
 
-  extension (elems: Vector[Elem]) 
-    def toModel = Model(elems)
+  extension (elems: Seq[Elem]) 
+    def toModel = Model(elems.toVector)
 
-    def mergeAdjacentStrAttr(sat: StrAttrType, delim: String): Vector[Elem] =
-      if elems.length < 2 then elems else
+    def concatAdjacent(sat: StrAttrType, delim: String): Vector[Elem] =
+      if elems.length < 2 then elems.toVector else
         val result = scala.collection.mutable.Buffer.empty[Elem]
         var currentIndex = 0
         inline def stringOf(elem: Elem): String = elem match

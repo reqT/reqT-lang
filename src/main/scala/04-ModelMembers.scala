@@ -101,7 +101,7 @@ transparent trait ModelMembers:
 
   def /[T](p: AttrPath[T]): Boolean =  self / LinkPath(p.links) / p.dest
 
-  def mergeAdjacentText = Model(elems.mergeAdjacentStrAttr(Text, "\n"))
+  def concatAdjacentText = Model(elems.concatAdjacent(Text, "\n"))
 
   def toMarkdown: String =
     // TODO turn tweaks below into default args or context using MarkdownSettings
