@@ -6,6 +6,11 @@ trait Show[-A]:
 object Show:
   extension [A](a: A)(using s: Show[A]) 
     def show: String = s.show(a)
+
+  given showAny: Show[Any] with
+    override def show(a: Any): String = a. match
+      case s: String => s.show
+      case _ => a.toString 
   
   given showInt: Show[Int] with
     override def show(a: Int): String = a.toString
