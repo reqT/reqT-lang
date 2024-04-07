@@ -123,11 +123,17 @@ object meta:
 
   case class Concept(name: String, descr: String, tpe: String, group: String)
 
+  val generalConcepts: Seq[Concept] = Seq(
+    Concept("reqt", "An open source tool and language for working with software requirements models.", "reqt.meta", "General"),
+    Concept("Model", "A collection of model elements, which can be entities, attributes or relations.", "Model", "General")
+  )
+
   val concepts: ArraySeq[Concept] = (
     entityConceptGroups.map{case ((g,n), d) => Concept(n, d, "EntType", g.toString)} ++
     strAttrConcepts.map((n, d) => Concept(n,  d, "Attr","StrAttr")) ++
     intAttrConcepts.map((n, d) => Concept(n,  d, "Attr","IntAttr")) ++
-    relationConceptGroups.map{case ((g,n), d) => Concept(n,  d, "RelType", g.toString)}
+    relationConceptGroups.map{case ((g,n), d) => Concept(n,  d, "RelType", g.toString)} ++
+    generalConcepts
   ).sortBy(_.name)
 
   val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
@@ -154,11 +160,13 @@ object meta:
 
   extension (concept: Any) 
     def help: String = 
-      val (c, dOpt) = describe(concept.toString)
-      dOpt.getOrElse(s"Unknown concept: $concept. Did you mean: ${similarConcepts(c).mkString(", ")}")
+      val fw = concept.toString.firstWord
+      val (c, dOpt) = describe(fw)
+      dOpt.getOrElse(s"Unknown concept: $fw. Did you mean: ${similarConcepts(c).mkString(", ")}")
     
     def findConceptGroup: Option[ConceptGroup] = 
-      val normalized = concept.toString.toLowerCase.capitalize
+      val fw = concept.toString.firstWord
+      val normalized = fw.toLowerCase.capitalize
       groupMap.get(normalized)
 
   val entityNames: ArraySeq[String]   = entityConcepts.map(_._1)
