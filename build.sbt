@@ -1,4 +1,4 @@
-ThisBuild / version      := "4.0.0"
+ThisBuild / version      := "4.1.0"
 
 ThisBuild / scalaVersion := "3.3.3"  // use LTS
 

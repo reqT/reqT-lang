@@ -23,7 +23,7 @@ You can manage your requirements with the reqT-lang library, the Scala compiler 
 * Create a file `hello-reqt.scala` with this code:
 ```scala
 //> using scala 3.4
-//> using dep "reqt-lang:reqt-lang:4.0.0-RC2,url=https://github.com/reqT/reqT-lang/releases/download/4.0.0-RC2/reqt-lang_3-4.0.0-RC2.jar"
+//> using dep "reqt-lang:reqt-lang:4.1.0,url=https://github.com/reqT/reqT-lang/releases/download/4.1.0/reqt-lang_3-4.1.0.jar"
 
 import reqt.*
 
