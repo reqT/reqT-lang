@@ -7,6 +7,8 @@ object StringExtensions:
     def toLines: Array[String] = s.split("\n")
     def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
 
+    def firstWord: String = s.takeWhile(_.isLetter)
+
     def deCapitalize: String = s.take(1).toLowerCase ++ s.drop(1)
 
     def skipIndent: String     = s.dropWhile(ch => ch.isSpaceChar || ch == '\t')
