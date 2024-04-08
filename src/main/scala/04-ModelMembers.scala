@@ -17,6 +17,7 @@ transparent trait ModelMembers:
 
   /** A new Model with elem e appended to this Model. **/  
   def +(e: Elem): Model = Model(elems :+ e)
+  //TODO make same non-operator methods with good name like append for :+ , appendIfNotExists for + and make deep???
 
   def -(e: Elem): Model = Model(elems.filterNot(_ == e))
 
