@@ -76,24 +76,25 @@ transparent trait ModelMembers:
       case n: Node => n 
       case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.cutEmptyRelations) else e
     )
+  
+  /** A Map that groups equal links to gether. Keys of type Link point to Vector[Rel]. **/
+  def groupByLink: Map[Link | Elem, Vector[Elem]] = elems.groupBy: 
+      case Rel(e, rt, sub) => Link(e, rt)
+      case e => e
 
-  def mergeEqualRel: Model = ???
-    // val grouped: Map[Link | Elem, Vector[Elem]] = elems.groupBy{e => e match
-    //   case Rel(e, rt, sub) => Link(e, rt)
-    //   case e => e
-    // } // KOLLA VAD DETTA GER???
-    // val merged = grouped.map: 
-    //   case (Link(e, rt), rs: Rel) => 
-    //     val mergedElems = rs.map(_.sub.elems).reduceLeft(_ ++ _)
-    //     Rel(e, rt, Model(mergedElems).mergeEqualRel)
+  def mergeEqualRel: Model = 
+    val ess: Iterable[Vector[Elem]] = groupByLink.map:
+      case (Link(e, rt), xs) => 
+        val merged: Rel = 
+          xs.asInstanceOf[Vector[Rel]].reduceLeft: (r1, r2) => 
+            Rel(r1.e, r1.rt, (r1.sub ++ r2.sub).mergeEqualRel)
+        Vector(merged)
+      case (e, xs) => xs
 
-    //   case (x, xs) => xs 
-    // ???
-    
+    Model(ess.flatten.toVector)
 
-  /** A Model in normal form with no empty relations and distinct, sorted elems at all levels. **/
-  def normal: Model = cutEmptyRelations.distinctDeep.sorted
-  // TODO: normal form should merge submodels of same links
+  /** A Model in normal form: no empty relations, distinct, sorted elems, merged equal links. **/
+  def normal: Model = mergeEqualRel.cutEmptyRelations.distinctDeep.sorted
   
   /** A Model with the nodes but not relations at the top of this Model. */
   def tip: Model = cut(0)
