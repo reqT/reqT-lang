@@ -5,33 +5,33 @@ Reqt is a language for software requirements modelling.
 
 A reqt Model is a sequence of elements, where each element can be either an entity, an attribute or a relation.
 * An **entity** has an **entity type**, e.g. `Feature`, `UseCase`, and a **unique id**. The id is a string of any character except whitespace.
-* An **attribute** has an **attribute type**, e.g. `Prio`, `Spec`, and a **value**. The attribute type determines if the value is either an integer, e.g. Prio 12, or a string, e.g. `Spec a string of characters`.
+* An **attribute** has an **attribute type**, e.g. `Prio`, `Spec`, and a **value**. The attribute type determines if the value is either an integer, e.g. `Prio: 12`, or a string, e.g. `Spec: a string of characters`.
 * A **relation** recursively combines an entity and a **relation type** with a non-empty sub-model. 
 
 Example:
 ```
-* Comment A string attribute with informative text.
-* Feature yyy has Prio 42
-* Feature yyy requires Feature xxx
-* Feature xxx has 
-  * Prio 12
-  * Spec An informal description
+* Comment: A string attribute with informative text.
+* Feature: yyy has Prio 42
+* Feature: yyy requires Feature xxx
+* Feature: xxx has 
+  * Prio: 12
+  * Spec: An informal description
       that is continued on the next line
-  * UseCase zzz has
-    * Prio 23
+  * UseCase: zzz has
+    * Prio: 23
 ```
 
 In markdown view the above is rendered like so:
 
-* Comment A string attribute with informative text.
-* Feature yyy has Prio 42
-* Feature yyy requires Feature xxx
-* Feature xxx has 
-  * Prio 12
-  * Spec An informal description
+* Comment: A string attribute with informative text.
+* Feature: yyy has Prio 42
+* Feature: yyy requires Feature xxx
+* Feature: xxx has 
+  * Prio: 12
+  * Spec: An informal description
       that is continued on the next line
-  * UseCase zzz has
-    * Prio 23
+  * UseCase: zzz has
+    * Prio: 23
 
 ## Lexical Tokens
 
@@ -68,6 +68,8 @@ A legal `reqt` model abides the following grammar, where `|` denotes alternative
 ```
 ElemStart ::= '* '
 
+OptColon ::= ':' | ''
+
 Model ::= (Indent(n) ElemStart Elem)*
 
 Elem ::= Node | Rel
@@ -76,19 +78,19 @@ Node ::= Attr | Ent
 
 Attr ::= IntAttr |  StrAttr
 
-IntAttr ::= IntAttrType Num
+IntAttr ::= IntAttrType OptColon Num
 
-StrAttr ::= StrAttr (Word)*
+StrAttr ::= StrAttrType OptColon (Word)*
 
-Ent ::= EntityType Id
+Ent ::= EntityType OptColon Id
 
 Id :: = Word
 
 Rel ::= SingleLineRel | MultiLineRel
 
-SingleLineRel ::= Ent RelType Node
+SingleLineRel ::= Ent RelType OptColon Node
 
-MultiLineRel ::= Ent RelType SubModel
+MultiLineRel ::= Ent RelType OptColon SubModel
 
 SubModel ::= (Indent(n + 1) ElemStart Elem)* Outdent(n)
 
@@ -102,7 +104,7 @@ EntityType ::= 'Barrier' | 'Breakpoint' | 'Class' | 'Component' | 'Configuration
 IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Order' | 'Prio' | 
 'Probability' | 'Profit' | 'Value'
 
-StrAttr ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 
+StrAttrType ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 
 'Input' | 'Location' | 'Output' | 'Spec' | 'Text' | 'Title' | 'Why'
 
 RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Impacts' | 'Implements' | 
@@ -124,7 +126,9 @@ as well as subsequent lines with a higher Indent level.
 4. If a `Num` token have more tokens following on the same line then the following error is given:
 "Illegal extra tokens after integer value."
 
-4. An `IntAttribute`, `Ent` or `SingleLineRel` cannot be followed by a subsequent line with a higher Indent level.
+5. An `IntAttribute`, `Ent` or `SingleLineRel` cannot be followed by a subsequent line with a higher Indent level.
 This gives the Error: "Higher indentation level is not allowed here."
 
-5. The elements following a `MultiLineRel` that are on a higher Indent level are part of the (possibly empty) `SubModel`.
+6. The elements following a `MultiLineRel` that are on a higher Indent level are part of the (possibly empty) `SubModel`.
+
+7. Colons after EntityType, RelType, IntAttrType, StrAttrType are optional, but recommended.
