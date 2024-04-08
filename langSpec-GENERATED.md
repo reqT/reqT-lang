@@ -15,8 +15,8 @@ Example:
 * Feature: yyy requires Feature: xxx
 * Feature: xxx has 
   * Prio: 12
-  * Spec: An longer textual specification
-      that is spanning several lines. An longer textual specification
+  * Spec: A longer textual specification
+      that is spanning several lines. A longer textual specification
       that is spanning several lines.
   * UseCase: zzz has
     * Prio: 23
@@ -29,8 +29,8 @@ In markdown view the above is rendered like so:
 * Feature: yyy requires Feature: xxx
 * Feature: xxx has 
   * Prio: 12
-  * Spec: An longer textual specification
-      that is spanning several lines. An longer textual specification
+  * Spec: A longer textual specification
+      that is spanning several lines. A longer textual specification
       that is spanning several lines.
   * UseCase: zzz has
     * Prio: 23
