@@ -33,11 +33,11 @@ object Path:
 
   final case class EntTypePath(links: Vector[Link], dest: EntType) extends Path:
     type Value = Nothing
-    def hasDest: Boolean = false
+    def hasDest: Boolean = true
 
   final case class EntPath(links: Vector[Link], dest: Ent) extends Path:
     type Value = Nothing
-    def hasDest: Boolean = false
+    def hasDest: Boolean = true
 
   final case class LinkPath(links: Vector[Link]) extends Path:
     type Value = Nothing
