@@ -152,20 +152,17 @@ transparent trait ModelMembers:
   def /[T](p: EntTypePath): Vector[String] =  self / LinkPath(p.links) / p.dest
 
 
-  // def paths: Vector[Path] = 
-  //   val pb = collection.mutable.ArrayBuffer.empty[Path]
+  def paths: Vector[Path] = 
+    val pb = collection.mutable.ArrayBuffer.empty[Path]
 
-  //   def recur(links: Vector[Link], m: Model): Unit =
-  //     for e <- m.elems do e match
-  //       case a: Attr[?] => pb.append(AttrPath(links, a))
-        
-  //       case e: Ent => pb.append(LinkPath(links :+ e))
-        
-  //       case Rel(e, rt, sub) => recur(links :+ Link(e, rt), sub) 
-  //   end recur
-
-  //   recur(Vector(), self)
-  //   pb.toVector
+    def recur(links: Vector[Link], m: Model): Unit =
+      for e <- m.elems do e match
+        case a: Attr[?] => pb.append(AttrPath(links, a))
+        case e: Ent => pb.append(EntPath(links, e))
+        case Rel(e, rt, sub) => recur(links :+ Link(e, rt), sub) 
+    end recur
+    recur(Vector(), self)
+    pb.toVector
 
   def concatAdjacentText = Model(elems.concatAdjacent(Text, "\n"))
 
