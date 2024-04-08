@@ -18,6 +18,8 @@ transparent trait ModelMembers:
   /** A new Model with elem e appended to this Model. **/  
   def +(e: Elem): Model = Model(elems :+ e)
 
+  def -(e: Elem): Model = Model(elems.filterNot(_ == e))
+
   def nodes: Vector[Node] = elems.flatMap:
     case n: Node => Vector(n) 
     case Rel(e, r, m) => Vector(e) ++ m.nodes
