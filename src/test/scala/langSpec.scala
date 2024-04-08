@@ -15,8 +15,8 @@ A reqt Model is a sequence of elements, where each element can be either an enti
 Example:
 ```
 * Comment: A string attribute with informative text.
-* Feature: yyy has Prio 42
-* Feature: yyy requires Feature xxx
+* Feature: yyy has Prio: 42
+* Feature: yyy requires Feature: xxx
 * Feature: xxx has 
   * Prio: 12
   * Spec: An informal description
@@ -28,8 +28,8 @@ Example:
 In markdown view the above is rendered like so:
 
 * Comment: A string attribute with informative text.
-* Feature: yyy has Prio 42
-* Feature: yyy requires Feature xxx
+* Feature: yyy has Prio: 42
+* Feature: yyy requires Feature: xxx
 * Feature: xxx has 
   * Prio: 12
   * Spec: An informal description
@@ -126,5 +126,5 @@ This gives the Error: "Higher indentation level is not allowed here."
 
 6. The elements following a `MultiLineRel` that are on a higher Indent level are part of the (possibly empty) `SubModel`.
 
-7. Colons after EntityType, RelType, IntAttrType, StrAttrType are optional, but recommended.
+7. Colons after EntityType, RelType, IntAttrType, StrAttrType are optional. Colons are recommended after EntityType, IntAttrType, StrAttrType.
 """
