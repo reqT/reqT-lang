@@ -1,4 +1,4 @@
-# Language Specification of reqt version 4.0
+# Language specification of reqT version 4
 ## Introduction
 
 Reqt is a language for software requirements modelling.

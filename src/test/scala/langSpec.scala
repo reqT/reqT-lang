@@ -2,7 +2,7 @@ package reqt
 
 object langSpec: // save this file by sbt> Test / runMain generateLangSpec
   val specMarkDown: String = 
-    s"""# Language Specification of reqt version 4.0
+    s"""# Language specification of reqT version 4
 ## Introduction
 
 Reqt is a language for software requirements modelling.
