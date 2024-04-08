@@ -7,11 +7,6 @@ object Show:
   extension [A](a: A)(using s: Show[A]) 
     def show: String = s.show(a)
 
-  given showAny: Show[Any] with
-    override def show(a: Any): String = a. match
-      case s: String => s.show
-      case _ => a.toString 
-  
   given showInt: Show[Int] with
     override def show(a: Int): String = a.toString
 
@@ -19,16 +14,30 @@ object Show:
     override def show(a: String): String = 
       if a.contains('"') || a.contains('\n') then s"\"\"\"$a\"\"\"" else s"\"$a\""
 
-  given showEntLink: Show[EntLink] with
-    override def show(el: EntLink): String = s"${el.e.show}.${el.rt.show}"
-      
+  given showLink: Show[Link] with
+    override def show(el: Link): String = s"${el.e.show}.${el.rt.show}"
 
-  given showElem: Show[Elem] with 
-    override def show(e: Elem): String = e match 
+  given showNode: Show[Node] with
+    override def show(n: Node): String = n match
       case Ent(et, id)     => s"${et.toString}(${id.show})"
       case u: Undefined[?] => u.toString
       case IntAttr(at, v)  => s"${at.toString}(${v.show})"
       case StrAttr(at, v)  => s"${at.toString}(${v.show})"
+
+  given showLinkOrNode: Show[Link | Node] with
+    override def show(ln: Link | Node): String = ln match
+      case n: Node => n.show
+      case l: Link => l.show
+
+  // given showPathEmpty: Show[Path.Empty.type] with
+  //   override def show(e: Path.Empty.type): String = "Path.Empty"
+
+  // given showPath: Show[Path] with
+  //   override def show(p: Path): String = p.toVector.map(_.show).mkString("Path/","/","")
+
+  given showElem: Show[Elem] with 
+    override def show(e: Elem): String = e match 
+      case n: Node     => n.show
       case Rel(e, rt, sub) => s"""${e.show}.${rt.show}(${sub.elems.map(_.show).mkString(",")})"""
   
   given showModel: Show[Model] with 
@@ -41,11 +50,11 @@ object Show:
             case Rel(e, rt, sub) => 
               sb.append(indent(indentLevel))
               if sub == Model.empty then 
-                sb.append(EntLink(e, rt).show) 
+                sb.append(Link(e, rt).show) 
                 sb.append("(),\n")
                 loop(elems.drop(1), indentLevel)
               else 
-                sb.append(EntLink(e, rt).show)
+                sb.append(Link(e, rt).show)
                 sb.append("(\n")
                 loop(sub.elems, indentLevel + 1)  // not tail-recursive
                 sb.append(indent(indentLevel))

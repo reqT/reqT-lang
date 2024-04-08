@@ -6,7 +6,7 @@
 package reqt
 
 final case class Model(elems: Vector[Elem]) extends ModelMembers
-object Model extends ModelCompanion
+case object Model extends ModelCompanion
 
 sealed trait Elem
 sealed trait Node extends Elem
@@ -15,10 +15,9 @@ sealed trait ElemType
 sealed trait NodeType extends ElemType
 sealed trait AttrType[T] extends NodeType
 
-sealed trait Link
-final case class EntLink(e: Ent, rt: RelType) extends Link
+final case class Link(e: Ent, rt: RelType)
 
-final case class Ent private (et: EntType, id: String) extends Node, Link
+final case class Ent private (et: EntType, id: String) extends Node
 object Ent:
   val emptyId = "???"
   def apply(et: EntType, id: String): Ent = 
@@ -66,43 +65,43 @@ extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, va
 extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
 extension (e: Ent)
   def binds(sub: Elem*): Rel = Rel(e, Binds, Model(sub*))
-  def binds: EntLink = EntLink(e, Binds)
+  def binds: Link = Link(e, Binds)
 
   def deprecates(sub: Elem*): Rel = Rel(e, Deprecates, Model(sub*))
-  def deprecates: EntLink = EntLink(e, Deprecates)
+  def deprecates: Link = Link(e, Deprecates)
 
   def excludes(sub: Elem*): Rel = Rel(e, Excludes, Model(sub*))
-  def excludes: EntLink = EntLink(e, Excludes)
+  def excludes: Link = Link(e, Excludes)
 
   def has(sub: Elem*): Rel = Rel(e, Has, Model(sub*))
-  def has: EntLink = EntLink(e, Has)
+  def has: Link = Link(e, Has)
 
   def helps(sub: Elem*): Rel = Rel(e, Helps, Model(sub*))
-  def helps: EntLink = EntLink(e, Helps)
+  def helps: Link = Link(e, Helps)
 
   def hurts(sub: Elem*): Rel = Rel(e, Hurts, Model(sub*))
-  def hurts: EntLink = EntLink(e, Hurts)
+  def hurts: Link = Link(e, Hurts)
 
   def impacts(sub: Elem*): Rel = Rel(e, Impacts, Model(sub*))
-  def impacts: EntLink = EntLink(e, Impacts)
+  def impacts: Link = Link(e, Impacts)
 
   def implements(sub: Elem*): Rel = Rel(e, Implements, Model(sub*))
-  def implements: EntLink = EntLink(e, Implements)
+  def implements: Link = Link(e, Implements)
 
   def inherits(sub: Elem*): Rel = Rel(e, Inherits, Model(sub*))
-  def inherits: EntLink = EntLink(e, Inherits)
+  def inherits: Link = Link(e, Inherits)
 
   def interacts(sub: Elem*): Rel = Rel(e, Interacts, Model(sub*))
-  def interacts: EntLink = EntLink(e, Interacts)
+  def interacts: Link = Link(e, Interacts)
 
   def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
-  def precedes: EntLink = EntLink(e, Precedes)
+  def precedes: Link = Link(e, Precedes)
 
   def relates(sub: Elem*): Rel = Rel(e, Relates, Model(sub*))
-  def relates: EntLink = EntLink(e, Relates)
+  def relates: Link = Link(e, Relates)
 
   def requires(sub: Elem*): Rel = Rel(e, Requires, Model(sub*))
-  def requires: EntLink = EntLink(e, Requires)
+  def requires: Link = Link(e, Requires)
 
   def verifies(sub: Elem*): Rel = Rel(e, Verifies, Model(sub*))
-  def verifies: EntLink = EntLink(e, Verifies)
+  def verifies: Link = Link(e, Verifies)

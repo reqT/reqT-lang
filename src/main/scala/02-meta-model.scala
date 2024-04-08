@@ -200,7 +200,7 @@ object meta:
   def generate: String = 
     def entExtensions(name: String): String = 
       s"|  def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
-      s"|  def $name: EntLink = EntLink(e, ${name.capitalize})\n"
+      s"|  def $name: Link = Link(e, ${name.capitalize})\n"
 
     s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT AS CHANGES ARE LOST ON RE-GENERATION 
         |//--- Edit the code below by changing `def generate` in reqt.meta
@@ -210,7 +210,7 @@ object meta:
         |package reqt
         |
         |final case class Model(elems: Vector[Elem]) extends ModelMembers
-        |object Model extends ModelCompanion
+        |case object Model extends ModelCompanion
         |
         |sealed trait Elem
         |sealed trait Node extends Elem
@@ -219,10 +219,9 @@ object meta:
         |sealed trait NodeType extends ElemType
         |sealed trait AttrType[T] extends NodeType
         |
-        |sealed trait Link
-        |final case class EntLink(e: Ent, rt: RelType) extends Link
+        |final case class Link(e: Ent, rt: RelType)
         |
-        |final case class Ent private (et: EntType, id: String) extends Node, Link
+        |final case class Ent private (et: EntType, id: String) extends Node
         |object Ent:
         |  val emptyId = "???"
         |  def apply(et: EntType, id: String): Ent = 

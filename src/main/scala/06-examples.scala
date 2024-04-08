@@ -255,14 +255,14 @@ object Prioritization:
     val m = Prio100DollarTest
     val shs = m.ents.filter(_.et == Stakeholder).distinct
     val rs = m.ents.filter(_.et == Req).distinct
-    val prioSum = shs.flatMap(s => m/s/Prio).sum
+    val prioSum = shs.flatMap(s => m/s.has/Prio).sum
     val benefitSum = shs.map: s => 
-        s -> (m/s).intAttrs.collect{ case IntAttr(Benefit, b) => b}.sum
+        s -> (m/s.has).intAttrs.collect{ case IntAttr(Benefit, b) => b}.sum
       .toMap
     val normalized = rs.map(r =>
       r has Benefit(
         math.round(shs.map(s =>
-          (m/s/Prio).head*(m/s/r/Benefit).head * 100.0 / (benefitSum(s)*prioSum)).sum).toInt))
+          (m/s.has/Prio).head*(m/s.has/r.has/Benefit).head * 100.0 / (benefitSum(s)*prioSum)).sum).toInt))
     Model(Title("Prioritization Normalized Benefits") +: normalized)
 
 object QUPER:

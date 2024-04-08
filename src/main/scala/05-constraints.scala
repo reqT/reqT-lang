@@ -72,7 +72,7 @@ object csp:
     override def fromInt(i: Int): Int = i
     override def toInt(value: Int): Int = value
 
-    override def toString: String = s"IntVar(id=${id.show})"
+    override def toString: String = s"IntVar(id=$id)"
   end IntVar
 
   case class EnumVar[T, U](id: T, values: Seq[U]) extends Var:
@@ -82,7 +82,7 @@ object csp:
     lazy val indexOfValue: Map[U, Int] = values.zipWithIndex.toMap
     override def toInt(value: U): Int = indexOfValue(value)
 
-    override def toString: String = s"EnumVar(id=${id.show},values=${values.show})"
+    override def toString: String = s"EnumVar(id=$id,values=$values)"
   object EnumVar:
     def apply[T, U](id: T, values: Array[U]): EnumVar[T, U] = new EnumVar(id, values.toSeq)
 
