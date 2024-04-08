@@ -12,6 +12,8 @@
 
 * With the reqT Scala-embedded DSL you can analyze and transform your requirements models using the power of the Scala standard library and the extensive open source ecosystem of Scala, Java and Javascript. 
 
+* See [the language specification](https://github.com/reqT/reqT-lang/blob/main/langSpec-GENERATED.md) and [meta-language concepts definitions](https://github.com/reqT/reqT-lang/blob/main/concepts-GENERATED.csv).
+
 ## How to use reqT-lang as a library
 
 You can manage your requirements with the reqT-lang library, the Scala compiler and your favorite editor, e.g. in VS Code with the Scala Metals extension.
