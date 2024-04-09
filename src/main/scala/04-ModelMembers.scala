@@ -12,14 +12,78 @@ transparent trait ModelMembers:
       case r: Rel => n += r.sub.size
     n
 
-  /** A new Model with elems of other Model to elems of this Model. **/
-  def ++(other: Model): Model = Model(elems ++ other.elems)
+  /** A new Model with elem e prepended to the elems of this Model. Same as `e +: m` */
+  def prepend(e: Elem): Model = Model(e +: elems)
 
-  /** A new Model with elem e appended to this Model. **/  
-  def +(e: Elem): Model = Model(elems :+ e)
-  //TODO make same non-operator methods with good name like append for :+ , appendIfNotExists for + and make deep???
+  /** A new Model with elem e prepended to the elems of this Model. Same as `m.prepend(e)` */
+  def +:(e: Elem): Model = prepend(e)
 
-  def -(e: Elem): Model = Model(elems.filterNot(_ == e))
+  /** A new Model with elem e appended to the elems of this Model. Same as `m :+ e` */
+  def append(e: Elem): Model = Model(elems :+ e)
+
+  /** A new Model with elem e appended to the elems of this Model. Same as `m.append(e)` */
+  def :+(e: Elem): Model = append(e)
+
+  /** A new Model with other Model's elems appended to elems. Same as: `m :++ other` 
+    * NOTE: Different from `m ++ other` */
+  def append(other: Model): Model = Model(elems ++ other.elems)  
+
+  def :++(other: Model): Model = append(other)
+
+  /** A new model first attribute of same type updated to `a` or appended to elems if not in `elems.tip`. */
+  def updated[T](a: Attr[T]): Model = 
+    var isReplaced = false
+    val es = elems.map: e => 
+      e match
+        case a2: Attr[?] if !isReplaced && a.t == a2.t => 
+          isReplaced = true
+          a  
+        case elem => elem 
+    Model(if isReplaced then es else elems :+ a)
+
+  /** merge sub model of r with the sub model of first relations with the same link or append r to elems */
+  def mergeFirst(r: Rel): Model = 
+    var isMerged = false
+    val es = elems.map: e => 
+      e match
+        case r2: Rel if !isMerged && r.link == r2.link => 
+          isMerged = true
+          Rel(r2.e, r2.t, r2.sub ++ r.sub)  // recur with add
+        case elem => elem 
+    Model(if isMerged then es else elems :+ r)
+
+  /** Append an elem if not already exists at top level. Relations are merged using mergeFirst. */
+  def add(e: Elem): Model = 
+    e match
+      case n: Node => if !elems.exists(_ == n) then Model(elems :+ n) else self
+      case r: Rel  => self.mergeFirst(r)
+
+  def +(e: Elem): Model = add(e)
+
+  def addAll(es: Elem*): Model = 
+    var result = self 
+    for e <- es do result += e
+    result
+
+  def addAll(es: Vector[Elem]): Model = 
+    var result = self 
+    for e <- es do result += e
+    result
+
+  def addAll(other: Model): Model =  addAll(other.elems) 
+
+  /** A new Model with each elem of other Model added to elems of this Model. Same as `m.addAll(other)` **/
+  def ++(other: Model): Model = addAll(other)  
+  
+  def -(e: Elem): Model = Model(elems.filterNot(_ == e)) // what TODO if e is Rel?
+
+  def -(t: ElemType): Model = Model(elems.filterNot(_.t == t)) // what TODO if e is Rel?
+
+  def -(l: Link): Model = 
+    val es = elems.filterNot: 
+      case r: Rel if r.link == l => false 
+      case _ => true
+    Model(es)
 
   def nodes: Vector[Node] = elems.flatMap:
     case n: Node => Vector(n) 
@@ -29,12 +93,12 @@ transparent trait ModelMembers:
     case _: Node => Vector() 
     case Rel(e, r, m) => Vector(Link(e,r)) ++ m.links
 
-  def relTypes: Vector[RelType] = links.map(_.rt)
+  def relTypes: Vector[RelType] = links.map(_.t)
 
   def undefined: Vector[Undefined[?]] = nodes.collect{ case u: Undefined[?] => u }
 
   def ents: Vector[Ent]         = nodes.collect { case e: Ent => e }
-  def entTypes: Vector[EntType] = nodes.collect { case e: Ent => e.et }
+  def entTypes: Vector[EntType] = nodes.collect { case e: Ent => e.t }
   def attrs: Vector[Attr[?]]    = nodes.collect { case a: Attr[?] => a }
   def strAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
   def strValues: Vector[String] = nodes.collect { case a: StrAttr => a.value }
@@ -43,35 +107,42 @@ transparent trait ModelMembers:
   
   def ids: Vector[String] = ents.map(_.id)
 
-  /** A new Model with distinct top-level elems. **/
-  def distinctTop: Model = Model(elems.distinct) 
+  /** A new Model with distinct elems (non-recursive). **/
+  def distinctElems: Model = Model(elems.distinct) 
 
-  /** A new Model that is distinct by top-level attribute type. **/
-  def distinctAttrTop: Model = 
-    val es = elems.distinctBy:
-      case a: Attr[?] => a.at 
-      case a => a
+  /** A new Model that is distinct by attribute type (non-recursive). **/
+  def distinctAttrType: Model =
+    val foundAttrTypes: collection.mutable.Set[AttrType[?]] = collection.mutable.Set()
+    val es = elems.flatMap:
+      case a: Attr[?] => 
+        if foundAttrTypes(a.t) then Vector()
+        else 
+          foundAttrTypes += a.t
+          Vector(a)
+      case e => Vector(e)
     Model(es)
 
-  /** A new Model with deep de-duplication of its elems per level. **/
-  def distinctDeep: Model =
+  /** A new Model with recursive de-duplication of its elems on all levels. **/
+  def distinctElemsDeep: Model =
     val es = elems.distinct.map:
       case n: Node => n 
-      case Rel(e, r, m) => Rel(e, r, m.distinctDeep)
+      case Rel(e, r, m) => Rel(e, r, m.distinctElemsDeep)
     Model(es) 
 
-  /** A new Model with deep de-duplication of its attribute types per level. **/
-  def distinctAttrDeep: Model =
-    val es = distinctAttrTop.elems.map:
+  /** A new Model with recursive de-duplication of its attributes by type on all levels.  **/
+  def distinctAttrTypeDeep: Model =
+    val es = distinctAttrType.elems.map:
       case n: Node => n 
-      case Rel(e, r, m) => Rel(e, r, m.distinctAttrDeep)
+      case Rel(e, r, m) => Rel(e, r, m.distinctAttrTypeDeep)
     Model(es) 
 
+  /** Recursively sort elems alphabetically. */  
+  // TODO: maybe better to give each Elem ordering and IntAttr special ordering???
   def sorted: Model = 
-    Model(elems.map:
+    val es = elems.map:
       case n: Node => n 
-      case Rel(e, r, m) => Rel(e, r, m.sorted)
-    .sortBy(_.show)) 
+      case Rel(e, r, m) => Rel(e, r, m.sorted)  // recur
+    Model(es.sorted) // sorted is using Elem.elemOrd implicitly
 
   /** All empty relations at any depth are replaced by its entity. */
   def cutEmptyRelations: Model =
@@ -85,20 +156,33 @@ transparent trait ModelMembers:
       case Rel(e, rt, sub) => Link(e, rt)
       case e => e
 
-  def mergeEqualRel: Model = 
+  /** */
+  def appendEqualRel: Model =  
     val ess: Iterable[Vector[Elem]] = groupByLink.map:
       case (Link(e, rt), xs) => 
         val merged: Rel = 
           xs.asInstanceOf[Vector[Rel]].reduceLeft: (r1, r2) => 
-            Rel(r1.e, r1.rt, (r1.sub ++ r2.sub).mergeEqualRel)
+            Rel(r1.e, r1.t, (r1.sub :++ r2.sub).appendEqualRel)
         Vector(merged)
       case (e, xs) => xs
 
     Model(ess.flatten.toVector)
 
-  /** A Model in normal form: no empty relations, distinct, sorted elems, merged equal links. **/
-  def normal: Model = mergeEqualRel.cutEmptyRelations.distinctDeep.sorted
-  
+  /** A new model constructed by adding all elems using add one by one giving no duplicates. */
+  def distinct = Model() ++ self
+
+  /** A Model in normal form: elems are added one by one replacing same nodes and then sorted. **/
+  def normal: Model = distinct.sorted
+
+  def minimal: Model = cutEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinct
+
+  def atoms: Vector[Elem] = paths.flatMap(_.toModel.elems)
+
+  def maximal: Model = Model(atoms) 
+
+  /** True if this model is in normal form. */
+  def isNormal: Boolean = self == normal
+
   /** A Model with the nodes but not relations at the top of this Model. */
   def tip: Model = cut(0)
   
@@ -125,7 +209,7 @@ transparent trait ModelMembers:
       case Vector() => self
 
       case Vector(link) => 
-        val ms: Vector[Model] = elems.collect{ case r: Rel if r.e == link.e && r.rt == link.rt => r.sub}
+        val ms: Vector[Model] = elems.collect{ case r: Rel if r.e == link.e && r.t == link.t => r.sub}
         ms.foldLeft(Model())(_ ++ _)
 
       case Vector(link, rest*) => 
@@ -135,14 +219,14 @@ transparent trait ModelMembers:
   def /[T](a: Attr[T]): Boolean = elems.exists(_ == a)
 
   def /[T](at: AttrType[T]): Vector[T] = elems.collect{
-    case a: Attr[?] if !a.isInstanceOf[Undefined[?]] && a.at == at => a.value.asInstanceOf[T]
+    case a: Attr[?] if !a.isInstanceOf[Undefined[?]] && a.t == at => a.value.asInstanceOf[T]
   }
 
   def /(e: Ent): Boolean = elems.exists(_ == e)
 
-  def /(et: EntType): Vector[String] = elems.collect{case e: Ent if e.et == et => e.id}
+  def /(et: EntType): Vector[String] = elems.collect{case e: Ent if e.t == et => e.id}
 
-  def /[T](u: Undefined[T]): Vector[Undefined[T]] = elems.collect{case Undefined(at) if u.at == at => u} 
+  def /[T](u: Undefined[T]): Vector[Undefined[T]] = elems.collect{case Undefined(at) if u.t == at => u} 
 
   def /(ut: Undefined.type): Vector[Undefined[?]] = elems.collect{case u: Undefined[?] => u} 
 
@@ -169,6 +253,16 @@ transparent trait ModelMembers:
 
   def concatAdjacentText = Model(elems.concatAdjacent(Text, "\n"))
 
+  /** */
+  def trim: Model = 
+    extension (es: Vector[Elem]) def dropWhileEmptyText: Vector[Elem] = 
+      es.dropWhile:
+        case StrAttr(Text, s) if s.trim.isEmpty => true
+        case _ => false
+
+    // optimize this as double reverse is inefficient ...
+    Model(elems.reverse.dropWhileEmptyText.reverse.dropWhileEmptyText) 
+
   def toMarkdown: String =
     // TODO turn tweaks below into default args or context using MarkdownSettings
     val MaxLen = 72  // Limit for creating one-liners in pretty markdown; TODO: should this be hardcoded???
@@ -185,31 +279,31 @@ transparent trait ModelMembers:
           sb.append(s"$indent* $at\n")
 
         case a: Attr[?] => 
-          if a.at == Text then sb.append(s"$indent${a.value}\n") 
-          else if a.at == Title && a.value.toString.trim.startsWith("#") then 
+          if a.t == Text then sb.append(s"$indent${a.value}\n") 
+          else if a.t == Title && a.value.toString.trim.startsWith("#") then 
             sb.append(s"$indent${a.value.toString.trim}\n")  //never colon after title
-          else sb.append(s"$indent* ${a.at}$colonOpt ${a.value}\n")
+          else sb.append(s"$indent* ${a.t}$colonOpt ${a.value}\n")
         
         case e: Ent => 
-          sb.append(s"$indent* ${e.et}$colonOpt ${e.id}\n")
+          sb.append(s"$indent* ${e.t}$colonOpt ${e.id}\n")
         
         case Rel(e, rt, Model(Vector(e2: Ent))) 
           if isDetectOneLiner && !e.id.contains('\n') && e.id.length + indent.length < MaxLen 
           => // a one-liner
-            sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${e2.et}$colonOpt ${e2.id}\n")
+            sb.append(s"$indent* ${e.t}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${e2.t}$colonOpt ${e2.id}\n")
         
         case Rel(e, rt, Model(Vector(u: Undefined[?]))) 
           if isDetectOneLiner 
           => // a one-liner
-          sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${u.at}\n")
+          sb.append(s"$indent* ${e.t}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${u.t}\n")
         
         case Rel(e, rt, Model(Vector(a: Attr[?]))) 
           if isDetectOneLiner && !a.value.toString.contains('\n') && a.value.toString.length + indent.length < MaxLen 
           => // a one-liner
-            sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${a.at}$colonOpt ${a.value}\n")
+            sb.append(s"$indent* ${e.t}$colonOpt ${e.id} ${rt.toString.deCapitalize} ${a.t}$colonOpt ${a.value}\n")
         
         case Rel(e, rt, sub) => // put sub on indented new line 
-          sb.append(s"$indent* ${e.et}$colonOpt ${e.id} ${rt.toString.deCapitalize}\n")
+          sb.append(s"$indent* ${e.t}$colonOpt ${e.id} ${rt.toString.deCapitalize}\n")
           if sub.elems.length > 0 then recur(level + 1, sub)
     end recur
 

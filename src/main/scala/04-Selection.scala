@@ -1,7 +1,7 @@
 package reqt
 
 object Selection:
-  extension (et: Ent)      def &(rt: RelType)  = Link(et,rt)
+  extension (e: Ent)       def &(rt: RelType)  = Link(e,rt)
   extension (et: EntType)  def &(rt: RelType)  = LinkType(et,rt)
 
   type Expr = Term | Or
@@ -32,22 +32,22 @@ object Selection:
 
     val pickedElems = m.elems.flatMap:
       elem => elem match
-        case e: Ent     if hasTerm(e.et) || hasTerm(e) => Some(e) 
+        case e: Ent     if hasTerm(e.t) || hasTerm(e) => Some(e) 
 
-        case a: Attr[?] if hasTerm(a.at) || hasTerm(a) => Some(a)
+        case a: Attr[?] if hasTerm(a.t) || hasTerm(a) => Some(a)
 
         case r: Rel => 
           val sub = r.sub.keep(s)
-          if sub.elems.nonEmpty then Some(Rel(r.e, r.rt, sub)) 
+          if sub.elems.nonEmpty then Some(Rel(r.e, r.t, sub)) 
           else if // TODO: think more about what this means
-            hasTerm(r.rt) ||  
+            hasTerm(r.t) ||  
             hasTerm(r.e) || 
-            hasTerm(r.e & r.rt) || 
-            hasTerm(r.e.et) ||
-            hasTerm(r.e.et & r.rt) ||
+            hasTerm(r.e & r.t) || 
+            hasTerm(r.e.t) ||
+            hasTerm(r.e.t & r.t) ||
             hasTerm(r) ||
             r.expandSubnodes.exists(rel => hasTerm(rel))
-          then Some(Rel(r.e, r.rt, sub))
+          then Some(Rel(r.e, r.t, sub))
           else None
 
         case _ => None

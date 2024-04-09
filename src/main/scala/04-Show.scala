@@ -15,7 +15,7 @@ object Show:
       if a.contains('"') || a.contains('\n') then s"\"\"\"$a\"\"\"" else s"\"$a\""
 
   given showLink: Show[Link] with
-    override def show(el: Link): String = s"${el.e.show}.${el.rt.show}"
+    override def show(el: Link): String = s"${el.e.show}.${el.t.show}"
 
   given showNode: Show[Node] with
     override def show(n: Node): String = n match
@@ -32,8 +32,21 @@ object Show:
   // given showPathEmpty: Show[Path.Empty.type] with
   //   override def show(e: Path.Empty.type): String = "Path.Empty"
 
-  // given showPath: Show[Path] with
-  //   override def show(p: Path): String = p.toVector.map(_.show).mkString("Path/","/","")
+  given showEmptyPath: Show[Path.type] with 
+    override def show(p: Path.type): String = "Path"
+
+  given showPath: Show[Path] with
+    override def show(p: Path): String =
+      if p.links.isEmpty && !p.hasDest then "Path" else  
+        val showLinks: Vector[String] = p.links.map(_.show)
+        val showDest: String = if !p.hasDest then "" else 
+          p.dest match
+            case e: Ent          => e.show
+            case a: Attr[?]      => a.show
+            case at: AttrType[?] => at.show
+            case et: EntType     => et.show
+        val xs = if p.hasDest then (showLinks :+ showDest) else showLinks
+        xs.mkString("Path/","/", "")
 
   given showElem: Show[Elem] with 
     override def show(e: Elem): String = e match 

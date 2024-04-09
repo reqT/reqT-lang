@@ -6,7 +6,7 @@ class TestMetaModel extends munit.FunSuite:
   import meta.*
   import showDeprecations.*
 
-  test("All meta model names consistent with concepts"):
+  test("Names corresponds to concepts"):
     val names1 = 
       (entityConcepts ++ strAttrConcepts ++ intAttrConcepts ++ relationConcepts).map((name, descr) => name).sorted
         ++ generalConcepts.map(_.name)
@@ -15,7 +15,7 @@ class TestMetaModel extends munit.FunSuite:
     assert((names1 diff names2).length == 0, s"missing in definitions: ${(names1 diff names2).mkString(",")}") 
 
 
-  test("All deprecations have consistent advice      "):
+  test("Deprecations have advice     "):
 
     def check(act: String, tpe: String)(xs: Seq[String]) =
       val mig: Seq[String] =

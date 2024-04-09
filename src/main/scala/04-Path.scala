@@ -7,6 +7,8 @@ sealed trait Path:
 
   def links: Vector[Link]
 
+  def firstLinkDropped: Path
+
   def dest: Dest
   
   def hasDest: Boolean
@@ -18,31 +20,46 @@ sealed trait Path:
   
   def toVector: Vector[Link | Dest] = if !hasDest then links else links :+ dest 
 
-object Path:
+  def toModel: Model = 
+    if links.isEmpty then
+      if !hasDest then Model() else dest match
+        case e: Ent => Model(e)
+        case a: Attr[?]  => Model(a)
+        case at: AttrType[?] => Model(Undefined(at))
+        case et: EntType => Model(et.apply(""))
+    else
+      val h = links.head
+      Model() + Rel(h.e, h.t, firstLinkDropped.toModel)
+
+case object Path:
   def fromString(s: String): Path = ???  
   // TODO: parse path strings such as """Path/Feature("x")/Undefined(Prio)"""
     
-
   final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends Path:
     type Value = T
     def hasDest: Boolean = true
+    def firstLinkDropped: AttrTypePath[T] = copy(links = links.tail)
   
   final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends Path:
     type Value = T
     def hasDest: Boolean = true
+    def firstLinkDropped: AttrPath[T] = copy(links = links.tail)
 
   final case class EntTypePath(links: Vector[Link], dest: EntType) extends Path:
     type Value = Nothing
     def hasDest: Boolean = true
+    def firstLinkDropped: EntTypePath = copy(links = links.tail)
 
   final case class EntPath(links: Vector[Link], dest: Ent) extends Path:
     type Value = Nothing
     def hasDest: Boolean = true
+    def firstLinkDropped: EntPath = copy(links = links.tail)
 
   final case class LinkPath(links: Vector[Link]) extends Path:
     type Value = Nothing
     def dest = throw java.util.NoSuchElementException()
     def hasDest: Boolean = false
+    def firstLinkDropped: LinkPath = copy(links = links.tail)
   
   def /(link: Link): LinkPath = LinkPath(Vector(link))
   def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)

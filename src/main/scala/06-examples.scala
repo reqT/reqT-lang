@@ -253,8 +253,8 @@ object Prioritization:
 
   def NormalizedBenefits: Model =
     val m = Prio100DollarTest
-    val shs = m.ents.filter(_.et == Stakeholder).distinct
-    val rs = m.ents.filter(_.et == Req).distinct
+    val shs = m.ents.filter(_.t == Stakeholder).distinct
+    val rs = m.ents.filter(_.t == Req).distinct
     val prioSum = shs.flatMap(s => m/s.has/Prio).sum
     val benefitSum = shs.map: s => 
         s -> (m/s.has).intAttrs.collect{ case IntAttr(Benefit, b) => b}.sum
