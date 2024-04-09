@@ -68,7 +68,7 @@ class TestModelOps extends munit.FunSuite:
     assert:
       Req("x").has(Prio(1)) +: Model() == Model(Req("x").has(Prio(1))) 
 
-  test("Model normal distinct    "):
+  test("Model normal distinct   "):
     val m = Model(
       Req("y").has(Prio(1),Prio(2),Req("z").has(Req("a"))),
       Req("y").has(Prio(1),Prio(2),Req("z").has(Req("b"))),
@@ -116,9 +116,42 @@ class TestModelOps extends munit.FunSuite:
       Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).distinctAttrType ==
       Model(Prio(1),Req("x"),Req("y"),Req("x"))
 
-    assert: // invariants: all below should always hold
-      m.distinct == m.paths.map(_.toModel).reduceLeft(_ ++ _)  
+  test("Model invariants        "):
+    val m = Model(
+      Req("y").has(Prio(1),Prio(2),Req("z").has(Req("a"))),
+      Req("y").has(Prio(1),Prio(2),Req("z").has(Req("b"))),
+      Prio(2),
+      Prio(1),
+      Undefined(Prio),
+      Undefined(Prio),
+      Req("x"),
+      Req("x").has(),
+      Req("x"),
+      Req("x").has(),
+      Req("x").has(Prio(1),Prio(2),Req("z")),
+      Req("x").has(Prio(1),Prio(2),Req("x")),
+      Req("x").has(Prio(2),Prio(1),Req("y")),
+      Req("y").has(Prio(1),Prio(2),Req("x")),
+      Req("y").has(Prio(1),Prio(2),Req("y")),
+      Req("y").has(Prio(1),Prio(2),Req("z")),
+    )
+    
+    assert: 
+      m.distinct == m.paths.map(_.toModel).reduceLeft(_ ++ _)
+    assert:
       m.maximal == m.paths.map(_.toModel).reduceLeft(_ :++ _)
+    assert:
+      m.minimal.sorted == m.minimal.normal
+      
+    val randomModels = Seq.tabulate(10)(i => Model.random(i))
+
+    // assert: 
+    //   randomModels.forall(m => m.distinct == m.paths.map(_.toModel).foldLeft(Model())(_ ++ _))  ????
+
+    // assert:
+    //   m.maximal == m.paths.map(_.toModel).reduceLeft(_ :++ _)
+    // assert:
+    //   m.minimal.sorted == m.minimal.normal
 
       //TODO for all random models....
 

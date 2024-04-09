@@ -122,6 +122,18 @@ transparent trait ModelMembers:
       case e => Vector(e)
     Model(es)
 
+  /** A new Model that removes Ent that are also part of Links. **/
+  def distinctEntLinks: Model =
+    val es = elems.flatMap:
+      case e: Ent => 
+        if elems.exists: 
+          case Rel(e2, t, sub) if e == e2 => true
+          case _ => false 
+        then Seq()
+        else Seq(e)
+      case e => Seq(e)
+    Model(es)
+
   /** A new Model with recursive de-duplication of its elems on all levels. **/
   def distinctElemsDeep: Model =
     val es = elems.distinct.map:
@@ -174,7 +186,8 @@ transparent trait ModelMembers:
   /** A Model in normal form: elems are added one by one replacing same nodes and then sorted. **/
   def normal: Model = distinct.sorted
 
-  def minimal: Model = cutEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinct
+  def minimal: Model = 
+    cutEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinctEntLinks.distinct
 
   def atoms: Vector[Elem] = paths.flatMap(_.toModel.elems)
 
