@@ -130,6 +130,7 @@ object err:
   def missingPar(s: String)       = ParseException(s"Missing enclosing () in: $s")
   def missingEndPar(s: String)    = ParseException(s"Missing matching ) at end: $s")
   def badIdentifier(s: String)    = ParseException(s"Bad identifier: $s")
+  def badParamType(s: String)     = ParseException(s"Bad param type: $s")
   def varExpected(s: String)      = ParseException(s"Var expected: $s")
   def identExpected(s: String)    = ParseException(s"Identifier expected: $s")
   def operatorExpected(s: String) = ParseException(s"Operator expected: $s")
