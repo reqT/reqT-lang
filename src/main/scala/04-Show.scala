@@ -29,9 +29,6 @@ object Show:
       case n: Node => n.show
       case l: Link => l.show
 
-  // given showPathEmpty: Show[Path.Empty.type] with
-  //   override def show(e: Path.Empty.type): String = "Path.Empty"
-
   given showEmptyPath: Show[Path.type] with 
     override def show(p: Path.type): String = "Path"
 
@@ -46,7 +43,7 @@ object Show:
             case at: AttrType[?] => at.show
             case et: EntType     => et.show
         val xs = if p.hasDest then (showLinks :+ showDest) else showLinks
-        xs.mkString("Path/","/", "")
+        xs.mkString("Path(","/", ")")
 
   given showElem: Show[Elem] with 
     override def show(e: Elem): String = e match 

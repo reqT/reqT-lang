@@ -1,5 +1,7 @@
 package reqt 
 
+import scala.compiletime.ops.double
+
 /** A Scala-embedded DSL for expressing integer constraint satisfaction problems. */
 object csp: 
   def constraints(cs: Constr*): Seq[Constr] = cs.toSeq 
@@ -248,3 +250,83 @@ object csp:
     lazy val seq1 = item
     lazy val seq2 = load
     lazy val constSeq1 = size    
+
+  object parseConstraints:
+    import parseUtils.*
+    object mk:
+      type ConstrMaker = Seq[Var] => Constr
+      
+      val constr: Map[String, ConstrMaker] = Map(
+        "XeqY" -> (xs => XeqY(xs(0), xs(1)))
+      )
+
+      val oper: Map[String, ConstrMaker] = Map(
+        ">" -> (xs => XgtY(xs(0), xs(1))),
+        "<" -> (xs => XltY(xs(0), xs(1))),
+      )
+    end mk
+
+    val isConstrClass: Set[String] = mk.constr.keySet
+
+    val isOperand: Set[String] = mk.oper.keySet
+
+    def parseIdent(s: String): (String, String) = 
+      val fw = s.firstWord
+      val rest = s.stripPrefix(fw).trim
+      if fw == "Path" then 
+        ??? // (Path.fromString(s), rest) 
+      else 
+        if fw.isEmpty || !fw(0).isUnicodeIdentifierStart || !fw.drop(1).forall(_.isUnicodeIdentifierPart) 
+        then throw err.badIdentifier(fw) 
+        (fw, rest)
+
+    def parseVar(s: String): (Var, String) = 
+      val (inside, rest) = parseInside(s.stripPrefix("Var"))
+      val id: (String | Path) = 
+        if inside.startsWith("Path") then Path.fromString(inside).getOrElse(throw err.illegalPath(inside))
+        else inside
+      (Var(id), rest)
+
+    def parseVarList(s: String): Seq[Var] = 
+      val xs = s.splitEscaped(',', '"')
+      ???
+      
+    def parseOperator(s: String): (String, String) = 
+      val op = s.takeWhile(!_.isWhitespace)
+      (op,  s.stripPrefix(op).trim)
+
+    def parseConstr(s: String): Constr =
+      val fw = s.firstWord
+      if isConstrClass(fw) then 
+        val rest1 = s.stripPrefix(fw)
+        val (inside, rest2) = parseInside(rest1)
+        if rest2.nonEmpty then throw err.unknownTrailing(rest2) else
+          val vs = parseVarList(inside) 
+          mk.constr(fw)(vs) 
+        end if 
+      else if fw == "Var" then 
+        val (v1, rest1) = parseVar(s)
+        val (op, rest2) = parseOperator(rest1) 
+        if !isOperand(op) then throw err.operatorExpected(s"$op $rest2")
+        val (v2, rest3) = parseVar(rest2)
+        if rest3.nonEmpty then throw err.unknownTrailing(rest3)
+        mk.oper(op)(Seq(v1, v2))
+      else if fw == "Path" then 
+        ???  // use Path.fromString
+      else if isIdStart(s) then 
+        val (i1, rest1) = parseIdent(s)
+        val (op, rest2) = parseOperator(rest1) 
+        if !isOperand(op) then throw err.operatorExpected(s"$op $rest2")
+        val (i2, rest3) = parseIdent(rest2)
+        if rest3.nonEmpty then throw err.unknownTrailing(rest3)
+        mk.oper(op)(Seq(Var(i1), Var(i2)))
+      else throw err.varExpected(s) 
+    
+    def parseLines(s: String): util.Try[Seq[Constr]] = util.Try:
+      val nonEmptyTrimmedLines = s.toLines.map(_.trim).filter(_.nonEmpty)
+      nonEmptyTrimmedLines.map(parseConstr).toSeq
+
+    def apply(s: String): (Seq[Constr], String) = parseLines(s) match
+      case scala.util.Failure(exception) => (Seq(), exception.getMessage)
+      case scala.util.Success(value)     => (value, "")
+

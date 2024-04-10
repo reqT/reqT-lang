@@ -142,8 +142,21 @@ class TestModelOps extends munit.FunSuite:
       m.maximal == m.paths.map(_.toModel).reduceLeft(_ :++ _)
     assert:
       m.minimal.sorted == m.minimal.normal
+
+    assert:
+      m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths
       
-    val randomModels = Seq.tabulate(10)(i => Model.random(i))
+    val ms = Seq.tabulate(100)(i => Model.random(10))
+
+    assert: 
+      ms.forall(m => m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths)
+
+    assert: 
+      ms.forall(m => m.minimal.maximal.normal == m.maximal.minimal.normal)
+      
+    assert: 
+      ms.forall(m => m.minimal.maximal.normal == m.maximal.minimal.normal)
+
 
     // assert: 
     //   randomModels.forall(m => m.distinct == m.paths.map(_.toModel).foldLeft(Model())(_ ++ _))  ????

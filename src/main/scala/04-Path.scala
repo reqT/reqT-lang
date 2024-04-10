@@ -1,5 +1,7 @@
 package reqt
 
+import reqt.meta.isElemStart
+
 sealed trait Path:
   type Value 
 
@@ -31,41 +33,50 @@ sealed trait Path:
       val h = links.head
       Model() + Rel(h.e, h.t, firstLinkDropped.toModel)
 
-case object Path:
-  def fromString(s: String): Path = ???  
-  // TODO: parse path strings such as """Path/Feature("x")/Undefined(Prio)"""
-    
-  final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends Path:
-    type Value = T
-    def hasDest: Boolean = true
-    def firstLinkDropped: AttrTypePath[T] = copy(links = links.tail)
-  
-  final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends Path:
-    type Value = T
-    def hasDest: Boolean = true
-    def firstLinkDropped: AttrPath[T] = copy(links = links.tail)
-
-  final case class EntTypePath(links: Vector[Link], dest: EntType) extends Path:
-    type Value = Nothing
-    def hasDest: Boolean = true
-    def firstLinkDropped: EntTypePath = copy(links = links.tail)
-
-  final case class EntPath(links: Vector[Link], dest: Ent) extends Path:
-    type Value = Nothing
-    def hasDest: Boolean = true
-    def firstLinkDropped: EntPath = copy(links = links.tail)
-
-  final case class LinkPath(links: Vector[Link]) extends Path:
-    type Value = Nothing
-    def dest = throw java.util.NoSuchElementException()
-    def hasDest: Boolean = false
-    def firstLinkDropped: LinkPath = copy(links = links.tail)
-  
+case object Root:  // TODO: is this needed or is it just another unnecessary way of doing Path(...)
   def /(link: Link): LinkPath = LinkPath(Vector(link))
   def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)
   def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](Vector(), a)
   def /(e: Ent): EntPath = EntPath(Vector(), e)
   def /(e: EntType): EntTypePath = EntTypePath(Vector(), e)
+
+case object Path:
+  def fromString(s: String): Option[Path] = 
+    if s.isEmpty then None 
+    else if s == "Path" || s == "Path()" then Some(Path())
+    else if s.startsWith("(") && s.endsWith(")") then fromString(s.drop(1).dropRight(1))
+    else if s.startsWith("Path(") && s.endsWith(")") then fromString(s.drop(5).dropRight(1))
+    else
+      import parseUtils.*
+      import meta.*
+      val parts = s.splitEscaped('/','"').toVector
+      if parts.isEmpty then None else
+        type ParsedUnion = Elem | ElemType | Link
+        val parsed: Vector[(Option[ParsedUnion], String)] = parts.map(meta.parseConcept)
+        val parsedParts: Vector[ParsedUnion] = parsed.collect{ case (Some(p), s) if s.isEmpty => p}
+        if parsedParts.length != parts.length then None // overflow strings means malformed path 
+        else
+          val links: Vector[Link] = parsed.collect{ case (Some(Link(e,t)), s) => Link(e,t)}
+          val last: ParsedUnion = parsedParts.last
+          if links != parsedParts.dropRight(1) then None // malformed path if not starting with links
+          else
+            last match
+              case _: Link        => Some(LinkPath(links))
+              case a: Attr[?]     => Some(AttrPath(links, a))
+              case a: AttrType[?] => Some(AttrTypePath(links, a))
+              case e: Ent         => Some(EntPath(links, e))
+              case e: EntType     => Some(EntTypePath(links, e))
+              case _              => None // malformed path
+
+  def apply(): LinkPath = LinkPath(Vector()) // Empty path
+
+  def apply(p: Path): Path = p  // recursively unpack Path(Path(Path(...)))
+    
+  def apply(link: Link): LinkPath = LinkPath(Vector(link))
+  def apply[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)
+  def apply[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](Vector(), a)
+  def apply(e: Ent): EntPath = EntPath(Vector(), e)
+  def apply(e: EntType): EntTypePath = EntTypePath(Vector(), e)
 
   extension (l1: Link) 
     def /(l2: Link): LinkPath = LinkPath(Vector(l1, l2))
@@ -80,5 +91,30 @@ case object Path:
     def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](lp.links, a)
     def /(e: Ent): EntPath = EntPath(lp.links, e)
     def /(e: EntType): EntTypePath = EntTypePath(lp.links, e)
+end Path
 
-  
+final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends Path:
+  type Value = T
+  def hasDest: Boolean = true
+  def firstLinkDropped: AttrTypePath[T] = copy(links = links.tail)
+
+final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends Path:
+  type Value = T
+  def hasDest: Boolean = true
+  def firstLinkDropped: AttrPath[T] = copy(links = links.tail)
+
+final case class EntTypePath(links: Vector[Link], dest: EntType) extends Path:
+  type Value = Nothing
+  def hasDest: Boolean = true
+  def firstLinkDropped: EntTypePath = copy(links = links.tail)
+
+final case class EntPath(links: Vector[Link], dest: Ent) extends Path:
+  type Value = Nothing
+  def hasDest: Boolean = true
+  def firstLinkDropped: EntPath = copy(links = links.tail)
+
+final case class LinkPath(links: Vector[Link]) extends Path:
+  type Value = Nothing
+  def dest = throw java.util.NoSuchElementException()
+  def hasDest: Boolean = false
+  def firstLinkDropped: LinkPath = copy(links = links.tail)

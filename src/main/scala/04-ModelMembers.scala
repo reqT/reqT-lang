@@ -26,7 +26,7 @@ transparent trait ModelMembers:
 
   /** A new Model with other Model's elems appended to elems. Same as: `m :++ other` 
     * NOTE: Different from `m ++ other` */
-  def append(other: Model): Model = Model(elems ++ other.elems)  
+  def append(other: Model): Model = Model(elems :++ other.elems)  
 
   def :++(other: Model): Model = append(other)
 
@@ -203,7 +203,7 @@ transparent trait ModelMembers:
   def top: Model = cut(1)
 
   def sub: Model =
-    elems.collect { case Rel(e, r, sub) => sub }.foldLeft(Model())(_ ++ _)
+    elems.collect { case Rel(e, r, sub) => sub }.foldLeft(Model())(_ :++ _)
 
   /** Cut all relations so that no relations is deeper than depth. cut(0) == tip, cut(1) == top **/
   def cut(depth : Int): Model = 
@@ -223,7 +223,7 @@ transparent trait ModelMembers:
 
       case Vector(link) => 
         val ms: Vector[Model] = elems.collect{ case r: Rel if r.e == link.e && r.t == link.t => r.sub}
-        ms.foldLeft(Model())(_ ++ _)
+        ms.foldLeft(Model())(_ :++ _)
 
       case Vector(link, rest*) => 
         val m2 = self / link

@@ -192,6 +192,40 @@ object meta:
     def isRelType: Boolean     = relTypes.isDefinedAt(s)
     def isElemStart: Boolean   = isConceptName(s.skipIndent.takeWhile(ch => ch.isLetter)) //!(ch.isSpaceChar || ch == '\t')))
 
+  def parseConcept(s: String): (Option[Elem | ElemType | Link], String) =
+    val trimmed = s.trim
+    val fw = trimmed.firstWord
+    val rest1 = trimmed.drop(fw.length).trim
+    if rest1.isEmpty then 
+      if fw.isNodeType then (Some(nodeTypes(fw)), "")
+      else if fw.isRelType then (Some(relTypes(fw)), "")
+      else (None, s)
+    else if rest1(0) != '(' then (None, s) else 
+      val (param, rest2) = rest1.partitionByCharEscaped(')','"')
+      val rest2afterParen = rest2.stripPrefix(")").trim
+      val hasLinkDot = rest2afterParen.startsWith(".")
+      val inner = param.trim.drop(1)
+      val unquoted = inner.dropQuotes
+      if fw == "Undefined" then
+        if inner.isStrAttrType then (Some(Undefined(strAttrTypes(inner))), rest2afterParen) 
+        if inner.isIntAttrType then (Some(Undefined(intAttrTypes(inner))), rest2afterParen) 
+        else (None, s) 
+      else if fw.isEntType then 
+        if !hasLinkDot then
+          (Some(entTypes(fw).apply(unquoted)), rest2afterParen)
+        else 
+          val relPart = rest2afterParen.drop(1)
+          val relWord = relPart.firstWord
+          val rest3 = relPart.drop(relWord.length)
+          if relWord.isRelType then (Some(Link(entTypes(fw).apply(unquoted), relTypes(relWord))), rest3)
+          else (None, s)
+      else if fw.isStrAttrType then (Some(strAttrTypes(fw).apply(unquoted)), rest2afterParen)
+      else if fw.isIntAttrType then 
+        val intOpt = inner.toIntOption
+        if intOpt.isDefined then (Some(intAttrTypes(fw).apply(intOpt.get)), rest2afterParen)
+        else (None, s)
+      else (None, s)
+
   def matrix: Seq[Seq[String]] = for Concept(n, d, t, g) <- concepts yield Seq(n, t, g, d) 
 
   def csv(delim: String = ";"): String = 

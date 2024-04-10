@@ -1,6 +1,9 @@
 package reqt
 package examples
 
+object constraintProblems:
+  val releasePlanningSimple = ???
+
 /** Examples from "Software Requirements - Styles and techniques" by S. Lauesen (2002)". */
 object Lauesen:
   val allExamples = 
