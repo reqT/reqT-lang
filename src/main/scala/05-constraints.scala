@@ -254,15 +254,25 @@ object csp:
   object parseConstraints:
     import parseUtils.*
     object mk:
-      type ConstrMaker = Seq[Var] => Constr
+      type Param = Var | Int | Boolean
+
+      type ConstrMaker = Seq[Param] => Constr
       
+      private def bang(x: Param) = throw err.badParamType(x.toString)
+      
+      extension (x: Param)
+        def asVar: Var      = x match { case x: Var     => x case _ => bang(x)}
+        def asInt: Int      = x match { case x: Int     => x case _ => bang(x)}
+        def asBool: Boolean = x match { case x: Boolean => x case _ => bang(x)}
+
       val constr: Map[String, ConstrMaker] = Map(
-        "XeqY" -> (xs => XeqY(xs(0), xs(1)))
+        "XeqY" -> (xs => XeqY(xs(0).asVar, xs(1).asVar)),   //should these be strings and xs(0).parseVar ???
+        "XeqC" -> (xs => XeqC(xs(0).asVar, xs(1).asInt)),
       )
 
       val oper: Map[String, ConstrMaker] = Map(
-        ">" -> (xs => XgtY(xs(0), xs(1))),
-        "<" -> (xs => XltY(xs(0), xs(1))),
+        ">" -> {xs => XgtY(xs(0).asVar, xs(1).asVar)},
+        "<" -> {xs => XltY(xs(0).asVar, xs(1).asVar)},
       )
     end mk
 
