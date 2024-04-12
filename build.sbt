@@ -35,13 +35,13 @@ lazy val hello = taskKey[Unit]("Prints welcome message")
 
 hello := println(s"""
   *** Welcome to the $nameOfThisBuild build in sbt ***
-
-  type 'meta' to generate meta files, or use the underlying `Test / run` task
-  type 'test' to run all tests
-  type 'package' to build a jar in target/scala-x.y.z
-  type 'build' to do clean + all of the above
-  type 'console' to enter the Scala REPL with reqt.* imported
-  type 'hello' to see this message
+  
+  meta       generate meta files, or use the underlying `Test / run` task
+  test       run all tests
+  package    build a jar in target/scala-x.y.z
+  build      clean + all of the above
+  console    enter the Scala REPL with reqt.* imported
+  hello      see this message
 """)
 
 lazy val myStartupTransition: State => State = { s: State =>
