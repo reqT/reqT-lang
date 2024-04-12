@@ -24,7 +24,8 @@ sealed trait Node extends Elem:
 
 sealed trait ElemType
 sealed trait NodeType extends ElemType
-sealed trait AttrType[T] extends NodeType
+sealed trait AttrType[T] extends NodeType:
+  def apply(value: T): Attr[T]
 
 final case class Link(e: Ent, t: RelType)
 
@@ -56,12 +57,15 @@ final case class Rel(e: Ent, t: RelType, sub: Model) extends Elem:
   def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, t, Model(n)) }
 
 enum EntType extends NodeType:
+  def apply(id: String): Ent = Ent(this, id)
   case Barrier, Breakpoint, Class, Component, Configuration, Data, Design, Domain, Epic, Event, Feature, Field, Function, Goal, Idea, Image, Interface, Issue, Label, Member, Module, Product, Prototype, Quality, Relationship, Release, Req, Resource, Risk, Screen, Section, Stakeholder, State, Story, System, Target, Task, Term, Test, UseCase, User, Variant, VariationPoint
 
 enum StrAttrType extends AttrType[String]:
+  def apply(value: String): StrAttr = StrAttr(this, value)
   case Comment, Constraints, Deprecated, Example, Expectation, Failure, Gist, Input, Location, Output, Spec, Text, Title, Why
 
 enum IntAttrType extends AttrType[Int]:
+  def apply(value: Int):    IntAttr = IntAttr(this, value)
   case Benefit, Capacity, Cost, Damage, Frequency, Max, Min, Order, Prio, Probability, Profit, Value
 
 enum RelType extends ElemType:
@@ -71,11 +75,6 @@ export EntType.*
 export StrAttrType.*
 export IntAttrType.*
 export RelType.*
-
-extension (t: EntType)      def apply(id: String): Ent = Ent(t, id)
-extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
-extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
-extension (e: Ent)
   def binds(sub: Elem*): Rel = Rel(e, Binds, Model(sub*))
   def binds: Link = Link(e, Binds)
 

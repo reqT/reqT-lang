@@ -262,7 +262,8 @@ object meta:
         |
         |sealed trait ElemType
         |sealed trait NodeType extends ElemType
-        |sealed trait AttrType[T] extends NodeType
+        |sealed trait AttrType[T] extends NodeType:
+        |  def apply(value: T): Attr[T]
         |
         |final case class Link(e: Ent, t: RelType)
         |
@@ -294,12 +295,15 @@ object meta:
         |  def expandSubnodes: Vector[Rel] = sub.elems.collect{ case n: Node => Rel(e, t, Model(n)) }
         |
         |enum EntType extends NodeType:
+        |  def apply(id: String): Ent = Ent(this, id)
         |  case ${entityNames.mkString(", ")}
         |
         |enum StrAttrType extends AttrType[String]:
+        |  def apply(value: String): StrAttr = StrAttr(this, value)
         |  case ${strAttrNames.mkString(", ")}
         |
         |enum IntAttrType extends AttrType[Int]:
+        |  def apply(value: Int):    IntAttr = IntAttr(this, value)
         |  case ${intAttrNames.mkString(", ")}
         |
         |enum RelType extends ElemType:
@@ -309,9 +313,4 @@ object meta:
         |export StrAttrType.*
         |export IntAttrType.*
         |export RelType.*
-        |
-        |extension (t: EntType)      def apply(id: String): Ent = Ent(t, id)
-        |extension (sat: StrAttrType) def apply(value: String): StrAttr = StrAttr(sat, value)
-        |extension (sat: IntAttrType) def apply(value: Int):    IntAttr = IntAttr(sat, value)
-        |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(entExtensions).mkString("","\n", "").stripMargin
