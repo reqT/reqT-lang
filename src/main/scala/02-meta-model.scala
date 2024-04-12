@@ -313,4 +313,6 @@ object meta:
         |export StrAttrType.*
         |export IntAttrType.*
         |export RelType.*
+        |
+        |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(entExtensions).mkString("","\n", "").stripMargin

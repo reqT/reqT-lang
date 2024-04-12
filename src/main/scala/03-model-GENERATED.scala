@@ -75,6 +75,8 @@ export EntType.*
 export StrAttrType.*
 export IntAttrType.*
 export RelType.*
+
+extension (e: Ent)
   def binds(sub: Elem*): Rel = Rel(e, Binds, Model(sub*))
   def binds: Link = Link(e, Binds)
 
