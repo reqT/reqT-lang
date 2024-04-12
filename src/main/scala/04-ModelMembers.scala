@@ -95,6 +95,11 @@ transparent trait ModelMembers:
 
   def relTypes: Vector[RelType] = links.map(_.t)
 
+  def rels: Vector[Rel] = elems.flatMap:
+    case _: Node => Vector() 
+    case r@Rel(_, _, m) => Vector(r) ++ m.rels
+
+
   def undefined: Vector[Undefined[?]] = nodes.collect{ case u: Undefined[?] => u }
 
   def ents: Vector[Ent]         = nodes.collect { case e: Ent => e }
