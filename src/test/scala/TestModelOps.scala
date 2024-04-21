@@ -168,3 +168,21 @@ class TestModelOps extends munit.FunSuite:
 
       //TODO for all random models....
 
+  test("Model ordering          "):
+    val m = Model(
+      Stakeholder("a"),
+      Feature("x").has(
+        Stakeholder("b"),
+        Req("a") has Order(2),
+        Req("b") has Order(3),
+        Req("c") has Order(4),
+        Req("d") has Order(1),
+        Req("e") has Order(7),
+      )
+    )
+    
+    assert(m.orderIdsBy(Order) == "d a b c e".split(" ").toVector)
+
+    assert(true)
+
+

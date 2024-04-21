@@ -110,7 +110,34 @@ transparent trait ModelMembers:
   def intAttrs: Vector[IntAttr] = nodes.collect { case a: IntAttr => a }
   def intValues: Vector[Int]    = nodes.collect { case a: IntAttr => a.value }
   
-  def ids: Vector[String] = ents.map(_.id)
+  lazy val ids: Vector[String] = ents.map(_.id)
+
+  lazy val idTypeMap: Map[String, Set[EntType]] = 
+    ents.groupBy(_.id).map((id, xs) => id -> xs.map(_.t).toSet)
+  
+  lazy val idMap: Map[String, Vector[Ent]] = 
+    ents.groupBy(_.id).map((id, xs) => id -> xs.toVector)
+
+  def isIdTypeDistinct: Boolean = idTypeMap.forall((id, xs) => xs.size == 1)
+
+  def nonTypeDistinctIds: Map[String, Set[EntType]] = idTypeMap.filter((id, xs) => xs.size > 1)
+
+  def entsOfId(id: String): Vector[Ent] = idMap.get(id).getOrElse(Vector())
+
+  def getEntOfId(id: String): Ent = idMap(id).head
+
+  def entTypesOfId(id: String): Set[EntType] = idTypeMap(id)
+
+  def orderIdsBy(iat: IntAttrType): Vector[String] = 
+    val lro: Model = leafRelsOf(iat)
+    lro.ids.sortBy(id => (lro / lro.getEntOfId(id).has / iat).headOption)
+
+  def fromIdOrdering(iat: IntAttrType, ids: Seq[String]): Model =
+    val indexOfId = ids.zipWithIndex.toMap
+    val pairs: Seq[(Ent, Int)] = 
+      ids.map(entsOfId).filter(_.nonEmpty).map(_.head).map(e => e -> (indexOfId(e.id) + 1))
+    val rels = pairs.sortBy(_._2).map((e,i) => e.has(iat(i)))
+    Model(rels*)
 
   /** A new Model with distinct elems (non-recursive). **/
   def distinctElems: Model = Model(elems.distinct) 
@@ -268,6 +295,33 @@ transparent trait ModelMembers:
     end recur
     recur(Vector(), self)
     pb.toVector
+
+  def pathsOf[T](at: AttrType[T]): Vector[AttrPath[T]] = 
+    val pb = collection.mutable.ArrayBuffer.empty[AttrPath[T]]
+
+    def recur(links: Vector[Link], m: Model): Unit =
+      for e <- m.elems do 
+        e match
+          case a: StrAttr if a.t == at => pb.append(AttrPath(links, a.asInstanceOf[Attr[T]]))
+          case a: IntAttr if a.t == at => pb.append(AttrPath(links, a.asInstanceOf[Attr[T]]))
+          case Rel(e, rt, sub) => recur(links :+ Link(e, rt), sub) 
+          case _ => 
+    end recur
+    recur(Vector(), self)
+    pb.toVector
+
+  def bottom(n: Int): Model = paths.map(_.takeLinksRight(n)).toModel
+
+  lazy val leafs: Model = bottom(0)
+
+  lazy val leafRels: Model = Model(bottom(1).elems.collect{ case r: Rel => r})
+
+  def leafRelsOf[T](at: AttrType[T]): Model = 
+    Model(leafRels.elems.collect{ case r: Rel if r.sub.elems.exists(e => e.t == at) => r})
+
+  def leafRelsOf(et: EntType): Model = 
+    Model(leafRels.elems.collect{ case r: Rel if r.e.t == et => r})
+
 
   def concatAdjacentText = Model(elems.concatAdjacent(Text, "\n"))
 

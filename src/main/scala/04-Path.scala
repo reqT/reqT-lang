@@ -11,6 +11,8 @@ sealed trait Path:
 
   def firstLinkDropped: Path
 
+  def takeLinksRight(n: Int): Path 
+
   def dest: Dest
   
   def hasDest: Boolean
@@ -91,30 +93,39 @@ case object Path:
     def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](lp.links, a)
     def /(e: Ent): EntPath = EntPath(lp.links, e)
     def /(e: EntType): EntTypePath = EntTypePath(lp.links, e)
+
+  extension (ps: Seq[Path]) 
+    def toModel: Model = ps.map(_.toModel).foldLeft(Model.empty)(_ :++ _)
 end Path
 
 final case class AttrTypePath[T](links: Vector[Link], dest: AttrType[T]) extends Path:
   type Value = T
   def hasDest: Boolean = true
   def firstLinkDropped: AttrTypePath[T] = copy(links = links.tail)
+  def takeLinksRight(n: Int): AttrTypePath[T] = copy(links = links.takeRight(n))
 
 final case class AttrPath[T](links: Vector[Link], dest: Attr[T]) extends Path:
   type Value = T
   def hasDest: Boolean = true
   def firstLinkDropped: AttrPath[T] = copy(links = links.tail)
+  def takeLinksRight(n: Int): AttrPath[T] = copy(links = links.takeRight(n))
 
 final case class EntTypePath(links: Vector[Link], dest: EntType) extends Path:
   type Value = Nothing
   def hasDest: Boolean = true
   def firstLinkDropped: EntTypePath = copy(links = links.tail)
+  def takeLinksRight(n: Int): EntTypePath = copy(links = links.takeRight(n))
+
 
 final case class EntPath(links: Vector[Link], dest: Ent) extends Path:
   type Value = Nothing
   def hasDest: Boolean = true
   def firstLinkDropped: EntPath = copy(links = links.tail)
+  def takeLinksRight(n: Int): EntPath = copy(links = links.takeRight(n))
 
 final case class LinkPath(links: Vector[Link]) extends Path:
   type Value = Nothing
   def dest = throw java.util.NoSuchElementException()
   def hasDest: Boolean = false
   def firstLinkDropped: LinkPath = copy(links = links.tail)
+  def takeLinksRight(n: Int): LinkPath = copy(links = links.takeRight(n))
