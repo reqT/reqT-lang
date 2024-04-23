@@ -53,12 +53,12 @@ object Show:
   given showModel: Show[Model] with 
     override def show(m: Model): String = 
       val sb = scala.collection.mutable.StringBuilder("Model(\n")
-      def indent(lvl: Int): String = "  " * lvl
+      def indent2(lvl: Int): String = "  " * lvl
       def loop(elems: Vector[Elem], indentLevel: Int): Unit = 
         if elems.isEmpty then () else
           elems.head match
             case Rel(e, rt, sub) => 
-              sb.append(indent(indentLevel))
+              sb.append(indent2(indentLevel))
               if sub == Model.empty then 
                 sb.append(Link(e, rt).show) 
                 sb.append("(),\n")
@@ -67,11 +67,11 @@ object Show:
                 sb.append(Link(e, rt).show)
                 sb.append("(\n")
                 loop(sub.elems, indentLevel + 1)  // not tail-recursive
-                sb.append(indent(indentLevel))
+                sb.append(indent2(indentLevel))
                 sb.append("),\n")
                 loop(elems.drop(1), indentLevel)
             case e => 
-              sb.append(indent(indentLevel))
+              sb.append(indent2(indentLevel))
               sb.append(e.show)
               sb.append(",\n")
               loop(elems.drop(1), indentLevel)

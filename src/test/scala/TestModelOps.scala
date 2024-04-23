@@ -173,16 +173,42 @@ class TestModelOps extends munit.FunSuite:
       Stakeholder("a"),
       Feature("x").has(
         Stakeholder("b"),
-        Req("a") has Order(2),
-        Req("b") has Order(3),
-        Req("c") has Order(4),
-        Req("d") has Order(1),
-        Req("e") has Order(7),
+        Req("a") has Rank(2),
+        Req("b") has Rank(3),
+        Req("c") has Rank(4),
+        Req("d") has Rank(1),
+        Req("e") has Rank(7),
+      ),
+      Feature("y").has(
+        Stakeholder("b"),
+        Req("a") has Prio(2),
+        Req("b") has Prio(3),
+        Req("c") has Prio(4),
+        Req("d") has Prio(1),
+        Req("e") has Prio(7),
       )
     )
     
-    assert(m.orderIdsBy(Order) == "d a b c e".split(" ").toVector)
+    assert(m.entsOrderedBy(Rank) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
 
-    assert(true)
+    assert(m.toRankingFrom(Rank) == m.toRankingFrom(Prio))
+    assert(m.toRankingFrom(Rank).fromRankingTo(Prio) == m.toRankingFrom(Prio).fromRankingTo(Prio))
+
+    val r = Ranking: 
+     """  Feature a
+      Req x, Req y
+      foo bar
+        Stakeholder y """
+    val mr = Model(r).fromRankingTo(Value)
+
+    assert(mr.toMarkdown ==
+      s"""|* Feature: a has Value: 1
+          |* Req: x has Value: 2
+          |* Req: y has Value: 3
+          |* Req: foo has Value: 4
+          |* Req: bar has Value: 5
+          |* Stakeholder: y has Value: 6
+          |""".stripMargin)
+
 
 

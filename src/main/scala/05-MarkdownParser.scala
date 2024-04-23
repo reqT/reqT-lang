@@ -1,5 +1,7 @@
 package reqt
 
+import reqt.StringExtensions.spaceSplit
+
 /** A parser from Markdown-valid bullet lists with reqt.Elem. Unknown stuff is kept in Text attributes. **/
 object MarkdownParser:
   import meta.*
@@ -37,15 +39,15 @@ object MarkdownParser:
       debugMsg(s"""  i=$i\n  line=line(i)="$line" """)
       val level: Int = line.level(baseLevel)
       debugMsg(s"  level=$level")
-      val words: Array[String] = line.toWords
+      val parts: Array[String] = line.spaceSplit
 
-      if words.isEmpty then 
+      if parts.isEmpty then 
         debugMsg(s"""words is empty, line="$line" """)
         elems.append(Text(""))
       else
-        val first = words.head
+        val first = parts.head
         val isFirstHeading = first.startsWith("#") 
-        val isFirstBulletElem = first == "*" && words.length > 1
+        val isFirstBulletElem = first == "*" && parts.length > 1
         
         def endOfTextBlock: Int =
           var more = i
@@ -80,7 +82,7 @@ object MarkdownParser:
           appendUntilEnd(Text)
         else 
           debugMsg("""we know the line starts with "*" perhaps after some indentation""")
-          val secondWordColonStripped = words(1).stripColonSuffix
+          val secondWordColonStripped = parts(1).stripColonSuffix
           val restOfLine = line.removeLeadingBullet.skipFirstToken
 
           secondWordColonStripped match
@@ -94,7 +96,7 @@ object MarkdownParser:
 
           case w if w.isIntAttrType => 
             debugMsg("case w if w.isIntAttrType => MATCHED")
-            val thirdOpt: Option[String] = words.lift(2)
+            val thirdOpt: Option[String] = parts.lift(2)
             val numOpt: Option[Int] = thirdOpt.flatMap(_.toIntOption)
             val ia: Attr[Int] = 
               if numOpt.isDefined then intAttrTypes(w).apply(numOpt.get) 
@@ -113,17 +115,17 @@ object MarkdownParser:
           case w if w.isEntType =>
             debugMsg("case w if w.isEntType => MATCHED")
             val ent: EntType = entTypes(w) 
-            val thirdOpt: Option[String] = words.lift(2)
-            val r: Int = words.indexWhere(s => relTypes.isDefinedAt(s.stripColonSuffix))
+            val thirdOpt: Option[String] = parts.lift(2)
+            val r: Int = parts.indexWhere(s => relTypes.isDefinedAt(s.stripColonSuffix))
 
             if r == -1 then 
               debugMsg(s"  there is no RelType given on this line")
 
               val wordsWithId = thirdOpt match
                 case Some(id) if isConceptName(id) => // there is no id but a concept
-                   w +: Ent.emptyId +: words.drop(2)  // add empty id and then rest (drop leading * Ent)
+                   w +: Ent.emptyId +: parts.drop(2)  // add empty id and then rest (drop leading * Ent)
                 case _ =>  // there is an id that does not start with a concept 
-                  words.drop(1)  // drop leading *
+                  parts.drop(1)  // drop leading *
 
               val remainingWords = wordsWithId.drop(2)
 
@@ -163,12 +165,12 @@ object MarkdownParser:
               else elems.append(ent.apply(id))
             else // this is a relation
               debugMsg(s"""   parsing relation""")
-              val rt = relTypes(words(r).stripColonSuffix)
-              val idMaybeEmpty = words.slice(2, r).mkString(" ")  // 2 as we want to skip leading *
+              val rt = relTypes(parts(r).stripColonSuffix)
+              val idMaybeEmpty = parts.slice(2, r).mkString(" ")  // 2 as we want to skip leading *
               val id = 
                 if idMaybeEmpty.isEmpty then Ent.emptyId 
                 else idMaybeEmpty.stripColonSuffix // remove trailing colon in id because it is confusing 
-              val remainingWords = words.slice(r + 1, words.length)
+              val remainingWords = parts.slice(r + 1, parts.length)
               debugMsg(s"""      remainingWords.mkString(" ")=="${remainingWords.mkString(" ")}" """)
               val extraElemsOnThisLine: List[Elem] = 
                 if remainingWords.isEmpty then List.empty else 

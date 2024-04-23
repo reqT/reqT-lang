@@ -62,11 +62,11 @@ enum EntType extends NodeType:
 
 enum StrAttrType extends AttrType[String]:
   def apply(value: String): StrAttr = StrAttr(this, value)
-  case Comment, Constraints, Deprecated, Example, Expectation, Failure, Gist, Input, Location, Output, Spec, Text, Title, Why
+  case Comment, Constraints, Deprecated, Example, Expectation, Failure, Gist, Input, Location, Output, Ranking, Spec, Text, Title, Why
 
 enum IntAttrType extends AttrType[Int]:
   def apply(value: Int):    IntAttr = IntAttr(this, value)
-  case Benefit, Capacity, Cost, Damage, Frequency, Max, Min, Order, Prio, Probability, Profit, Value
+  case Benefit, Capacity, Cost, Damage, Frequency, Max, Min, Prio, Probability, Profit, Rank, Value
 
 enum RelType extends ElemType:
   case Binds, Deprecates, Excludes, Has, Helps, Hurts, Impacts, Implements, Inherits, Interacts, Precedes, Relates, Requires, Verifies

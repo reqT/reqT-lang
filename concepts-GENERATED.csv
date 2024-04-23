@@ -37,7 +37,6 @@ Member	EntType	DataEnt	A data entity that is part of another entity. More specif
 Min	Attr	IntAttr	A minimum estimated or assigned value.
 Model	Model	General	A collection of model elements, which can be entities, attributes or relations.
 Module	EntType	DesignEnt	A collection of coherent functions and interfaces.
-Order	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).
 Output	Attr	StrAttr	Data produced by an entity, e.g. a function or a test.
 Prio	Attr	IntAttr	A level of importance of an entity. Short for priority.
 Probability	Attr	IntAttr	A likelihood expressed as whole percentages that something (e.g. a risk) occurs.
@@ -45,6 +44,8 @@ Product	EntType	ContextEnt	An artifact offered to users or customers, e.g. an ap
 Profit	Attr	IntAttr	A gain or return of some entity, e.g. in monetary terms.
 Prototype	EntType	DesignEnt	A system with limited functionality used to demonstrate a design idea.
 Quality	EntType	QualityEnt	An aspect of system quality, distinguishing characteristic or degree of goodness.
+Rank	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).
+Ranking	Attr	StrAttr	A rank ordered sequence of entity ids separated by newline.
 Relationship	EntType	DataEnt	A specific way that data types are connected.
 Release	EntType	ContextEnt	A specific version of a product offered to end users at a specific time.
 Req	EntType	GeneralEnt	Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.

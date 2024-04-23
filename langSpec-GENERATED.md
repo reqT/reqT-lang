@@ -103,11 +103,11 @@ EntityType ::= 'Barrier' | 'Breakpoint' | 'Class' | 'Component' | 'Configuration
 'Stakeholder' | 'State' | 'Story' | 'System' | 'Target' | 'Task' | 'Term' | 'Test' | 'UseCase' | 
 'User' | 'Variant' | 'VariationPoint'
 
-IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Order' | 'Prio' | 
-'Probability' | 'Profit' | 'Value'
+IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Prio' | 
+'Probability' | 'Profit' | 'Rank' | 'Value'
 
 StrAttrType ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 
-'Input' | 'Location' | 'Output' | 'Spec' | 'Text' | 'Title' | 'Why'
+'Input' | 'Location' | 'Output' | 'Ranking' | 'Spec' | 'Text' | 'Title' | 'Why'
 
 RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Impacts' | 'Implements' | 
 'Inherits' | 'Interacts' | 'Precedes' | 'Relates' | 'Requires' | 'Verifies'

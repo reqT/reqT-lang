@@ -5,7 +5,8 @@ object StringExtensions:
     def p: Unit = println(s)
 
     def toLines: Array[String] = s.split("\n")
-    def toWords: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
+    def spaceSplit: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
+    def words: Array[String] = s.split("([^a-zA-Z']+)'*\\1*").filter(_.nonEmpty)
 
     def firstWord: String = s.takeWhile(_.isLetter)
 
@@ -53,6 +54,11 @@ object StringExtensions:
     def level(base: Int): Int = 
       val initSpace = s.takeWhile(ch => ch.isSpaceChar || ch == '\t')
       initSpace.replace("\\t", "  ").length + base
+
+    def hasNewline: Boolean = s.contains("\n")
+
+    def trimIndent(nbrSpaces: Int): String = 
+      s.trim.toLines.map(line => line.trim).mkString("\n").indent(nbrSpaces)
 
     def wrapLongLineAtWords(n: Int): String = 
       val words = s.split(" ").iterator

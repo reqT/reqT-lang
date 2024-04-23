@@ -128,16 +128,39 @@ transparent trait ModelMembers:
 
   def entTypesOfId(id: String): Set[EntType] = idTypeMap(id)
 
-  def orderIdsBy(iat: IntAttrType): Vector[String] = 
+  def entsOrderedBy(iat: IntAttrType): Vector[Ent] = 
     val lro: Model = leafRelsOf(iat)
-    lro.ids.sortBy(id => (lro / lro.getEntOfId(id).has / iat).headOption)
+    lro.ents.sortBy(e => (lro / e.has / iat).headOption)
 
-  def fromIdOrdering(iat: IntAttrType, ids: Seq[String]): Model =
+  def toRankingFrom(iat: IntAttrType): Model = Model(StrAttr(Ranking, entsOrderedBy(iat).map(_.id).mkString("\n","\n","")))
+
+  def fromIdOrder(iat: IntAttrType, ids: Seq[String]): Model =
     val indexOfId = ids.zipWithIndex.toMap
     val pairs: Seq[(Ent, Int)] = 
       ids.map(entsOfId).filter(_.nonEmpty).map(_.head).map(e => e -> (indexOfId(e.id) + 1))
     val rels = pairs.sortBy(_._2).map((e,i) => e.has(iat(i)))
     Model(rels*)
+
+  def fromRankingTo(iat: IntAttrType) = 
+    import meta.isEntType
+    val rankings: Vector[StrAttr] = nodes.collect { case a: StrAttr if a.t == Ranking => a } 
+    val xss: Vector[Seq[String]] = rankings.map(r => r.value.words.toSeq)
+    val es: Vector[Ent] = xss.flatMap: xs => 
+      if xs.isEmpty then Vector(Req(""))
+      else 
+        var i = 0
+        var result = Vector.empty[Ent]
+        while i < xs.length do
+          if isEntType(xs(i)) then 
+            result :+= meta.entTypes(xs(i)).apply(xs.lift(i + 1).getOrElse(""))
+            i += 1
+          else if idMap.isDefinedAt(xs(i)) then 
+            result = result :+ idMap(xs(i)).head
+          else result = result :+ Req(xs(i)) 
+          i += 1
+        result
+    val rels = es.zipWithIndex.map((e, i) => e.has(iat.apply(i + 1)))
+    Model(rels)
 
   /** A new Model with distinct elems (non-recursive). **/
   def distinctElems: Model = Model(elems.distinct) 
@@ -338,7 +361,7 @@ transparent trait ModelMembers:
   def toMarkdown: String =
     // TODO turn tweaks below into default args or context using MarkdownSettings
     val MaxLen = 72  // Limit for creating one-liners in pretty markdown; TODO: should this be hardcoded???
-    val isDetectOneLiner = false  // perhaps not allow one liner un-parsing as it is non-regular
+    val isDetectOneLiner = true  // perhaps not allow one liner un-parsing as it is non-regular
     val isInsertColon = true
 
     val colonOpt = if isInsertColon then ":" else ""
@@ -351,10 +374,14 @@ transparent trait ModelMembers:
           sb.append(s"$indent* $at\n")
 
         case a: Attr[?] => 
-          if a.t == Text then sb.append(s"$indent${a.value}\n") 
-          else if a.t == Title && a.value.toString.trim.startsWith("#") then 
-            sb.append(s"$indent${a.value.toString.trim}\n")  //never colon after title
-          else sb.append(s"$indent* ${a.t}$colonOpt ${a.value}\n")
+          val trimmed = a.value.toString.trim
+          val formattedValue = 
+            if !trimmed.hasNewline then trimmed else "\n" + trimmed.trimIndent(level * 2 + 2)
+
+          if a.t == Text then sb.append(s"$indent$formattedValue\n") 
+          else if a.t == Title && formattedValue.startsWith("#") then 
+            sb.append(s"$indent$formattedValue\n")  //never colon after title
+          else sb.append(s"$indent* ${a.t}$colonOpt $formattedValue\n")
         
         case e: Ent => 
           sb.append(s"$indent* ${e.t}$colonOpt ${e.id}\n")
