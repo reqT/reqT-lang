@@ -195,7 +195,7 @@ class TestModelOps extends munit.FunSuite:
     assert(m.toRankingFrom(Rank).fromRankingTo(Prio) == m.toRankingFrom(Prio).fromRankingTo(Prio))
 
     val r = Ranking: 
-     """  Feature a
+      """  Feature a Feature b
       Req x, Req y
       foo bar
         Stakeholder y """
@@ -203,11 +203,12 @@ class TestModelOps extends munit.FunSuite:
 
     assert(mr.toMarkdown ==
       s"""|* Feature: a has Value: 1
-          |* Req: x has Value: 2
-          |* Req: y has Value: 3
-          |* Req: foo has Value: 4
-          |* Req: bar has Value: 5
-          |* Stakeholder: y has Value: 6
+          |* Feature: b has Value: 2
+          |* Req: x has Value: 3
+          |* Req: y has Value: 4
+          |* Req: foo has Value: 5
+          |* Req: bar has Value: 6
+          |* Stakeholder: y has Value: 7
           |""".stripMargin)
 
 
