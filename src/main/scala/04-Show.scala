@@ -63,6 +63,9 @@ object Show:
                 sb.append(Link(e, rt).show) 
                 sb.append("(),\n")
                 loop(elems.drop(1), indentLevel)
+              else if sub.size == 1 then // this Rel is a oneliner
+                sb.append(e.show + " " + rt.show + " " + sub.elems.head.show + ",\n")
+                loop(elems.drop(1), indentLevel)
               else 
                 sb.append(Link(e, rt).show)
                 sb.append("(\n")
