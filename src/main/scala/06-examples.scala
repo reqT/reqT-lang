@@ -1,13 +1,30 @@
 package reqt
 package examples
 
+
+val menu: Map[String, Model] = Map(
+  "Goal-Design Scale" -> Lauesen.GoalDesignScale,
+  "Why-Spec-Example" -> Lauesen.WhySpecExample,
+  "Context Diagram: Simple" -> Lauesen.ContextDiagramSimple,
+  "Context Diagram: Interface" -> Lauesen.ContextDiagramInterfaces,
+  "Data: Relations" -> Lauesen.DataRelations,
+  "Data: Entities" -> Lauesen.DataEntities,
+  "State Machine" -> Lauesen.StateMachine,
+  "Quality Requirements" -> Lauesen.QualityRequirements,
+  "Model with Sections" -> Lauesen.ModelWithSections,
+  "Task: Hotel Reception Work" -> Lauesen.TaskHotelReceptionWork,
+  "Prioritization: 100$ test" -> Prioritization.DollarTest,
+  "QUPER Model: StartupQuality" -> QualityModel.StartupQuality,
+  "Variability Model: Color" -> VariabilityModel.AppearanceVariation,
+)
+
 object constraintProblems:
   val releasePlanningSimple = ???
 
 /** Examples from "Software Requirements - Styles and techniques" by S. Lauesen (2002)". */
 object Lauesen:
   val allExamples = 
-    Seq(GoalDesignScale, WhySpecExample, ContextDiagramSimple, ContextDiagramInterfaces, DataRelations, DataEntities)
+    Seq(GoalDesignScale, WhySpecExample, ContextDiagramSimple, ContextDiagramInterfaces, DataRelations, DataEntities, StateMachine, QualityRequirements, ModelWithSections, TaskHotelReceptionWork)
 
   val GoalDesignScale = Model(
     Title("Goal-Design-scale"),
@@ -234,7 +251,7 @@ object Lauesen:
         Task("deliverKey"))))
 
 object Prioritization:
-  val Prio100DollarTest = Model(
+  val DollarTest = Model(
     Stakeholder("a").has(
       Prio(2),
       Req("1") has Benefit(5),
@@ -254,21 +271,32 @@ object Prioritization:
       Req("6") has Benefit(90),
       Req("7") has Benefit(20)))
 
-  def NormalizedBenefits: Model =
-    val m = Prio100DollarTest
-    val shs = m.ents.filter(_.t == Stakeholder).distinct
-    val rs = m.ents.filter(_.t == Req).distinct
-    val prioSum = shs.flatMap(s => m/s.has/Prio).sum
-    val benefitSum = shs.map: s => 
-        s -> (m/s.has).intAttrs.collect{ case IntAttr(Benefit, b) => b}.sum
+  def normalizedVotes(
+    m: Model = DollarTest,
+    voterType: EntType = Stakeholder,
+    voterPrioType: IntAttrType = Prio, 
+    requirementType: EntType = Req, 
+    verdictType: IntAttrType = Benefit,
+  ): Model =
+    val voters: Vector[Ent] = m.ents.filter(_.t == voterType).distinct
+    val requirements: Vector[Ent] = m.ents.filter(_.t == requirementType).distinct
+    val prioSum: Int = voters.flatMap(s => m/s.has/voterPrioType).sum
+    
+    val benefitSum: Map[Ent, Int] = voters.map: s => 
+        s -> (m/s.has).intAttrs.collect{ case IntAttr(verdict, b) => b}.sum
       .toMap
-    val normalized = rs.map(r =>
-      r has Benefit(
-        math.round(shs.map(s =>
-          (m/s.has/Prio).head*(m/s.has/r.has/Benefit).head * 100.0 / (benefitSum(s)*prioSum)).sum).toInt))
-    Model(Title("Prioritization Normalized Benefits") +: normalized)
 
-object QUPER:
+    val relations: Vector[Rel] = requirements.map: r =>
+      val result: Vector[Double] = voters.map: s =>
+        val weighted = (m/s.has/voterPrioType).head * (m/s.has/r.has/verdictType).head * 100.0 
+        val tot = benefitSum(s) * prioSum
+        weighted / tot
+      val verdict = math.round(result.sum).toInt
+      r has verdictType(verdict)
+    
+    Model(Section("Normalized Votes").has(relations*))
+
+object QualityModel:
   val StartupQuality = Model(
     Quality("mtts") has (
       Gist("Mean time to startup"),
@@ -294,9 +322,9 @@ object QUPER:
     )
   )
 
-object VariabilityModeling:
-  val ColorVariation = Model(
-  Component("apperance") has (
+object VariabilityModel:
+  val AppearanceVariation = Model(
+  Component("appearance") has (
     VariationPoint("color") has (
       Min(0), Max(2),
       Variant("blue"), Variant("red"), Variant("green")),
@@ -307,11 +335,11 @@ object VariabilityModeling:
     VariationPoint("payment") requires Variant("cash"), /* mandatory */
     Variant("round") excludes Variant("red"),
     Variant("green") requires Variant("square")),
-  Component("apperance") requires VariationPoint("shape"), /* mandatory */
-  Product("free") requires Component("apperance"),
+  Component("appearance") requires VariationPoint("shape"), /* mandatory */
+  Product("free") requires Component("appearance"),
   Product("free") binds (
     VariationPoint("shape") binds Variant("round")),
-  Product("premium") requires Component("apperance"),
+  Product("premium") requires Component("appearance"),
   Product("premium") binds ( /* violating variability constraints */
     VariationPoint("color") binds (Variant("red"), Variant("green")),
     VariationPoint("shape") binds (Variant("round"), Variant("square")),

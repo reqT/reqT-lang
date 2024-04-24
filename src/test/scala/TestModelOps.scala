@@ -211,5 +211,8 @@ class TestModelOps extends munit.FunSuite:
           |* Stakeholder: y has Value: 7
           |""".stripMargin)
 
+  test("Model Examples          "):
+    assert(examples.Prioritization.normalizedVotes().intValues.sum == 99)
+
 
 
