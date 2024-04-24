@@ -14,8 +14,9 @@ transparent trait ModelCompanion:
     nbrTopLevelElems: Int, 
     relationRate: Double = 0.3, 
     nextLevelReduction: Int = 1, 
-    attrRate: Double = 0.5,
+    attrRate: Double = 0.5,  
   ): Model =
+    //TODO: also draw elem types randomly
     require(nbrTopLevelElems >= 0, "nbrTopLevelElems must be >= 0")
     require(attrRate >= 0.0 && attrRate <= 1.0, "attrRate must be in [0.0, 1.0]")
     require(relationRate >= 0.0 && relationRate <= 1.0, "relationRate must be in [0.0, 1.0]")
