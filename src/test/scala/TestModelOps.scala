@@ -186,7 +186,7 @@ class TestModelOps extends munit.FunSuite:
         Req("c") has Prio(4),
         Req("d") has Prio(1),
         Req("e") has Prio(7),
-      )
+      ),
     )
     
     assert(m.entsOrderedBy(Rank) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
