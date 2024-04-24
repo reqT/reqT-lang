@@ -8,6 +8,19 @@ object StringExtensions:
     def spaceSplit: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
     def words: Array[String] = s.split("([^a-zA-Z']+)'*\\1*").filter(_.nonEmpty)
 
+    /** 
+     * Indent and trim each line with spaces and add trailing newline if missing.
+     * From Java 17 there is indent on String; this is here to run on Java 8, 11. 
+     */
+    def trimIndent(nbrSpaces: Int): String = 
+      s.trim.toLines.map(line => (" " * nbrSpaces) + line.trim).mkString("", "\n", "\n")
+
+    /**
+     * Strip leading whitespace. 
+     * From Java 17 there is stripLeading on String; this is here to run on Java 8, 11.
+     */
+    def stripLeadingWhitespace: String = s.dropWhile(_.isWhitespace)
+
     def firstWord: String = s.takeWhile(_.isLetter)
 
     def deCapitalize: String = s.take(1).toLowerCase ++ s.drop(1)
@@ -56,9 +69,6 @@ object StringExtensions:
       initSpace.replace("\\t", "  ").length + base
 
     def hasNewline: Boolean = s.contains("\n")
-
-    def trimIndent(nbrSpaces: Int): String = 
-      s.trim.toLines.map(line => line.trim).mkString("\n").indent(nbrSpaces)
 
     def wrapLongLineAtWords(n: Int): String = 
       val words = s.split(" ").iterator

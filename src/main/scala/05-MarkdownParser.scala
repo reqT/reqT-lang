@@ -106,7 +106,7 @@ object MarkdownParser:
             
             val afterNumOnThisLine = 
               restOfLine
-                .stripLeading
+                .stripLeadingWhitespace
                 .drop(if numOpt.isDefined && thirdOpt.isDefined then thirdOpt.get.length else 0)
                 .trim
             
