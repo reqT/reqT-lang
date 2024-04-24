@@ -10,6 +10,13 @@ case object Model extends ModelCompanion
 
 sealed trait Elem:
   def t: ElemType
+  def isEnt: Boolean = this.isInstanceOf[Ent]
+  def isRel: Boolean = this.isInstanceOf[Rel]
+  def isNode: Boolean = this.isInstanceOf[Node]
+  def isAttr: Boolean = this.isInstanceOf[Attr[?]]
+  def isIntAttr: Boolean = this.isInstanceOf[IntAttr]
+  def isStrAttr: Boolean = this.isInstanceOf[StrAttr]
+  def isUndefined: Boolean = this.isInstanceOf[Undefined[?]]
 
 object Elem:
   given elemOrd: Ordering[Elem] = Ordering.by:
