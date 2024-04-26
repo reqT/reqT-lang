@@ -1,12 +1,12 @@
 digraph G { /* dot -T pdf -o metamodel.pdf metamodel.dot */
-  fontname = "Sans"
+  fontname = "Monospace"
   fontsize = 10
   rankdir = "BT"
   ordering = "out"
   nojustify = true
 
   node [
-    fontname = "Sans"
+    fontname = "Monospace"
     fontsize = 10
     shape = "record"
   ]
@@ -19,15 +19,15 @@ digraph G { /* dot -T pdf -o metamodel.pdf metamodel.dot */
   { rank = same; Node_; Rel; }
   { rank = same;  Ent; Attr;  AttrType; }
 
-  Model [label = "{Model|elems: Vector[Elem]}" constraint=false]
-  Node_ [label = "{Node|t: NodeType}"]
-  Ent [label = "{Ent|t: EntType\lid: String}"]
-  Rel [label = "{Rel|e: Ent\lt: RelType\lsub: Model\l }"]
+  Model [label = <{<b>Model</b>|elems: Seq[Elem]}> fontsize = 12]
+  Node_ [label = <{Node|t: NodeType}>]
+  Ent [label = <{Ent|t: EntType<BR/>id: String}>]
+  Rel [label = <{Rel|e: Ent<BR/>t: RelType<BR/>sub: Model}>]
   Attr [label = "{Attr[T]|t: AttrType[T]\lvalue: T}"]
   StrAttr [label = "{StrAttr|t: StrAttrType\lvalue: String}"]
   IntAttr [label = "{IntAttr|t: IntAttrType\lvalue: Int}"]
 
-  Elem [label = "{Elem|t: ElemType}"]
+  Elem [label = <{Elem|t: ElemType}>]
   NodeType [label = "{NodeType}"]
 
   EntType[label = <{EntType|Barrier, Breakpoint, Class,<BR/> Component,Configuration,<BR/> Data,Design, Domain,Epic, <BR/>Event, Feature,Field, Function,<BR/> Goal,Idea, Image, Interface,<BR/>Issue, Label, Member,<BR/>Module, Product, Prototype,<BR/>Quality, Relationship,<BR/>Release, Req, Resource,<BR/>Risk, Screen,Section, <BR/> Stakeholder, State, Story, <BR/>  System,Target, Task, Term,<BR/>Test, UseCase, User,<BR/>Variant, VariationPoint}> fontsize = 9]
@@ -36,7 +36,7 @@ digraph G { /* dot -T pdf -o metamodel.pdf metamodel.dot */
 
   StrAttrType [fontsize = 9 label = <{StrAttrType|Comment, Constraints,<BR/> Deprecated, Example, <BR/> Expectation, Failure, <BR/>  Gist, Input, Location, <BR/>  Output, Ranking, Spec,<BR/>  Text, Title, Why}>]
 
-  IntAttrType [fontsize = 9 label = <{IntAttrType|Benefit, Capacity, Cost,   <BR/> Damage, Frequency,<BR/>Max, Min, Prio, Probability,<BR/> Profit,Rank, Value}>]
+  IntAttrType [fontsize = 9 label = <{IntAttrType|Benefit, Capacity, Cost,   <BR/> Damage, Frequency,<BR/>Max, Min, Prio, <BR/>Probability,<BR/> Profit,Rank, Value}>]
 
   RelType[label = <{RelType|Binds, Deprecates,<BR/> Excludes,Has,<BR/>Helps,Hurts,<BR/>Impacts,<BR/>Implements,<BR/>Inherits,Interacts,<BR/>Precedes, Relates,<BR/>Requires, Verifies}> fontsize = 9]
 
