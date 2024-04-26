@@ -171,7 +171,7 @@ class TestModelOps extends munit.FunSuite:
   test("Model ordering          "):
     val m = Model(
       Stakeholder("a"),
-      Feature("x").has(
+      Feature("x").has( 
         Stakeholder("b"),
         Req("a") has Rank(2),
         Req("b") has Rank(3),

@@ -1,14 +1,16 @@
-ThisBuild / version      := "4.2.1-M2"
+lazy val reqTLangVer = "4.2.1-M2"
+lazy val scalaVer    = "3.3.3"  // use LTS only
+lazy val munitVer    = "0.7.29"
 
-ThisBuild / scalaVersion := "3.3.3"  // use LTS
-
+ThisBuild / version      := reqTLangVer
+ThisBuild / scalaVersion := scalaVer  // use LTS
 ThisBuild / organization := "io.github.reqt"
 
 console / initialCommands := """import reqt.*"""
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-libraryDependencies += "org.scalameta" %% "munit" % "0.7.29" % Test
+libraryDependencies += "org.scalameta" %% "munit" % munitVer % Test
 
 lazy val nameOfThisBuild = "reqt-lang"
 
