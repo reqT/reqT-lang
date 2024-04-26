@@ -15,7 +15,7 @@ digraph G { /* dot -T pdf -o metamodel.pdf metamodel.dot */
     arrowhead = "empty"
   ]
  
-  { rank = same;  Model; Elem; ElemType;}
+  { rank = same;  Elem; Model; ElemType;}
   { rank = same; Node_; Rel; }
   { rank = same;  Ent; Attr;  AttrType; }
 
