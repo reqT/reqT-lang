@@ -1,0 +1,70 @@
+digraph G { /* dot -T pdf -o metamodel.pdf metamodel.dot */
+  fontname = "Sans"
+  fontsize = 10
+  rankdir = "BT"
+  ordering = "out"
+  nojustify = true
+
+  node [
+    fontname = "Sans"
+    fontsize = 10
+    shape = "record"
+  ]
+
+  edge [
+    arrowhead = "empty"
+  ]
+ 
+  { rank = same;  Model; Elem; ElemType;}
+  { rank = same; Node_; Rel; }
+  { rank = same;  Ent; Attr;  AttrType; }
+
+  Model [label = "{Model|val elems: Vector[Elem]}" constraint=false]
+  Node_ [label = "{Node|val t: NodeType}"]
+  Ent [label = "{Ent|val t: EntType\lval id: String}"]
+  Rel [label = "{Rel|val e: Ent\lval t: RelType\lval sub: Model\l }"]
+  Attr [label = "{Attr[T]|val t: AttrType[T]\lval value: T}"]
+  StrAttr [label = "{StrAttr|val t: StrAttrType\lval value: String}"]
+  IntAttr [label = "{IntAttr|val t: IntAttrType\lval value: Int}"]
+
+  Elem [label = "{Elem|val t: ElemType}"]
+  NodeType [label = "{NodeType}"]
+
+  EntType[label = <{EntType|Barrier, Breakpoint, Class,<BR/> Component,Configuration, Data,<BR/>Design, Domain,Epic, Event,<BR/> Feature,Field, Function, Goal,<BR/>Idea, Image, Interface,<BR/>Issue, Label, Member,<BR/>Module, Product, Prototype,<BR/>Quality, Relationship,<BR/>Release, Req, Resource,<BR/>Risk, Screen,Section, <BR/> Stakeholder, State, Story, <BR/>  System,Target, Task, Term,<BR/>Test, UseCase, User,<BR/>Variant, VariationPoint}> fontsize = 9]
+
+  AttrType [label = "{AttrType[T]}"]
+
+  StrAttrType [fontsize = 9 label = <{StrAttrType|Comment, Constraints,<BR/> Deprecated, Example, <BR/> Expectation, Failure, <BR/>  Gist, Input, Location, <BR/>  Output, Ranking, Spec,<BR/>  Text, Title, Why}>]
+
+  IntAttrType [fontsize = 9 label = <{IntAttrType|Benefit, Capacity, Cost,  Damage, <BR/>  Frequency,Max, Min,Prio, <BR/>  Probability, Profit, Rank, Value}>]
+
+  RelType[label = <{RelType|Binds, Deprecates,<BR/> Excludes,Has,<BR/>Helps,Hurts,<BR/>Impacts,<BR/>Implements,<BR/>Inherits,Interacts,<BR/>Precedes, Relates,<BR/>Requires, Verifies}> fontsize = 9]
+
+  Node_ -> Elem
+  Rel -> Elem
+  Ent -> Node_
+  Attr -> Node_
+  StrAttr -> Attr
+  IntAttr -> Attr
+
+  
+  AttrType -> NodeType
+  StrAttrType -> AttrType
+  IntAttrType -> AttrType
+
+  NodeType -> ElemType
+  EntType -> NodeType
+  RelType -> ElemType
+
+
+
+/*  Goal -> EntType
+  Feature -> EntType
+  Function -> EntType
+  Data -> EntType
+  OtherEnts -> EntType
+  OtherEnts [ label = "..."; shape = "none"]
+
+  has -> RelType
+*/
+}
