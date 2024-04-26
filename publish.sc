@@ -47,9 +47,9 @@ else
     val preRel = 
       if reqTLangVer.contains("-M") || reqTLangVer.contains("_RC") then Seq("--prerelease") else Seq()
     val assemblyCmd = Seq()
-    val createCmd = Seq("gh", "release", "create", reqTLangVer, "--generate-notes") ++ preRel
+    val createCmd = Seq("gh", "release", "create", "v" + reqTLangVer, "--generate-notes") ++ preRel
 
-    val uploadCmd = Seq("gh", "release", "upload", reqTLangVer, jar)
+    val uploadCmd = Seq("gh", "release", "upload", "v" + reqTLangVer, jar)
 
     val ghOpt = util.Try{os.proc("which", "gh").call(cwd = wd)}.toOption
 
