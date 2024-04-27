@@ -8,6 +8,7 @@ extension (s: String)
 val modelFile = "src/main/scala/03-model-GENERATED.scala"
 val langSpecFile = "langSpec-GENERATED.md"
 val conceptFile = "concepts-GENERATED.csv"
+val graphFile = "metamodel-graph-GENERATED.dot"
 
 @main def generateLang = 
   println(s"Generating $modelFile")
@@ -17,6 +18,8 @@ val conceptFile = "concepts-GENERATED.csv"
   showDeprecations()
   println(s"Generating $conceptFile")
   meta.csv("\t").saveTo(conceptFile)
+  println(s"Generating $graphFile")
+  meta.graph.saveTo(graphFile)
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)

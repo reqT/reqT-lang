@@ -324,3 +324,46 @@ object meta:
         |
         |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(entExtensions).mkString("","\n", "").stripMargin
+
+  def graph: String = 
+    import GraphVizGen.*
+    val (model, elem, node, rel, ent, attr, strAttr, intAttr) = 
+        ("Model", "Elem", "Node_", "Rel", "Ent", "Attr", "StrAttr", "IntAttr")
+
+    val (elemType, nodeType, relType, entType, attrType, strAttrType, intAttrType) =
+        ("ElemType", "NodeType", "RelType", "EntType", "AttrType", "StrAttrType", "IntAttrType")
+
+    val relTypeValues = 
+      relationNames.map(_.capitalize).grouped(2).map(_.mkString(", ")).mkString("",",\\l","\\l")
+    
+    val entTypeValues = 
+      entityNames.grouped(3).map(_.mkString(", ")).mkString("",",\\l","\\l")
+    
+    val strAttrTypeValues = 
+      strAttrNames.grouped(3).map(_.mkString(", ")).mkString("",",\\l","\\l")
+    
+    val intAttrTypeValues = 
+      intAttrNames.grouped(3).map(_.mkString(", ")).mkString("",",\\l","\\l")
+      
+    directedGraph("Metamodel")
+      (rankSame = Seq("Elem", "Model", "ElemType"), Seq("Node_", "Rel"), Seq("Ent", "Attr", "AttrType"))
+      (edges = node -> elem, rel -> elem, ent -> node, attr -> node, strAttr -> attr, intAttr -> attr,
+        nodeType -> elemType, relType -> elemType, entType -> nodeType, attrType -> nodeType,
+        strAttrType -> attrType, intAttrType -> attrType)
+      (nodeFormats =
+        recordNode(model)(model,"elems: Seq[Elem]"),
+        recordNode(elem) (elem,"t: ElemType"),
+        recordNode(node) ("Node","t: NodeType"),
+        recordNode(rel)  (rel, Seq("e: Ent","t: RelType","sub: Model").mkString("","\\l","\\l")),
+        recordNode(ent)  (ent, Seq("t: EntType","id: String").mkString("","\\l","\\l")),
+        recordNode(attr) ("Attr[T]", Seq("t: AttrType[T]","value: T").mkString("","\\l","\\l")),
+        recordNode(strAttr) (strAttr, Seq("t: StrAttrType","value: String").mkString("","\\l","\\l")),
+        recordNode(intAttr) (intAttr, Seq("t: IntAttrType","value: String").mkString("","\\l","\\l")),
+
+        recordNode(nodeType) (nodeType),
+        recordNode(attrType) ("AttrType[T]"),
+        recordNode(relType, fontSize = 9)  (relType, relTypeValues),
+        recordNode(entType, fontSize = 9)  (entType, entTypeValues),
+        recordNode(strAttrType, fontSize = 9)  (strAttrType, strAttrTypeValues),
+        recordNode(intAttrType, fontSize = 9)  (intAttrType, intAttrTypeValues),
+      )
