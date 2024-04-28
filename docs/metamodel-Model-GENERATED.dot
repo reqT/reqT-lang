@@ -1,0 +1,26 @@
+digraph Metamodel {
+  fontname = "Sans"
+  fontsize = 10
+  rankdir =  "BT"
+  ordering = "out"
+  nojustify = true
+
+  node [
+    fontname = "Sans"
+    fontsize = 10
+    shape = "record"
+  ]
+
+  edge [
+    arrowhead = "empty"
+  ]
+
+    { rank = same; Model; }
+
+
+    Model [ label = "{Model|elems: Seq[Elem]}" fontsize = 10]
+
+
+  
+
+}

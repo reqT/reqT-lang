@@ -1,0 +1,36 @@
+digraph Metamodel {
+  fontname = "Sans"
+  fontsize = 10
+  rankdir =  "BT"
+  ordering = "out"
+  nojustify = true
+
+  node [
+    fontname = "Sans"
+    fontsize = 10
+    shape = "record"
+  ]
+
+  edge [
+    arrowhead = "empty"
+  ]
+
+    { rank = same; ElemType; }
+
+
+    NodeType [ label = "{NodeType}" fontsize = 10]
+    AttrType [ label = "{AttrType[T]}" fontsize = 10]
+    RelType [ label = "{enum RelType|Binds, Deprecates,\lExcludes, Has,\lHelps, Hurts,\lImpacts, Implements,\lInherits, Interacts,\lPrecedes, Relates,\lRequires, Verifies\l}" fontsize = 9]
+    EntType [ label = "{enum EntType|Barrier, Breakpoint, Class,\lComponent, Configuration, Data,\lDesign, Domain, Epic,\lEvent, Feature, Field,\lFunction, Goal, Idea,\lImage, Interface, Issue,\lLabel, Member, Module,\lProduct, Prototype, Quality,\lRelationship, Release, Req,\lResource, Risk, Screen,\lSection, Stakeholder, State,\lStory, System, Target,\lTask, Term, Test,\lUseCase, User, Variant,\lVariationPoint\l}" fontsize = 9]
+    StrAttrType [ label = "{enum StrAttrType|Comment, Constraints, Deprecated,\lExample, Expectation, Failure,\lGist, Input, Location,\lOutput, Ranking, Spec,\lText, Title, Why\l}" fontsize = 9]
+    IntAttrType [ label = "{enum IntAttrType|Benefit, Capacity, Cost,\lDamage, Frequency, Max,\lMin, Prio, Probability,\lProfit, Rank, Value\l}" fontsize = 9]
+
+
+    NodeType -> ElemType
+    RelType -> ElemType
+    EntType -> NodeType
+    AttrType -> NodeType
+    StrAttrType -> AttrType
+    IntAttrType -> AttrType
+
+}

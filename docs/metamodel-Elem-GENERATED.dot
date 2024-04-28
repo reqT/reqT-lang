@@ -1,0 +1,40 @@
+digraph Metamodel {
+  fontname = "Sans"
+  fontsize = 10
+  rankdir =  "BT"
+  ordering = "out"
+  nojustify = true
+
+  node [
+    fontname = "Sans"
+    fontsize = 10
+    shape = "record"
+  ]
+
+  edge [
+    arrowhead = "empty"
+  ]
+
+    { rank = same; Model; Elem; }
+    { rank = same; Node_; Rel; }
+    { rank = same; Ent; Attr; }
+
+
+    Model [ label = "{Model|elems: Seq[Elem]}" fontsize = 10]
+    Elem [ label = "{Elem|t: ElemType}" fontsize = 10]
+    Node_ [ label = "{Node|t: NodeType}" fontsize = 10]
+    Rel [ label = "{Rel|e: Ent\lt: RelType\lsub: Model\l}" fontsize = 10]
+    Ent [ label = "{Ent|t: EntType\lid: String\l}" fontsize = 10]
+    Attr [ label = "{Attr[T]|t: AttrType[T]\lvalue: T\l}" fontsize = 10]
+    StrAttr [ label = "{StrAttr|t: StrAttrType\lvalue: String\l}" fontsize = 10]
+    IntAttr [ label = "{IntAttr|t: IntAttrType\lvalue: String\l}" fontsize = 10]
+
+
+    Node_ -> Elem
+    Rel -> Elem
+    Ent -> Node_
+    Attr -> Node_
+    StrAttr -> Attr
+    IntAttr -> Attr
+
+}

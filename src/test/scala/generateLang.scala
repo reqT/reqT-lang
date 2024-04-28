@@ -6,13 +6,17 @@ extension (s: String)
     try pw.write(s) finally pw.close()
 
 val modelFile = "src/main/scala/03-model-GENERATED.scala"
-val langSpecFile = "langSpec-GENERATED.md"
-val conceptFile = "concepts-GENERATED.csv"
-val graphFile = "metamodel-graph-GENERATED.dot"
+val docsDir = "docs"
+val langSpecFile = docsDir + "/langSpec-GENERATED.md"
+val conceptFile = docsDir + "/concepts-GENERATED.csv"
+def graphFile(mod: String) = docsDir + s"/metamodel$mod-GENERATED.dot"
 
 @main def generateLang = 
   println(s"Generating $modelFile")
   meta.generate.saveTo(modelFile)
+  
+  java.io.File(docsDir).mkdirs()
+
   println(s"Generating $langSpecFile")
   langSpec.specMarkDown.saveTo(langSpecFile)
   showDeprecations()
@@ -20,7 +24,10 @@ val graphFile = "metamodel-graph-GENERATED.dot"
   meta.csv("\t").saveTo(conceptFile)
 
   println(s"Generating $graphFile")
-  meta.graph(showElem=true, showElemType=true).saveTo(graphFile)
+  meta.graph(showElem=false, showElemType=false).saveTo(graphFile("-Model"))
+  meta.graph(showElem=true, showElemType=false).saveTo(graphFile("-Elem"))
+  meta.graph(showElem=false, showElemType=true).saveTo(graphFile("-ElemType"))
+  meta.graph(showElem=true, showElemType=true).saveTo(graphFile("-All"))
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)
