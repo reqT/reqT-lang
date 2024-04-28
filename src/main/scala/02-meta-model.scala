@@ -325,7 +325,7 @@ object meta:
         |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(entExtensions).mkString("","\n", "").stripMargin
 
-  def graph: String = 
+  def graph(showElem: Boolean = true, showElemType: Boolean = true): String = 
     import GraphVizGen.*
     val (model, elem, node, rel, ent, attr, strAttr, intAttr) = 
         ("Model", "Elem", "Node_", "Rel", "Ent", "Attr", "StrAttr", "IntAttr")
@@ -346,24 +346,38 @@ object meta:
       intAttrNames.grouped(3).map(_.mkString(", ")).mkString("",",\\l","\\l")
       
     directedGraph("Metamodel")
-      (rankSame = Seq("Elem", "Model", "ElemType"), Seq("Node_", "Rel"), Seq("Ent", "Attr", "AttrType"))
-      (edges = node -> elem, rel -> elem, ent -> node, attr -> node, strAttr -> attr, intAttr -> attr,
-        nodeType -> elemType, relType -> elemType, entType -> nodeType, attrType -> nodeType,
-        strAttrType -> attrType, intAttrType -> attrType)
-      (nodeFormats =
-        recordNode(model)(model,"elems: Seq[Elem]"),
-        recordNode(elem) (elem,"t: ElemType"),
-        recordNode(node) ("Node","t: NodeType"),
-        recordNode(rel)  (rel, Seq("e: Ent","t: RelType","sub: Model").mkString("","\\l","\\l")),
-        recordNode(ent)  (ent, Seq("t: EntType","id: String").mkString("","\\l","\\l")),
-        recordNode(attr) ("Attr[T]", Seq("t: AttrType[T]","value: T").mkString("","\\l","\\l")),
-        recordNode(strAttr) (strAttr, Seq("t: StrAttrType","value: String").mkString("","\\l","\\l")),
-        recordNode(intAttr) (intAttr, Seq("t: IntAttrType","value: String").mkString("","\\l","\\l")),
-
-        recordNode(nodeType) (nodeType),
-        recordNode(attrType) ("AttrType[T]"),
-        recordNode(relType, fontSize = 9)  (relType, relTypeValues),
-        recordNode(entType, fontSize = 9)  (entType, entTypeValues),
-        recordNode(strAttrType, fontSize = 9)  (strAttrType, strAttrTypeValues),
-        recordNode(intAttrType, fontSize = 9)  (intAttrType, intAttrTypeValues),
+      (rankSame = Seq(
+        (if !showElem && !showElemType then Seq("Model") else Seq()) 
+          ++ (if showElem then Seq("Model", "Elem") else Seq()) 
+          ++ (if showElemType then Seq("ElemType") else Seq())) ++ 
+        (if showElem then Seq(Seq("Node_", "Rel")) else Seq()) ++ 
+        (if showElem then Seq(Seq("Ent", "Attr") ++ (if showElemType then Seq("AttrType") else Seq())) else Seq())
       )
+      (edges = Seq() 
+        ++ (if showElem then 
+            Seq(node -> elem, rel -> elem, ent -> node, attr -> node, strAttr -> attr, intAttr -> attr) 
+          else Seq())
+        ++ (if showElemType then 
+              Seq(nodeType -> elemType, relType -> elemType, entType -> nodeType, attrType -> nodeType, strAttrType -> attrType, intAttrType -> attrType) 
+            else Seq())
+      )
+      (nodeFormats = (if !showElem && !showElemType then 
+            Seq(recordNode(model)(model,"elems: Seq[Elem]")) 
+          else Seq()) ++ 
+        (if showElem then Seq(
+          recordNode(model)(model,"elems: Seq[Elem]"),
+          recordNode(elem) (elem,"t: ElemType"),
+          recordNode(node) ("Node","t: NodeType"),
+          recordNode(rel)  (rel, Seq("e: Ent","t: RelType","sub: Model").mkString("","\\l","\\l")),
+          recordNode(ent)  (ent, Seq("t: EntType","id: String").mkString("","\\l","\\l")),
+          recordNode(attr) ("Attr[T]", Seq("t: AttrType[T]","value: T").mkString("","\\l","\\l")),
+          recordNode(strAttr) (strAttr, Seq("t: StrAttrType","value: String").mkString("","\\l","\\l")),
+          recordNode(intAttr) (intAttr, Seq("t: IntAttrType","value: String").mkString("","\\l","\\l")),
+        ) else Seq()) ++ (if showElemType then Seq(
+          recordNode(nodeType) (nodeType),
+          recordNode(attrType) ("AttrType[T]"),
+          recordNode(relType, fontSize = 9)  ("enum " + relType, relTypeValues),
+          recordNode(entType, fontSize = 9)  ("enum " + entType, entTypeValues),
+          recordNode(strAttrType, fontSize = 9)  ("enum " + strAttrType, strAttrTypeValues),
+          recordNode(intAttrType, fontSize = 9)  ("enum " + intAttrType, intAttrTypeValues),
+        ) else Seq()))

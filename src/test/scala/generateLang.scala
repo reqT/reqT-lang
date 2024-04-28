@@ -18,8 +18,9 @@ val graphFile = "metamodel-graph-GENERATED.dot"
   showDeprecations()
   println(s"Generating $conceptFile")
   meta.csv("\t").saveTo(conceptFile)
+
   println(s"Generating $graphFile")
-  meta.graph.saveTo(graphFile)
+  meta.graph(showElem=true, showElemType=true).saveTo(graphFile)
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)

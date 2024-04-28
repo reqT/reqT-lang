@@ -23,7 +23,7 @@ object GraphVizGen:
     noJustify: Boolean = true,
     edgeArrowhead: String = "empty",
     nodeShape: String = "record",
-  )(rankSame: Seq[String]*)(edges: (String, String)*)(nodeFormats: String*) = 
+  )(rankSame: Seq[Seq[String]])(edges: Seq[(String, String)])(nodeFormats: Seq[String]) = 
     s"""|digraph $name {
         |  fontname = "$fontName"
         |  fontsize = $fontSize
