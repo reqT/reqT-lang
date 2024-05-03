@@ -23,7 +23,7 @@ def graphFile(mod: String) = docsDir + s"/metamodel$mod-GENERATED.dot"
   println(s"Generating $conceptFile")
   meta.csv("\t").saveTo(conceptFile)
 
-  println(s"Generating $graphFile")
+  println(s"Generating graph files: metamodel-*-GENERATED.dot")
   meta.graph(showElem=false, showElemType=false).saveTo(graphFile("-Model"))
   meta.graph(showElem=true, showElemType=false).saveTo(graphFile("-Elem"))
   meta.graph(showElem=false, showElemType=true).saveTo(graphFile("-ElemType"))
