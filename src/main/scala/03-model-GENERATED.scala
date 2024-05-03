@@ -84,44 +84,44 @@ export IntAttrType.*
 export RelType.*
 
 extension (e: Ent)
-  def binds(sub: Elem*): Rel = Rel(e, Binds, Model(sub*))
-  def binds: Link = Link(e, Binds)
+  infix def binds(sub: Elem*): Rel = Rel(e, Binds, Model(sub*))
+  infix def binds: Link = Link(e, Binds)
 
-  def deprecates(sub: Elem*): Rel = Rel(e, Deprecates, Model(sub*))
-  def deprecates: Link = Link(e, Deprecates)
+  infix def deprecates(sub: Elem*): Rel = Rel(e, Deprecates, Model(sub*))
+  infix def deprecates: Link = Link(e, Deprecates)
 
-  def excludes(sub: Elem*): Rel = Rel(e, Excludes, Model(sub*))
-  def excludes: Link = Link(e, Excludes)
+  infix def excludes(sub: Elem*): Rel = Rel(e, Excludes, Model(sub*))
+  infix def excludes: Link = Link(e, Excludes)
 
-  def has(sub: Elem*): Rel = Rel(e, Has, Model(sub*))
-  def has: Link = Link(e, Has)
+  infix def has(sub: Elem*): Rel = Rel(e, Has, Model(sub*))
+  infix def has: Link = Link(e, Has)
 
-  def helps(sub: Elem*): Rel = Rel(e, Helps, Model(sub*))
-  def helps: Link = Link(e, Helps)
+  infix def helps(sub: Elem*): Rel = Rel(e, Helps, Model(sub*))
+  infix def helps: Link = Link(e, Helps)
 
-  def hurts(sub: Elem*): Rel = Rel(e, Hurts, Model(sub*))
-  def hurts: Link = Link(e, Hurts)
+  infix def hurts(sub: Elem*): Rel = Rel(e, Hurts, Model(sub*))
+  infix def hurts: Link = Link(e, Hurts)
 
-  def impacts(sub: Elem*): Rel = Rel(e, Impacts, Model(sub*))
-  def impacts: Link = Link(e, Impacts)
+  infix def impacts(sub: Elem*): Rel = Rel(e, Impacts, Model(sub*))
+  infix def impacts: Link = Link(e, Impacts)
 
-  def implements(sub: Elem*): Rel = Rel(e, Implements, Model(sub*))
-  def implements: Link = Link(e, Implements)
+  infix def implements(sub: Elem*): Rel = Rel(e, Implements, Model(sub*))
+  infix def implements: Link = Link(e, Implements)
 
-  def inherits(sub: Elem*): Rel = Rel(e, Inherits, Model(sub*))
-  def inherits: Link = Link(e, Inherits)
+  infix def inherits(sub: Elem*): Rel = Rel(e, Inherits, Model(sub*))
+  infix def inherits: Link = Link(e, Inherits)
 
-  def interacts(sub: Elem*): Rel = Rel(e, Interacts, Model(sub*))
-  def interacts: Link = Link(e, Interacts)
+  infix def interacts(sub: Elem*): Rel = Rel(e, Interacts, Model(sub*))
+  infix def interacts: Link = Link(e, Interacts)
 
-  def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
-  def precedes: Link = Link(e, Precedes)
+  infix def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
+  infix def precedes: Link = Link(e, Precedes)
 
-  def relates(sub: Elem*): Rel = Rel(e, Relates, Model(sub*))
-  def relates: Link = Link(e, Relates)
+  infix def relates(sub: Elem*): Rel = Rel(e, Relates, Model(sub*))
+  infix def relates: Link = Link(e, Relates)
 
-  def requires(sub: Elem*): Rel = Rel(e, Requires, Model(sub*))
-  def requires: Link = Link(e, Requires)
+  infix def requires(sub: Elem*): Rel = Rel(e, Requires, Model(sub*))
+  infix def requires: Link = Link(e, Requires)
 
-  def verifies(sub: Elem*): Rel = Rel(e, Verifies, Model(sub*))
-  def verifies: Link = Link(e, Verifies)
+  infix def verifies(sub: Elem*): Rel = Rel(e, Verifies, Model(sub*))
+  infix def verifies: Link = Link(e, Verifies)

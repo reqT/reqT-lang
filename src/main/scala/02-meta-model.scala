@@ -234,8 +234,8 @@ object meta:
 
   def generate: String = 
     def entExtensions(name: String): String = 
-      s"|  def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
-      s"|  def $name: Link = Link(e, ${name.capitalize})\n"
+      s"|  infix def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
+      s"|  infix def $name: Link = Link(e, ${name.capitalize})\n"
 
     s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT AS CHANGES ARE LOST ON RE-GENERATION 
         |//--- Edit the code below by changing `def generate` in reqt.meta
@@ -345,7 +345,7 @@ object meta:
     val intAttrTypeValues = 
       intAttrNames.grouped(3).map(_.mkString(", ")).mkString("",",\\l","\\l")
       
-    directedGraph("Metamodel")
+    classDiagram("Metamodel")
       (rankSame = Seq(
         (if !showElem && !showElemType then Seq("Model") else Seq()) 
           ++ (if showElem then Seq("Model", "Elem") else Seq()) 
