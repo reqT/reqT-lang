@@ -1,6 +1,7 @@
 package reqt
 
 import scala.collection.mutable
+import reqt.PrintUtils.PrettyPrinter
 
 /** Operations of companion to trait `Model` **/
 transparent trait ModelCompanion:
@@ -9,6 +10,9 @@ transparent trait ModelCompanion:
   def apply(elems: Elem*): Model = Model(elems.toVector)
 
   val empty: Model = Model()
+
+  given PrettyPrinter[Model] with
+    extension (m: Model) def pp: Unit = println(m.show)
 
   def random(
     nbrTopLevelElems: Int, 

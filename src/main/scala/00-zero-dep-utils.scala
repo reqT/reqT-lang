@@ -1,6 +1,12 @@
 package reqt
 
-object StringExtensions:
+object StringUtils:
+  val q: String = '\"'.toString
+  val q3: String = q*3
+  val nl = "\n"
+  def nlLiteral = """\n"""
+  def indent(n: Int): String = " " * (n * Settings.indentSpacing)
+
   extension (s: String)
     def p: Unit = println(s)
 
@@ -138,7 +144,7 @@ object StringExtensions:
     end editDistanceTo
 
   end extension
-end StringExtensions
+end StringUtils
 
 object err:
   class ParseException(msg: String) extends Exception(msg) 
@@ -168,4 +174,11 @@ object parseUtils:
       i += 1
     if s(i - 1) != ')' then throw err.missingEndPar(s)
     (s.substring(1,i - 1), s.substring(i))
+
+object PrintUtils:
+  trait PrettyPrinter[T]:
+    extension (x: T) def pp: Unit
+  object PrettyPrinter:
+    given anyToStringPrinter: PrettyPrinter[Any] with
+      extension (x: Any) def pp: Unit = println(x.toString)
 

@@ -12,7 +12,7 @@ export Path.`/` // path factories for slash notation on Model
 export MarkdownParser.m       // string interpolator to parse markdown Model
 export MarkdownParser.toModel // string extension to parse markdown Model
 
-export StringExtensions.* // general extensions only depending on Scala stdlib
+export StringUtils.* // general extensions only depending on Scala stdlib
 
 export meta.{help, describe, findConceptGroup}  // help to explore concepts
 

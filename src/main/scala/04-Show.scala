@@ -49,6 +49,9 @@ object Show:
     override def show(e: Elem): String = e match 
       case n: Node     => n.show
       case Rel(e, rt, sub) => s"""${e.show}.${rt.show}(${sub.elems.map(_.show).mkString(",")})"""
+
+  given showElemVector: Show[Vector[Elem]] with
+    override def show(es: Vector[Elem]): String = es.map(_.show).mkString("Vector(", ",", ")")
   
   given showModel: Show[Model] with 
     override def show(m: Model): String = 

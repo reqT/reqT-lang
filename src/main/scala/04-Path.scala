@@ -14,6 +14,8 @@ sealed trait Path:
   def takeLinksRight(n: Int): Path 
 
   def dest: Dest
+
+  def depth: Int = links.size + (if hasDest then 1 else 0)
   
   def hasDest: Boolean
 
@@ -35,14 +37,15 @@ sealed trait Path:
       val h = links.head
       Model() + Rel(h.e, h.t, firstLinkDropped.toModel)
 
-case object Root:  // TODO: is this needed or is it just another unnecessary way of doing Path(...)
-  def /(link: Link): LinkPath = LinkPath(Vector(link))
-  def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)
-  def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](Vector(), a)
-  def /(e: Ent): EntPath = EntPath(Vector(), e)
-  def /(e: EntType): EntTypePath = EntTypePath(Vector(), e)
+// case object Root:  // TODO: is this needed or is it just another unnecessary way of doing Path(...)
+//   def /(link: Link): LinkPath = LinkPath(Vector(link))
+//   def /[T](a: Attr[T]): AttrPath[T] = AttrPath[T](Vector(), a)
+//   def /[T](a: AttrType[T]): AttrTypePath[T] = AttrTypePath[T](Vector(), a)
+//   def /(e: Ent): EntPath = EntPath(Vector(), e)
+//   def /(e: EntType): EntTypePath = EntTypePath(Vector(), e)
 
 case object Path:
+  val Root = LinkPath(Vector())
   def fromString(s: String): Option[Path] = 
     if s.isEmpty then None 
     else if s == "Path" || s == "Path()" then Some(Path())
@@ -70,7 +73,7 @@ case object Path:
               case e: EntType     => Some(EntTypePath(links, e))
               case _              => None // malformed path
 
-  def apply(): LinkPath = LinkPath(Vector()) // Empty path
+  def apply(): LinkPath = Root // Empty path
 
   def apply(p: Path): Path = p  // recursively unpack Path(Path(Path(...)))
     

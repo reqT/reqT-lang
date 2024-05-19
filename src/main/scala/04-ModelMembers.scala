@@ -258,7 +258,14 @@ transparent trait ModelMembers:
   def top: Model = cut(1)
 
   def sub: Model =
-    elems.collect { case Rel(e, r, sub) => sub }.foldLeft(Model())(_ :++ _)
+    elems.collect { case Rel(e, rt, sub) => sub }.foldLeft(Model())(_ :++ _)
+  
+  /** Submodels with same link are merged **/
+  def linkMapOf(et: EntType): Map[Link, Model] = 
+    val ls: Seq[(Link, Model)]  = elems.collect { case Rel(e, rt, sub) if e.t == et => Link(e, rt) -> sub }
+    val grouped: Map[Link, Seq[(Link, Model)]] = ls.groupBy(_._1)
+    val merged: Map[Link, Model] = grouped.map((l, xs) => l -> xs.map(_._2).foldLeft(Model())(_ :++ _))
+    merged
 
   /** Cut all relations so that no relations is deeper than depth. cut(0) == tip, cut(1) == top **/
   def cut(depth : Int): Model = 

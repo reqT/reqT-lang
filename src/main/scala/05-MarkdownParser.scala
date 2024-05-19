@@ -1,6 +1,6 @@
 package reqt
 
-import reqt.StringExtensions.spaceSplit
+import reqt.StringUtils.spaceSplit
 
 /** A parser from Markdown-valid bullet lists with reqt.Elem. Unknown stuff is kept in Text attributes. **/
 object MarkdownParser:
