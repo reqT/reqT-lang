@@ -372,7 +372,7 @@ object meta:
           recordNode(ent)  (ent, Seq("t: EntType","id: String").mkString("","\\l","\\l")),
           recordNode(attr) ("Attr[T]", Seq("t: AttrType[T]","value: T").mkString("","\\l","\\l")),
           recordNode(strAttr) (strAttr, Seq("t: StrAttrType","value: String").mkString("","\\l","\\l")),
-          recordNode(intAttr) (intAttr, Seq("t: IntAttrType","value: String").mkString("","\\l","\\l")),
+          recordNode(intAttr) (intAttr, Seq("t: IntAttrType","value: Int").mkString("","\\l","\\l")),
         ) else Seq()) ++ (if showElemType then Seq(
           recordNode(nodeType) (nodeType),
           recordNode(attrType) ("AttrType[T]"),

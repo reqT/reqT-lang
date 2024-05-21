@@ -27,7 +27,7 @@ digraph Metamodel {
     Ent [ label = "{Ent|t: EntType\lid: String\l}" fontsize = 10]
     Attr [ label = "{Attr[T]|t: AttrType[T]\lvalue: T\l}" fontsize = 10]
     StrAttr [ label = "{StrAttr|t: StrAttrType\lvalue: String\l}" fontsize = 10]
-    IntAttr [ label = "{IntAttr|t: IntAttrType\lvalue: String\l}" fontsize = 10]
+    IntAttr [ label = "{IntAttr|t: IntAttrType\lvalue: Int\l}" fontsize = 10]
     NodeType [ label = "{NodeType}" fontsize = 10]
     AttrType [ label = "{AttrType[T]}" fontsize = 10]
     RelType [ label = "{enum RelType|Binds, Deprecates,\lExcludes, Has,\lHelps, Hurts,\lImpacts, Implements,\lInherits, Interacts,\lPrecedes, Relates,\lRequires, Verifies\l}" fontsize = 9]
