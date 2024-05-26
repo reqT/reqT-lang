@@ -2,7 +2,7 @@ package reqt
 
 class TestModelOps extends munit.FunSuite:
 
-  test("Model cut top tip       "):
+  test("Model tip top       "):
     assert:
       Model(Prio(1), Req("x").has(Prio(1))).tip == Model(Prio(1), Req("x"))
     assert:
@@ -173,11 +173,11 @@ class TestModelOps extends munit.FunSuite:
       Stakeholder("a"),
       Feature("x").has( 
         Stakeholder("b"),
-        Req("a") has Rank(2),
-        Req("b") has Rank(3),
-        Req("c") has Rank(4),
-        Req("d") has Rank(1),
-        Req("e") has Rank(7),
+        Req("a") has Order(2),
+        Req("b") has Order(3),
+        Req("c") has Order(4),
+        Req("d") has Order(1),
+        Req("e") has Order(7),
       ),
       Feature("y").has(
         Stakeholder("b"),
@@ -189,10 +189,10 @@ class TestModelOps extends munit.FunSuite:
       ),
     )
     
-    assert(m.entsOrderedBy(Rank) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
+    assert(m.entsOrderedBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
 
-    assert(m.toRankingFrom(Rank) == m.toRankingFrom(Prio))
-    assert(m.toRankingFrom(Rank).fromRankingTo(Prio) == m.toRankingFrom(Prio).fromRankingTo(Prio))
+    assert(m.toRankingFrom(Order) == m.toRankingFrom(Prio))
+    assert(m.toRankingFrom(Order).fromRankingTo(Prio) == m.toRankingFrom(Prio).fromRankingTo(Prio))
 
     val r = Ranking: 
       """  Feature a Feature b

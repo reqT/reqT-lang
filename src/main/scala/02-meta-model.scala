@@ -14,15 +14,17 @@ object meta:
   import RelGroup.* 
 
   val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
+    ContextEnt -> "Actor" -> "A role played by a user or external system that interacts with the system (product, app, or service) under development.",
+    ContextEnt -> "App" -> "A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application.",
     ContextEnt -> "Domain" -> "The application area of a product with its surrounding entities, e.g. users or other systems.",
     ContextEnt -> "Product" -> "An artifact offered to users or customers, e.g. an app, service or  embedded system.",
     ContextEnt -> "Release" -> "A specific version of a product offered to end users at a specific time.",
     ContextEnt -> "Resource" -> "A capability of, or support for product development, e.g. a development team or some testing equipment.",
     ContextEnt -> "Risk" -> "Something negative that may happen.",
-    ContextEnt -> "Section" -> "A part of a requirements document.",
+    ContextEnt -> "Scenario" -> "A narrative of foreseeable interactions of user roles (actors) and the system (product, app, or service) under development..",
+    ContextEnt -> "Service" -> "System use that provides value to stakeholders. System actions that stakeholders are willing to pay for.",
     ContextEnt -> "Stakeholder" -> "A role, person or legal entity with a stake in the development or operation of a product.",
     ContextEnt -> "System" -> "A set of software or hardware components interacting with users or systems.",
-    ContextEnt -> "Term" -> "A word or group of words having a particular meaning in a particular domain.",
     ContextEnt -> "User" -> "A human interacting with a system.",
 
     GeneralEnt -> "Epic" -> "A coherent collection of features, stories, use cases or issues. A large part of a release.",
@@ -33,9 +35,13 @@ object meta:
     GeneralEnt -> "Image" -> "A visual representation, picture or diagram.",
     GeneralEnt -> "Interface" -> "A defined way to interact with a system.",
     GeneralEnt -> "Issue" -> "Something needed to be fixed or work to do.",
+    GeneralEnt -> "Item" -> "An article in a collection, enumeration, or series.",
     GeneralEnt -> "Label" -> "A descriptive tag used to classify something.",
     GeneralEnt -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
-    GeneralEnt -> "Test" -> "A procedure to check if requirements are met.",  // Or TestCase ?
+    GeneralEnt -> "Section" -> "A part of a requirements document.",
+    GeneralEnt -> "Term" -> "A word or group of words having a particular meaning in a particular domain.",
+    GeneralEnt -> "Test" -> "A procedure to check if requirements are met.", 
+    GeneralEnt -> "WorkPackage" -> "A coherent collection of (development) activities.", 
 
 
     DataEnt -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // or Data or DataEntity or DataType?
@@ -96,7 +102,7 @@ object meta:
     "Frequency" -> "A number of occurrences per time unit. ",
     "Max" -> "A maximum estimated or assigned value.",
     "Min" -> "A minimum estimated or assigned value.",
-    "Rank" -> "An ordinal number of an entity (1st, 2nd, ...).",
+    "Order" -> "An ordinal number of an entity (1st, 2nd, ...).",
     "Prio" -> "A level of importance of an entity. Short for priority.",
     "Probability" -> "A likelihood expressed as whole percentages that something (e.g. a risk) occurs.",
     "Profit" -> "A gain or return of some entity, e.g. in monetary terms.",
@@ -105,7 +111,7 @@ object meta:
 
   val relationConceptGroups = ArraySeq[((RelGroup,String),String)](
     ClassRel -> "inherits" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
-    ContextRel -> "interacts" -> "A communication relation. A user interacts with an interface.",
+    ContextRel -> "interactsWith" -> "A communication relation. A user interacts with an interface.",
     DependencyRel -> "excludes" -> "Prevents an entity combination. One feature excludes another in a release.",
     DependencyRel -> "implements" -> "Realisation of an entity, e.g. a component implements a feature.",
     DependencyRel -> "precedes" -> "Temporal ordering. A feature precedes (should be implemented before) another feature.",
@@ -114,7 +120,7 @@ object meta:
     GeneralRel -> "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity.",
     GeneralRel -> "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity.",
     GeneralRel -> "impacts" -> "Some unspecific influence. A new feature impacts an existing component.",
-    GeneralRel -> "relates" -> "Some general, unspecific relation to another entity.",
+    GeneralRel -> "relatesTo" -> "Some general, unspecific relation to another entity.",
     GoalRel -> "helps" -> "Positive influence. A goal supports the fulfillment of another goal.",
     GoalRel -> "hurts" -> "Negative influence. A goal hinders another goal.",
     VariabilityRel -> "binds" -> "Ties a value to an option. A configuration binds a variation point.",

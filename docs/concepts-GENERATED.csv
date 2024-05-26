@@ -1,4 +1,6 @@
 concept	type	group	description
+Actor	EntType	ContextEnt	A role played by a user or external system that interacts with the system (product, app, or service) under development.
+App	EntType	ContextEnt	A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application.
 Barrier	EntType	QualityEnt	Something that makes it difficult to achieve a goal or a higher quality level.
 Benefit	Attr	IntAttr	A characterization of a good or helpful result or effect (e.g. of a feature).
 Breakpoint	EntType	QualityEnt	A point of change, representing an important shift in the relation between quality and benefit.
@@ -30,6 +32,7 @@ Image	EntType	GeneralEnt	A visual representation, picture or diagram.
 Input	Attr	StrAttr	Data consumed by an entity, 
 Interface	EntType	GeneralEnt	A defined way to interact with a system.
 Issue	EntType	GeneralEnt	Something needed to be fixed or work to do.
+Item	EntType	GeneralEnt	An article in a collection, enumeration, or series.
 Label	EntType	GeneralEnt	A descriptive tag used to classify something.
 Location	Attr	StrAttr	A location of a resource such as a web address or a path to a file of persistent data.
 Max	Attr	IntAttr	A maximum estimated or assigned value.
@@ -37,6 +40,7 @@ Member	EntType	DataEnt	A data entity that is part of another entity. More specif
 Min	Attr	IntAttr	A minimum estimated or assigned value.
 Model	Model	General	A collection of model elements, which can be entities, attributes or relations.
 Module	EntType	DesignEnt	A collection of coherent functions and interfaces.
+Order	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).
 Output	Attr	StrAttr	Data produced by an entity, e.g. a function or a test.
 Prio	Attr	IntAttr	A level of importance of an entity. Short for priority.
 Probability	Attr	IntAttr	A likelihood expressed as whole percentages that something (e.g. a risk) occurs.
@@ -44,15 +48,16 @@ Product	EntType	ContextEnt	An artifact offered to users or customers, e.g. an ap
 Profit	Attr	IntAttr	A gain or return of some entity, e.g. in monetary terms.
 Prototype	EntType	DesignEnt	A system with limited functionality used to demonstrate a design idea.
 Quality	EntType	QualityEnt	An aspect of system quality, distinguishing characteristic or degree of goodness.
-Rank	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).
 Ranking	Attr	StrAttr	A rank ordered sequence of entity ids separated by newline.
 Relationship	EntType	DataEnt	A specific way that data types are connected.
 Release	EntType	ContextEnt	A specific version of a product offered to end users at a specific time.
 Req	EntType	GeneralEnt	Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.
 Resource	EntType	ContextEnt	A capability of, or support for product development, e.g. a development team or some testing equipment.
 Risk	EntType	ContextEnt	Something negative that may happen.
+Scenario	EntType	ContextEnt	A narrative of foreseeable interactions of user roles (actors) and the system (product, app, or service) under development..
 Screen	EntType	DesignEnt	A design of (a part of) a user interface.
-Section	EntType	ContextEnt	A part of a requirements document.
+Section	EntType	GeneralEnt	A part of a requirements document.
+Service	EntType	ContextEnt	System use that provides value to stakeholders. System actions that stakeholders are willing to pay for.
 Spec	Attr	StrAttr	A definition of an entity. Short for specification
 Stakeholder	EntType	ContextEnt	A role, person or legal entity with a stake in the development or operation of a product.
 State	EntType	FunctionalEnt	A mode or condition of something in the domain or in the system. A configuration of data.
@@ -60,7 +65,7 @@ Story	EntType	FunctionalEnt	A description of what a user wants in order to achie
 System	EntType	ContextEnt	A set of software or hardware components interacting with users or systems.
 Target	EntType	QualityEnt	A desired quality level or quality goal.
 Task	EntType	FunctionalEnt	A piece of work by users, potentially supported by a system. Short for user task
-Term	EntType	ContextEnt	A word or group of words having a particular meaning in a particular domain.
+Term	EntType	GeneralEnt	A word or group of words having a particular meaning in a particular domain.
 Test	EntType	GeneralEnt	A procedure to check if requirements are met.
 Text	Attr	StrAttr	An paragraph or general description.
 Title	Attr	StrAttr	A general or descriptive heading. One or more leading # indicate heading level.
@@ -70,6 +75,7 @@ Value	Attr	IntAttr	Some general integer value.
 Variant	EntType	VariabilityEnt	An object or system property that can be chosen from a set of options.
 VariationPoint	EntType	VariabilityEnt	An opportunity of choice among variants.
 Why	Attr	StrAttr	A description of intention or rationale of an entity.
+WorkPackage	EntType	GeneralEnt	A coherent collection of (development) activities.
 binds	RelType	VariabilityRel	Ties a value to an option. A configuration binds a variation point.
 deprecates	RelType	GeneralRel	Makes outdated. An entity deprecates (supersedes) another entity.
 excludes	RelType	DependencyRel	Prevents an entity combination. One feature excludes another in a release.
@@ -79,8 +85,8 @@ hurts	RelType	GoalRel	Negative influence. A goal hinders another goal.
 impacts	RelType	GeneralRel	Some unspecific influence. A new feature impacts an existing component.
 implements	RelType	DependencyRel	Realisation of an entity, e.g. a component implements a feature.
 inherits	RelType	ClassRel	One entity inherits properties of another entity. A specialization, extension or subtype relation. 
-interacts	RelType	ContextRel	A communication relation. A user interacts with an interface.
+interactsWith	RelType	ContextRel	A communication relation. A user interacts with an interface.
 precedes	RelType	DependencyRel	Temporal ordering. A feature precedes (should be implemented before) another feature.
-relates	RelType	GeneralRel	Some general, unspecific relation to another entity.
+relatesTo	RelType	GeneralRel	Some general, unspecific relation to another entity.
 requires	RelType	DependencyRel	A requested combination. One function requires that a another function is also implemented.
 verifies	RelType	DependencyRel	Gives evidence of correctness. A test verifies the implementation of a feature.

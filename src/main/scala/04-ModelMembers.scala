@@ -212,10 +212,10 @@ transparent trait ModelMembers:
     Model(es.sorted) // sorted is using Elem.elemOrd implicitly
 
   /** All empty relations at any depth are replaced by its entity. */
-  def cutEmptyRelations: Model =
+  def removeEmptyRelations: Model =
     Model(elems.map:
       case n: Node => n 
-      case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.cutEmptyRelations) else e
+      case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.removeEmptyRelations) else e
     )
   
   /** A Map that groups equal links to gether. Keys of type Link point to Vector[Rel]. **/
@@ -242,7 +242,7 @@ transparent trait ModelMembers:
   def normal: Model = distinct.sorted
 
   def minimal: Model = 
-    cutEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinctEntLinks.distinct
+    removeEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinctEntLinks.distinct
 
   def atoms: Vector[Elem] = paths.flatMap(_.toModel.elems)
 

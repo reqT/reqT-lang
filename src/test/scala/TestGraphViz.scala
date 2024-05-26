@@ -5,4 +5,4 @@ class TestGraphViz extends munit.FunSuite:
     val m = examples.Lauesen.ContextDiagramInterfaces
     val dot = GraphVizGen.modelToGraphNested(m)
     dot.saveTo("target/g1.dot")
-    assert(true)  // TODO generate a graph from dot and check if it is good
+    assert(true)  // TODO generate a graph from dot and check if it is good 

@@ -45,7 +45,7 @@ object showDeprecations:
         |  -- Deleted relations:  ${deletedRelations.size}   \n${deletedRelations.p}
         |  ++ Added relations:    ${addedRelations.size}     \n${addedRelations.p}
         |
-        | Migration Advice: replacement suggestions for changed elems in reqt 3.1.7:
+        | Migration Advice: replacement suggestions for changed elems since 3.1.7:
         |${old.migrationAdvice.mkString("\n")}
         |""".stripMargin
 
@@ -70,15 +70,9 @@ object showDeprecations:
     val concepts = (entities ++ attributes ++ relations).sorted
 
     val migration: Seq[((String, String, String), String)] = Seq(
-      ("Deleted", "Entity", "Actor")       -> "use System or User",
-      ("Deleted", "Entity", "App")         -> "use Product or System",
-      ("Deleted", "Entity", "Item")        -> "use Label or Text",
       ("Deleted", "Entity", "Meta")        -> "use Data or Class",
-      ("Deleted", "Entity", "MockUp")      -> "use Prototype",
-      ("Deleted", "Entity", "Scenario")    -> "use UseCase or Story",
-      ("Deleted", "Entity", "Service")     -> "use Product, Feature or Function",
+      ("Deleted", "Entity", "MockUp")      -> "use Prototype",  
       ("Deleted", "Entity", "Ticket")      -> "use Issue",
-      ("Deleted", "Entity", "WorkPackage") -> "use Issue, Epic or Section",
       ("Added", "Entity", "Field") -> "more specific alternative to member", 
       ("Added", "Entity", "Image") -> "was attribute, use with attribute Location", 
       ("Added", "Entity", "Prototype") -> "instead of Mockup", 
@@ -86,18 +80,12 @@ object showDeprecations:
       ("Deleted", "Attribute", "FileName") -> "use Location",
       ("Deleted", "Attribute", "Image") -> "use entity Image with attribute Location",
       ("Deleted", "Attribute", "Status")      -> "use Label",
-      ("Deleted", "Attribute", "Order")       -> "use Rank",
       ("Added", "Attribute", "Failure")  -> "use together with Risk, Test",
       ("Added", "Attribute", "Location") -> "instead of FileName",
-      ("Added", "Attribute", "Rank") -> "instead of Order",
       ("Added", "Attribute", "Ranking") -> "used for ordered sequences of entities or ids",
-      ("Deleted", "Relation", "interactsWith") -> "use interacts",
       ("Deleted", "Relation", "is")            -> "use inherits",
-      ("Deleted", "Relation", "relatesTo")     -> "use relates",
-      ("Deleted", "Relation", "superOf")       -> "use inherits",
-      ("Added", "Relation", "interacts") -> "instead of interactsWith",
+      ("Deleted", "Relation", "superOf")       -> "use inherits in reverse direction",
       ("Added", "Relation", "inherits") -> "instead of is, superOf",
-      ("Added", "Relation", "relates") -> "instead of relatesTo",
     )
 
     def migrationAdvice = for (key, advice) <- migration yield 

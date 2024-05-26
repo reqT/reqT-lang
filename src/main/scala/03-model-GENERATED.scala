@@ -65,7 +65,7 @@ final case class Rel(e: Ent, t: RelType, sub: Model) extends Elem:
 
 enum EntType extends NodeType:
   def apply(id: String): Ent = Ent(this, id)
-  case Barrier, Breakpoint, Class, Component, Configuration, Data, Design, Domain, Epic, Event, Feature, Field, Function, Goal, Idea, Image, Interface, Issue, Label, Member, Module, Product, Prototype, Quality, Relationship, Release, Req, Resource, Risk, Screen, Section, Stakeholder, State, Story, System, Target, Task, Term, Test, UseCase, User, Variant, VariationPoint
+  case Actor, App, Barrier, Breakpoint, Class, Component, Configuration, Data, Design, Domain, Epic, Event, Feature, Field, Function, Goal, Idea, Image, Interface, Issue, Item, Label, Member, Module, Product, Prototype, Quality, Relationship, Release, Req, Resource, Risk, Scenario, Screen, Section, Service, Stakeholder, State, Story, System, Target, Task, Term, Test, UseCase, User, Variant, VariationPoint, WorkPackage
 
 enum StrAttrType extends AttrType[String]:
   def apply(value: String): StrAttr = StrAttr(this, value)
@@ -73,10 +73,10 @@ enum StrAttrType extends AttrType[String]:
 
 enum IntAttrType extends AttrType[Int]:
   def apply(value: Int):    IntAttr = IntAttr(this, value)
-  case Benefit, Capacity, Cost, Damage, Frequency, Max, Min, Prio, Probability, Profit, Rank, Value
+  case Benefit, Capacity, Cost, Damage, Frequency, Max, Min, Order, Prio, Probability, Profit, Value
 
 enum RelType extends ElemType:
-  case Binds, Deprecates, Excludes, Has, Helps, Hurts, Impacts, Implements, Inherits, Interacts, Precedes, Relates, Requires, Verifies
+  case Binds, Deprecates, Excludes, Has, Helps, Hurts, Impacts, Implements, Inherits, InteractsWith, Precedes, RelatesTo, Requires, Verifies
 
 export EntType.*
 export StrAttrType.*
@@ -111,14 +111,14 @@ extension (e: Ent)
   infix def inherits(sub: Elem*): Rel = Rel(e, Inherits, Model(sub*))
   infix def inherits: Link = Link(e, Inherits)
 
-  infix def interacts(sub: Elem*): Rel = Rel(e, Interacts, Model(sub*))
-  infix def interacts: Link = Link(e, Interacts)
+  infix def interactsWith(sub: Elem*): Rel = Rel(e, InteractsWith, Model(sub*))
+  infix def interactsWith: Link = Link(e, InteractsWith)
 
   infix def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
   infix def precedes: Link = Link(e, Precedes)
 
-  infix def relates(sub: Elem*): Rel = Rel(e, Relates, Model(sub*))
-  infix def relates: Link = Link(e, Relates)
+  infix def relatesTo(sub: Elem*): Rel = Rel(e, RelatesTo, Model(sub*))
+  infix def relatesTo: Link = Link(e, RelatesTo)
 
   infix def requires(sub: Elem*): Rel = Rel(e, Requires, Model(sub*))
   infix def requires: Link = Link(e, Requires)

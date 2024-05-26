@@ -96,21 +96,22 @@ MultiLineRel ::= Ent RelType OptColon SubModel
 
 SubModel ::= (Indent(n + 1) ElemStart Elem)* Outdent(n)
 
-EntityType ::= 'Barrier' | 'Breakpoint' | 'Class' | 'Component' | 'Configuration' | 'Data' | 'Design' | 
-'Domain' | 'Epic' | 'Event' | 'Feature' | 'Field' | 'Function' | 'Goal' | 'Idea' | 'Image' | 
-'Interface' | 'Issue' | 'Label' | 'Member' | 'Module' | 'Product' | 'Prototype' | 'Quality' | 
-'Relationship' | 'Release' | 'Req' | 'Resource' | 'Risk' | 'Screen' | 'Section' | 
-'Stakeholder' | 'State' | 'Story' | 'System' | 'Target' | 'Task' | 'Term' | 'Test' | 'UseCase' | 
-'User' | 'Variant' | 'VariationPoint'
+EntityType ::= 'Actor' | 'App' | 'Barrier' | 'Breakpoint' | 'Class' | 'Component' | 'Configuration' | 'Data' | 
+'Design' | 'Domain' | 'Epic' | 'Event' | 'Feature' | 'Field' | 'Function' | 'Goal' | 'Idea' | 
+'Image' | 'Interface' | 'Issue' | 'Item' | 'Label' | 'Member' | 'Module' | 'Product' | 
+'Prototype' | 'Quality' | 'Relationship' | 'Release' | 'Req' | 'Resource' | 'Risk' | 
+'Scenario' | 'Screen' | 'Section' | 'Service' | 'Stakeholder' | 'State' | 'Story' | 'System' | 
+'Target' | 'Task' | 'Term' | 'Test' | 'UseCase' | 'User' | 'Variant' | 'VariationPoint' | 
+'WorkPackage'
 
-IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Prio' | 
-'Probability' | 'Profit' | 'Rank' | 'Value'
+IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max' | 'Min' | 'Order' | 'Prio' | 
+'Probability' | 'Profit' | 'Value'
 
 StrAttrType ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 
 'Input' | 'Location' | 'Output' | 'Ranking' | 'Spec' | 'Text' | 'Title' | 'Why'
 
 RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Impacts' | 'Implements' | 
-'Inherits' | 'Interacts' | 'Precedes' | 'Relates' | 'Requires' | 'Verifies'
+'Inherits' | 'InteractsWith' | 'Precedes' | 'RelatesTo' | 'Requires' | 'Verifies'
 ```
 
 ## Special Parsing Rules

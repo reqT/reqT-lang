@@ -54,7 +54,7 @@ object Lauesen:
   val ContextDiagramSimple = Model(
     Title("Context Diagram, simple"),
     Section("context").has(
-      Product("hotelApp").interacts(
+      Product("hotelApp").interactsWith(
         User("receptionist"),
         User("guest"),
         System("accounting"),
@@ -94,20 +94,20 @@ object Lauesen:
 
   val DataRelations = Model(
       Title("Data Relations"),
-      Class("Guest").relates(
+      Class("Guest").relatesTo(
         Class("Stay"),
         Min(1),
       ),
-      Class("Stay").relates(
+      Class("Stay").relatesTo(
         Class("RoomState"),
         Class("Service"),
         Min(1),
       ),
-      Class("ServiceType").relates(
+      Class("ServiceType").relatesTo(
         Class("Service"),
         Min(1),
       ),
-      Class("Room").relates(
+      Class("Room").relatesTo(
         Class("RoomState"),
         Min(1),
       ),
@@ -206,7 +206,7 @@ object Lauesen:
       Quality("taskUsability").has(
         Spec("Novice users shall perform tasks Q and R in 15 minutes. Experienced users shall perform tasks Q, R, S in 2 minutes."),
       ),
-      Quality("taskUsability").relates(
+      Quality("taskUsability").relatesTo(
         Task("Q"),
         Task("R"),
         Task("S"),
