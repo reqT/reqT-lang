@@ -82,7 +82,6 @@ object showDeprecations:
       ("Deleted", "Attribute", "Status")      -> "use Label",
       ("Added", "Attribute", "Failure")  -> "use together with Risk, Test",
       ("Added", "Attribute", "Location") -> "instead of FileName",
-      ("Added", "Attribute", "Ranking") -> "used for ordered sequences of entities or ids",
       ("Deleted", "Relation", "is")            -> "use inherits",
       ("Deleted", "Relation", "superOf")       -> "use inherits in reverse direction",
       ("Added", "Relation", "inherits") -> "instead of is, superOf",

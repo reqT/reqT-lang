@@ -15,7 +15,7 @@ class TestModelOps extends munit.FunSuite:
         Model(Prio(42), Prio(2),Undefined(Prio))
 
     assert:
-      Model(Prio(1),Req("x"),Prio(2),Undefined(Prio),Req("x")).updated(Prio(42)).distinctAttrType == 
+      Model(Prio(1),Req("x"),Prio(2),Undefined(Prio),Req("x")).updated(Prio(42)).distinctTopAttrType == 
         Model(Prio(42),Req("x"),Req("x"))
 
     assert:
@@ -105,15 +105,15 @@ class TestModelOps extends munit.FunSuite:
       Req("x").has(Prio(1),Prio(2),Req("z"),Req("x"),Req("y"))
     )
 
-    assert(m.normal == n)
+    assert(m.normalize == n)
     assert(m.distinct == d)
   
     assert:
-      Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).distinctElems ==
-      Model(Prio(1),Prio(2),Req("x"),Req("y"),Prio(3))
+      Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).elems.distinct ==
+      Model(Prio(1),Prio(2),Req("x"),Req("y"),Prio(3)).elems
 
     assert:
-      Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).distinctAttrType ==
+      Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).distinctAttrTypeDeep ==
       Model(Prio(1),Req("x"),Req("y"),Req("x"))
 
   test("Model invariants        "):
@@ -139,9 +139,9 @@ class TestModelOps extends munit.FunSuite:
     assert: 
       m.distinct == m.paths.map(_.toModel).reduceLeft(_ ++ _)
     assert:
-      m.maximal == m.paths.map(_.toModel).reduceLeft(_ :++ _)
+      m.expand == m.paths.map(_.toModel).reduceLeft(_ :++ _)
     assert:
-      m.minimal.sorted == m.minimal.normal
+      m.prune.sorted == m.prune.normalize
 
     assert:
       m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths
@@ -152,10 +152,10 @@ class TestModelOps extends munit.FunSuite:
       ms.forall(m => m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths)
 
     assert: 
-      ms.forall(m => m.minimal.maximal.normal == m.maximal.minimal.normal)
+      ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
       
     assert: 
-      ms.forall(m => m.minimal.maximal.normal == m.maximal.minimal.normal)
+      ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
 
 
     // assert: 
@@ -189,27 +189,10 @@ class TestModelOps extends munit.FunSuite:
       ),
     )
     
-    assert(m.entsOrderedBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
+    assert(m.rankBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
 
-    assert(m.toRankingFrom(Order) == m.toRankingFrom(Prio))
-    assert(m.toRankingFrom(Order).fromRankingTo(Prio) == m.toRankingFrom(Prio).fromRankingTo(Prio))
-
-    val r = Ranking: 
-      """  Feature a Feature b
-      Req x, Req y
-      foo bar
-        Stakeholder y """
-    val mr = Model(r).fromRankingTo(Value)
-
-    assert(mr.toMarkdown ==
-      s"""|* Feature: a has Value: 1
-          |* Feature: b has Value: 2
-          |* Req: x has Value: 3
-          |* Req: y has Value: 4
-          |* Req: foo has Value: 5
-          |* Req: bar has Value: 6
-          |* Stakeholder: y has Value: 7
-          |""".stripMargin)
+    assert(m.rankBy(Order) == m.rankBy(Prio))
+    assert(m.rankBy(Prio).toModel.withRank(Order).toModel.rankBy(Order) == m.rankBy(Order))
 
   test("Model Examples          "):
     assert(examples.Prioritization.normalizedVotes().intValues.sum == 99)

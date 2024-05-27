@@ -108,7 +108,7 @@ IntAttrType ::= 'Benefit' | 'Capacity' | 'Cost' | 'Damage' | 'Frequency' | 'Max'
 'Probability' | 'Profit' | 'Value'
 
 StrAttrType ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectation' | 'Failure' | 'Gist' | 
-'Input' | 'Location' | 'Output' | 'Ranking' | 'Spec' | 'Text' | 'Title' | 'Why'
+'Input' | 'Location' | 'Output' | 'Spec' | 'Text' | 'Title' | 'Why'
 
 RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Impacts' | 'Implements' | 
 'Inherits' | 'InteractsWith' | 'Precedes' | 'RelatesTo' | 'Requires' | 'Verifies'

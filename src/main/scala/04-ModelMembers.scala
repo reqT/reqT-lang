@@ -128,45 +128,18 @@ transparent trait ModelMembers:
 
   def entTypesOfId(id: String): Set[EntType] = idTypeMap(id)
 
-  def entsOrderedBy(iat: IntAttrType): Vector[Ent] = 
-    val lro: Model = leafRelsOf(iat)
-    lro.ents.sortBy(e => (lro / e.has / iat).headOption)
+  def rankBy[T](iat: IntAttrType, rt: RelType = Has): Vector[Ent] = 
+    val lrs: Model = leafRelsOf(iat)
+    lrs.ents.sortBy(e => (lrs / Link(e, rt) / iat).headOption)
 
-  def toRankingFrom(iat: IntAttrType): Model = Model(StrAttr(Ranking, entsOrderedBy(iat).map(_.id).mkString("\n","\n","")))
-
-  def fromIdOrder(iat: IntAttrType, ids: Seq[String]): Model =
-    val indexOfId = ids.zipWithIndex.toMap
-    val pairs: Seq[(Ent, Int)] = 
-      ids.map(entsOfId).filter(_.nonEmpty).map(_.head).map(e => e -> (indexOfId(e.id) + 1))
-    val rels = pairs.sortBy(_._2).map((e,i) => e.has(iat(i)))
-    Model(rels*)
-
-  def fromRankingTo(iat: IntAttrType) = 
-    import meta.isEntType
-    val rankings: Vector[StrAttr] = nodes.collect { case a: StrAttr if a.t == Ranking => a } 
-    val xss: Vector[Seq[String]] = rankings.map(r => r.value.words.toSeq)
-    val es: Vector[Ent] = xss.flatMap: xs => 
-      if xs.isEmpty then Vector(Req(""))
-      else 
-        var i = 0
-        var result = Vector.empty[Ent]
-        while i < xs.length do
-          if isEntType(xs(i)) then 
-            result :+= meta.entTypes(xs(i)).apply(xs.lift(i + 1).getOrElse(""))
-            i += 1
-          else if idMap.isDefinedAt(xs(i)) then 
-            result = result :+ idMap(xs(i)).head
-          else result = result :+ Req(xs(i)) 
-          i += 1
-        result
-    val rels = es.zipWithIndex.map((e, i) => e.has(iat.apply(i + 1)))
-    Model(rels)
+  def withRank(iat: IntAttrType, rt: RelType = Has): Vector[Rel] =
+    ents.zipWithIndex.map((e, i) => Rel(e, rt, Model(iat.apply(i + 1))))
 
   /** A new Model with distinct elems (non-recursive). **/
-  def distinctElems: Model = Model(elems.distinct) 
+  def distinctTopElems: Model = Model(elems.distinct) 
 
   /** A new Model that is distinct by attribute type (non-recursive). **/
-  def distinctAttrType: Model =
+  def distinctTopAttrType: Model =
     val foundAttrTypes: collection.mutable.Set[AttrType[?]] = collection.mutable.Set()
     val es = elems.flatMap:
       case a: Attr[?] => 
@@ -198,14 +171,14 @@ transparent trait ModelMembers:
 
   /** A new Model with recursive de-duplication of its attributes by type on all levels.  **/
   def distinctAttrTypeDeep: Model =
-    val es = distinctAttrType.elems.map:
+    val es = distinctTopAttrType.elems.map:
       case n: Node => n 
       case Rel(e, r, m) => Rel(e, r, m.distinctAttrTypeDeep)
     Model(es) 
 
   /** Recursively sort elems alphabetically. */  
   // TODO: maybe better to give each Elem ordering and IntAttr special ordering???
-  def sorted: Model = 
+  def sorted(using Ordering[Elem]): Model = 
     val es = elems.map:
       case n: Node => n 
       case Rel(e, r, m) => Rel(e, r, m.sorted)  // recur
@@ -236,20 +209,20 @@ transparent trait ModelMembers:
     Model(ess.flatten.toVector)
 
   /** A new model constructed by adding all elems using add one by one giving no duplicates. */
-  def distinct = Model() ++ self
+  def distinct = Model() ++ self  // TODO: investigate if this is redundant to distinctElemsDeep???
 
   /** A Model in normal form: elems are added one by one replacing same nodes and then sorted. **/
-  def normal: Model = distinct.sorted
+  def normalize: Model = distinct.sorted
 
-  def minimal: Model = 
+  def prune: Model = 
     removeEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinctEntLinks.distinct
 
   def atoms: Vector[Elem] = paths.flatMap(_.toModel.elems)
 
-  def maximal: Model = Model(atoms) 
+  def expand: Model = Model(atoms) 
 
   /** True if this model is in normal form. */
-  def isNormal: Boolean = self == normal
+  def isNormal: Boolean = self == normalize
 
   /** A Model with the nodes but not relations at the top of this Model. */
   def tip: Model = cut(0)

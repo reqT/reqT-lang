@@ -69,7 +69,7 @@ enum EntType extends NodeType:
 
 enum StrAttrType extends AttrType[String]:
   def apply(value: String): StrAttr = StrAttr(this, value)
-  case Comment, Constraints, Deprecated, Example, Expectation, Failure, Gist, Input, Location, Output, Ranking, Spec, Text, Title, Why
+  case Comment, Constraints, Deprecated, Example, Expectation, Failure, Gist, Input, Location, Output, Spec, Text, Title, Why
 
 enum IntAttrType extends AttrType[Int]:
   def apply(value: Int):    IntAttr = IntAttr(this, value)

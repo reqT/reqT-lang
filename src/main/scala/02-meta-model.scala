@@ -87,7 +87,6 @@ object meta:
     "Title" -> "A general or descriptive heading. One or more leading # indicate heading level.",
     "Input" -> "Data consumed by an entity, ",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
-    "Ranking" -> "A rank ordered sequence of entity ids separated by newline.",
     "Output" -> "Data produced by an entity, e.g. a function or a test.",
     "Spec" -> "A definition of an entity. Short for specification",
     "Text" -> "An paragraph or general description.", 

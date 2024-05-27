@@ -32,7 +32,7 @@ digraph Metamodel {
     AttrType [ label = "{AttrType[T]}" fontsize = 10]
     RelType [ label = "{enum RelType|Binds, Deprecates,\lExcludes, Has,\lHelps, Hurts,\lImpacts, Implements,\lInherits, InteractsWith,\lPrecedes, RelatesTo,\lRequires, Verifies\l}" fontsize = 9]
     EntType [ label = "{enum EntType|Actor, App, Barrier,\lBreakpoint, Class, Component,\lConfiguration, Data, Design,\lDomain, Epic, Event,\lFeature, Field, Function,\lGoal, Idea, Image,\lInterface, Issue, Item,\lLabel, Member, Module,\lProduct, Prototype, Quality,\lRelationship, Release, Req,\lResource, Risk, Scenario,\lScreen, Section, Service,\lStakeholder, State, Story,\lSystem, Target, Task,\lTerm, Test, UseCase,\lUser, Variant, VariationPoint,\lWorkPackage\l}" fontsize = 9]
-    StrAttrType [ label = "{enum StrAttrType|Comment, Constraints, Deprecated,\lExample, Expectation, Failure,\lGist, Input, Location,\lOutput, Ranking, Spec,\lText, Title, Why\l}" fontsize = 9]
+    StrAttrType [ label = "{enum StrAttrType|Comment, Constraints, Deprecated,\lExample, Expectation, Failure,\lGist, Input, Location,\lOutput, Spec, Text,\lTitle, Why\l}" fontsize = 9]
     IntAttrType [ label = "{enum IntAttrType|Benefit, Capacity, Cost,\lDamage, Frequency, Max,\lMin, Order, Prio,\lProbability, Profit, Value\l}" fontsize = 9]
 
 
