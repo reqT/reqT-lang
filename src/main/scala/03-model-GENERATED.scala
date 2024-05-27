@@ -76,7 +76,7 @@ enum IntAttrType extends AttrType[Int]:
   case Benefit, Capacity, Cost, Damage, Frequency, Max, Min, Order, Prio, Probability, Profit, Value
 
 enum RelType extends ElemType:
-  case Binds, Deprecates, Excludes, Has, Helps, Hurts, Impacts, Implements, Inherits, InteractsWith, Precedes, RelatesTo, Requires, Verifies
+  case Binds, Deprecates, Excludes, Has, Helps, Hurts, Impacts, Implements, InteractsWith, Is, Precedes, RelatesTo, Requires, Verifies
 
 export EntType.*
 export StrAttrType.*
@@ -108,11 +108,11 @@ extension (e: Ent)
   infix def implements(sub: Elem*): Rel = Rel(e, Implements, Model(sub*))
   infix def implements: Link = Link(e, Implements)
 
-  infix def inherits(sub: Elem*): Rel = Rel(e, Inherits, Model(sub*))
-  infix def inherits: Link = Link(e, Inherits)
-
   infix def interactsWith(sub: Elem*): Rel = Rel(e, InteractsWith, Model(sub*))
   infix def interactsWith: Link = Link(e, InteractsWith)
+
+  infix def is(sub: Elem*): Rel = Rel(e, Is, Model(sub*))
+  infix def is: Link = Link(e, Is)
 
   infix def precedes(sub: Elem*): Rel = Rel(e, Precedes, Model(sub*))
   infix def precedes: Link = Link(e, Precedes)

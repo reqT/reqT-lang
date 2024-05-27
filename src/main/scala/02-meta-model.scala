@@ -82,7 +82,7 @@ object meta:
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
     "Example" -> "A description that illustrates some entity by a typical instance.",
     "Expectation" -> "A required output of a test in order to be counted as passed.",
-    "Failure" -> "An error that prevents the normal execution of a system.",
+    "Failure" -> "A description of a runtime error that prevents the normal execution of a system.",
     "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
     "Title" -> "A general or descriptive heading. One or more leading # indicate heading level.",
     "Input" -> "Data consumed by an entity, ",
@@ -109,7 +109,7 @@ object meta:
   ).sorted
 
   val relationConceptGroups = ArraySeq[((RelGroup,String),String)](
-    ClassRel -> "inherits" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
+    ClassRel -> "is" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
     ContextRel -> "interactsWith" -> "A communication relation. A user interacts with an interface.",
     DependencyRel -> "excludes" -> "Prevents an entity combination. One feature excludes another in a release.",
     DependencyRel -> "implements" -> "Realisation of an entity, e.g. a component implements a feature.",

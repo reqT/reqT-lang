@@ -111,7 +111,7 @@ StrAttrType ::= 'Comment' | 'Constraints' | 'Deprecated' | 'Example' | 'Expectat
 'Input' | 'Location' | 'Output' | 'Spec' | 'Text' | 'Title' | 'Why'
 
 RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'Impacts' | 'Implements' | 
-'Inherits' | 'InteractsWith' | 'Precedes' | 'RelatesTo' | 'Requires' | 'Verifies'
+'InteractsWith' | 'Is' | 'Precedes' | 'RelatesTo' | 'Requires' | 'Verifies'
 ```
 
 ## Special Parsing Rules

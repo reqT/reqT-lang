@@ -20,7 +20,7 @@ Epic	EntType	GeneralEnt	A coherent collection of features, stories, use cases or
 Event	EntType	FunctionalEnt	Something that can happen in the domain or in the system.
 Example	Attr	StrAttr	A description that illustrates some entity by a typical instance.
 Expectation	Attr	StrAttr	A required output of a test in order to be counted as passed.
-Failure	Attr	StrAttr	An error that prevents the normal execution of a system.
+Failure	Attr	StrAttr	A description of a runtime error that prevents the normal execution of a system.
 Feature	EntType	GeneralEnt	A releasable characteristic of a product. A high-level, coherent bundle of requirements.
 Field	EntType	DataEnt	A data attribute that is part of another entity, such as a class
 Frequency	Attr	IntAttr	A number of occurrences per time unit. 
@@ -83,8 +83,8 @@ helps	RelType	GoalRel	Positive influence. A goal supports the fulfillment of ano
 hurts	RelType	GoalRel	Negative influence. A goal hinders another goal.
 impacts	RelType	GeneralRel	Some unspecific influence. A new feature impacts an existing component.
 implements	RelType	DependencyRel	Realisation of an entity, e.g. a component implements a feature.
-inherits	RelType	ClassRel	One entity inherits properties of another entity. A specialization, extension or subtype relation. 
 interactsWith	RelType	ContextRel	A communication relation. A user interacts with an interface.
+is	RelType	ClassRel	One entity inherits properties of another entity. A specialization, extension or subtype relation. 
 precedes	RelType	DependencyRel	Temporal ordering. A feature precedes (should be implemented before) another feature.
 relatesTo	RelType	GeneralRel	Some general, unspecific relation to another entity.
 requires	RelType	DependencyRel	A requested combination. One function requires that a another function is also implemented.

@@ -82,9 +82,7 @@ object showDeprecations:
       ("Deleted", "Attribute", "Status")      -> "use Label",
       ("Added", "Attribute", "Failure")  -> "use together with Risk, Test",
       ("Added", "Attribute", "Location") -> "instead of FileName",
-      ("Deleted", "Relation", "is")            -> "use inherits",
-      ("Deleted", "Relation", "superOf")       -> "use inherits in reverse direction",
-      ("Added", "Relation", "inherits") -> "instead of is, superOf",
+      ("Deleted", "Relation", "superOf")       -> "use is in reverse direction",
     )
 
     def migrationAdvice = for (key, advice) <- migration yield 
