@@ -27,5 +27,9 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: 'sbt'
+    - name: Set up sbt
+      uses: Jtalk/setup-sbt@v2
+      with:
+        version: 1.10.6
     - name: Run tests
       run: sbt build
