@@ -1,7 +1,6 @@
-// run with `scala-cli run publish.sc`
-
-//> using scala 3.4
+//> using scala 3.6.2
 //> using toolkit default
+// run with `scala-cli run publish.sc`
 
 println("*** Publish the reqT-lang jar to github using sbt and gh ***\n")
 

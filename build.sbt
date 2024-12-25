@@ -1,9 +1,9 @@
-lazy val reqTLangVer = "4.2.1-M2"
-lazy val scalaVer    = "3.3.3"  // use LTS only
-lazy val munitVer    = "0.7.29"
+lazy val reqTLangVer = "4.2.1-M3"
+lazy val scalaVer    = "3.3.4"  // use LTS only
+lazy val munitVer    = "1.0.3"
 
 ThisBuild / version      := reqTLangVer
-ThisBuild / scalaVersion := scalaVer  // use LTS
+ThisBuild / scalaVersion := scalaVer  // use LTS only
 ThisBuild / organization := "io.github.reqt"
 
 console / initialCommands := """import reqt.*"""
