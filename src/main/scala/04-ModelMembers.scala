@@ -217,7 +217,14 @@ transparent trait ModelMembers:
   def prune: Model = 
     removeEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinctEntLinks.distinct
 
-  def atoms: Vector[Elem] = paths.flatMap(_.toModel.elems)
+  def atoms: Vector[Elem] = //paths.flatMap(_.toModel.elems)
+    def loop(m: Model, isTopLevel: Boolean): Vector[Elem] = m.elems.flatMap:
+      case e: Ent if isTopLevel => Vector(e)
+      case Rel(e,l,sub) => sub.tip.elems.map(n => Rel(e,l,Model(n))) ++ loop(sub, false)
+      case a: Attr[_] if isTopLevel => Vector(a)
+      case u: Undefined[_] if isTopLevel => Vector(u)
+      case _ => Vector()
+    loop(this, true).distinct
 
   def expand: Model = Model(atoms) 
 
