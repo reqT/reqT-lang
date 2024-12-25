@@ -31,5 +31,7 @@ jobs:
       uses: Jtalk/setup-sbt@v2
       with:
         version: 1.10.6
+    - name: Setup Graphviz
+      uses: ts-graphviz/setup-graphviz@v2
     - name: Run tests
       run: sbt build
