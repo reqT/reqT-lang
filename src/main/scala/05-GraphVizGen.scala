@@ -1,12 +1,58 @@
 package reqt
 
 object GraphVizGen:
+  /** https://graphviz.org/docs/attrs/rankdir/ */
+  enum RankDir { case LR, RL, TB, BT}
+
+  /** https://graphviz.org/docs/attrs/ordering/ */
+  enum EdgeOrdering: 
+    case In, Out, Empty
+    override def toString = this match
+      case In => "in"
+      case Out => "out"
+      case Empty => ""
+
+  case class GraphVizSettings(
+    isFlat: Boolean = false, 
+    fontName: String = "Sans",
+    fontSize: Int = 10,
+    rankDir: RankDir = RankDir.LR,
+    edgeOrdering: EdgeOrdering = EdgeOrdering.Out,
+    noJustify: Boolean = true,
+    // edgeArrowhead: String = "empty", //https://graphviz.org/docs/attr-types/arrowType/
+    // nodeShape: String = "record",  //https://graphviz.org/docs/attr-types/shape/
+    compound: Boolean = true,
+  )
+  object GraphVizSettings:
+    given default: GraphVizSettings = GraphVizSettings()
+
+  type GraphVizCtx = GraphVizSettings ?=> String
+
+
+  extension (m: Model)
+    def toGraphViz(using settings: GraphVizSettings): GraphVizCtx = 
+      //val s = settings.copy(rankDir = "LR") ???
+      //???
+      settings.toString  // TODO generate graphviz string
+
+  def modelToGraphNested(m: Model): GraphVizCtx = preamble + nestedBody(m) + ending
+  def modelToGraphFlat(m: Model): GraphVizCtx = preamble + flatBody(m) + ending
+
+
   // --- BEGIN copied from reqT 3.1.7; to be refactored
-  def formats = s"""|compound=true;overlap=false;rankdir=LR;clusterrank=local;
-                    |node [fontname="Sans", fontsize=9];
-                    |edge [fontname="Sans", fontsize=9];
-                    |""".stripMargin
-  def preamble: String = s"""digraph ${q}reqT.Model${q} { $nl$formats$nl"""
+  def formats: GraphVizCtx = 
+    val s = summon[GraphVizSettings]
+    import s.*
+
+    val clusterRank = //https://graphviz.org/docs/attrs/clusterrank/
+      if isFlat then "" else "clusterrank=local;" 
+    
+    s"""|compound=true;overlap=false;rankdir=LR;$clusterRank
+        |node [fontname="Sans", fontsize=9];
+        |edge [fontname="Sans", fontsize=9];
+        |""".stripMargin
+
+  def preamble: GraphVizCtx = s"""digraph ${q}reqT.Model${q} { $nl$formats$nl"""
   def ending: String = "\n}"
 
   def style(elem: Elem): String = elem match
@@ -49,29 +95,26 @@ object GraphVizGen:
           nestedBody(sub, path/Link(e1,l1))  + indent(path.depth + 1) + "}\n"
     xs.mkString
 
-  def modelToGraphNested(m: Model): String = preamble + nestedBody(m) + ending
+  def flatNode(elem: Elem): String = elem match {
+      case e@Ent(t, id) => s"$q$e$q [label=$q$t$nlLiteral$id$q, shape=box];\n"
+      case Undefined(t) => s" [label=$q$t$nlLiteral ??? $q, shape=box, style=rounded]"
+      case a: Attr[_] =>
+        val (row1, row2) = (a.t, a.value)
+        s"$q$a$q [label=$q$row1$nlLiteral$row2$q, shape=box, style=rounded];\n"
+      case _ => ""
+    }
 
+  def flatBody(m: Model): String = m.atoms.map {
+    case n: Node => flatNode(n)
+    case Rel(from,link, Model(Vector(to))) =>
+      flatNode(from) + flatNode(to) +
+      s"$q$from$q" + " -> " + s"$q$to$q" + s" [label=$link]" + ";\n"
+    case _ => ""
+  } .mkString
 
-  // --- END
+  // --- END old copied on-going refactoring
 
-
-  case class GraphVizSettings(
-    fontName: String = "Sans",
-    fontSize: Int = 10,
-    rankDir: String = "LR",
-    ordering: String = "out",
-    noJustify: Boolean = true,
-    edgeArrowhead: String = "empty",
-    nodeShape: String = "record",
-    compound: Boolean = true,
-  )
-  object GraphVizSettings:
-    given default: GraphVizSettings = GraphVizSettings()
-
-  extension (m: Model)
-    def toGraphViz(using settings: GraphVizSettings): String = 
-      val s = settings.copy(rankDir = "LR")
-      ???
+  // --- below methods are used in reqt.meta.graph
 
   def recordNode(
     nodeName: String,
@@ -85,26 +128,29 @@ object GraphVizGen:
 
   def edge(fromNode: String, toNode: String): String = s"  $fromNode -> $toNode"
 
-  def classDiagram(title: String)
-    (rankSame: Seq[Seq[String]])(edges: Seq[(String, String)])(nodeFormats: Seq[String]) 
-    (using settings: GraphVizSettings) =
-      val s = settings.copy(rankDir = "BT")
+  def classDiagram
+    (title: String)
+    (rankSame: Seq[Seq[String]])
+    (edges: Seq[(String, String)])
+    (nodeFormats: Seq[String]) 
+    (using settings: GraphVizSettings): String =
+      val s = settings.copy(rankDir = RankDir.BT)
       import s.*
       s"""|digraph $title {
           |  fontname = "$fontName"
           |  fontsize = $fontSize
           |  rankdir =  "$rankDir"
-          |  ordering = "$ordering"
+          |  ordering = "$edgeOrdering"
           |  nojustify = $noJustify
           |
           |  node [
           |    fontname = "$fontName"
           |    fontsize = $fontSize
-          |    shape = "$nodeShape"
+          |    shape = "record"
           |  ]
           |
           |  edge [
-          |    arrowhead = "$edgeArrowhead"
+          |    arrowhead = "empty"
           |  ]
           |
           |${rankSame.map(_.mkString("  { rank = same; ", "; ", "; }")).mkString("  ", "\n  ", "\n")}

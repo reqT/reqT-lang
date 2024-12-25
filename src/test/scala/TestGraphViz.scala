@@ -2,7 +2,17 @@ package reqt
 
 class TestGraphViz extends munit.FunSuite:
   test("Model toGraphVizNested"):
+    import scala.sys.process._
     val m = examples.Lauesen.ContextDiagramInterfaces
-    val dot = GraphVizGen.modelToGraphNested(m)
-    dot.saveTo("target/g1.dot")
+    val dotNested = GraphVizGen.modelToGraphNested(m)
+    val f1 = "target/g1n.dot"
+    dotNested.saveTo(f1)
+    if isDotInstalled() then dotCmd(f1).!
+
+    val dotFlat = GraphVizGen.modelToGraphFlat(m)
+    val f2 = "target/g1f.dot"
+    dotFlat.saveTo(f2)
+    if isDotInstalled() then dotCmd(f2).!
+
+
     assert(true)  // TODO generate a graph from dot and check if it is good 
