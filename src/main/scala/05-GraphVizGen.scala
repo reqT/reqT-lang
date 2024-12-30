@@ -28,12 +28,9 @@ object GraphVizGen:
 
   type GraphVizCtx = GraphVizSettings ?=> String
 
-
   extension (m: Model)
-    def toGraphViz(using settings: GraphVizSettings): GraphVizCtx = 
-      //val s = settings.copy(rankDir = "LR") ???
-      //???
-      settings.toString  // TODO generate graphviz string
+    def toGraph: GraphVizCtx = 
+      if summon[GraphVizSettings].isFlat then modelToGraphFlat(m) else modelToGraphNested(m)
 
   def modelToGraphNested(m: Model): GraphVizCtx = preamble + nestedBody(m) + ending
   def modelToGraphFlat(m: Model): GraphVizCtx = preamble + flatBody(m) + ending
