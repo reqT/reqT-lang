@@ -250,7 +250,8 @@ object csp:
     lazy val constSeq1 = size    
 
 
-  object parseConstraints:
+  object parseConstraints: 
+    //This is unfinished job... TODO: consider only parse simple rels such as x > y x > 1 x <= y x === 0
     import parseUtils.*
     object mk:
       type Param = Var | Int | Boolean
