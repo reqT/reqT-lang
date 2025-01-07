@@ -1,7 +1,5 @@
 package reqt 
 
-import scala.compiletime.ops.double
-
 /** A Scala-embedded DSL for expressing integer constraint satisfaction problems. */
 object csp: 
   def constraints(cs: Constr*): Seq[Constr] = cs.toSeq 
@@ -251,6 +249,7 @@ object csp:
     lazy val seq2 = load
     lazy val constSeq1 = size    
 
+
   object parseConstraints:
     import parseUtils.*
     object mk:
@@ -340,3 +339,82 @@ object csp:
       case scala.util.Failure(exception) => (Seq(), exception.getMessage)
       case scala.util.Success(value)     => (value, "")
 
+  end parseConstraints
+
+  object releasePlanningProblem: 
+    val requiredEntityTypes = Seq(Release, Feature, Stakeholder, Resource) 
+
+    def missingEntityTypes(m: Model): Seq[EntType] = 
+      val ets = m.entTypes.toSet
+      requiredEntityTypes.filterNot(et => ets.contains(et)) 
+    
+    def isValidReleasePlan(m: Model): Boolean = missingEntityTypes(m).isEmpty
+      
+    def apply(m: Model): Seq[Constr] = 
+      if !isValidReleasePlan(m) then Seq() else
+
+        val stakeholders = m.ents.filter(_.t == Stakeholder).distinct
+        val features =     m.ents.filter(_.t == Feature).distinct
+        val releases =     m.ents.filter(_.t == Release).distinct
+        val resources =    m.ents.filter(_.t == Resource).distinct
+
+        val featureOrder: Seq[Constr] = forAll(features) { f => Var(f.has/Order).in(1 to releases.size) }
+        val releaseOrder: Seq[Constr] = forAll(releases) { r => Var(r.has/Order).in(1 to releases.size) }
+
+        println(releases)
+
+        val weightedBenefit: Seq[Constr] = forAll(stakeholders, features): (s, f) => 
+          Var(f.has/s.has/Benefit) ===  (Var(s.has/f.has/Benefit) * Var(s.has/Prio))
+        
+        val featureBenefitSum: Seq[Constr] = forAll(features): f => 
+          Var(f.has/Benefit) === sumForAll(stakeholders)(s => Var(f.has/s.has/Benefit)) 
+
+        val featureBenefitPerRelease: Seq[Constr] = forAll(releases, features) { (r, f) =>
+          IfThenElse(Var(f.has/Order) === Var(r.has/Order),
+            Var(r.has/f.has/Benefit) === Var(f.has/Benefit),
+            Var(r.has/f.has/Benefit) === 0) }
+        
+        val benefitPerRelease: Seq[Constr] = forAll(releases): r =>
+          Var(r.has/Benefit) === sumForAll(features)(f => Var(r.has/f.has/Benefit))
+        
+        val featureCostPerReleasePerResource: Seq[Constr] = 
+          forAll(releases,features, resources): (r, f, res) =>
+            IfThenElse(Var(f.has/Order) === Var(r.has/Order),
+              Var(r.has/res.has/f.has/Cost) === Var(res.has/f.has/Cost),
+              Var(r.has/res.has/f.has/Cost) === 0)
+        
+        val resourceCostPerRelease: Seq[Constr] = forAll(releases,resources): (r, res) =>
+          Var(r.has/res.has/Cost) === sumForAll(features)(f => Var(r.has/res.has/f.has/Cost))
+        
+        val featureCostPerRelease: Seq[Constr] = forAll(releases,features): (r, f) =>
+          Var(r.has/f.has/Cost) === sumForAll(resources)(res => Var(r.has/res.has/f.has/Cost)) 
+        
+        val costPerRelease: Seq[Constr] = forAll(releases): r =>
+          Var(r.has/Cost) === sumForAll(features)(f => Var(r.has/f.has/Cost))
+      
+        val costLimitPerResource: Seq[Constr] = forAll(releases, resources): (r, res) =>
+          Var(r.has/res.has/Cost) <= Var(res.has/r.has/Capacity)
+        
+        val totalCostPerRelease: Seq[Constr] = forAll(releases): r =>
+          Var(r.has/Cost) === sumForAll(resources)(res => Var(r.has/res.has/Cost))
+        
+        val rs = m.rels
+        
+        val precedences = rs.collect:
+          case Rel(e1, Precedes, Model(Vector(e2: Ent))) => Var(e1.has/Order) < Var(e2.has/Order) 
+        
+        val exclusions = rs.collect:
+          case Rel(e1, Excludes, Model(Vector(e2: Ent))) => Var(e1.has/Order) =/= Var(e2.has/Order) 
+          
+        val couplings = rs.collect:
+          case Rel(e1, Requires, Model(Vector(e2: Ent))) => Var(e1.has/Order) === Var(e2.has/Order)
+
+        val inputConstraints: Seq[Constr] = m.paths.collect:
+          case AttrPath(links, dest: IntAttr) => Var(AttrTypePath(links, dest.t)) === dest.value  
+
+        Seq(inputConstraints, featureOrder, releaseOrder, weightedBenefit, featureBenefitSum, featureBenefitPerRelease, benefitPerRelease, featureCostPerReleasePerResource, resourceCostPerRelease, featureCostPerRelease, costPerRelease, costLimitPerResource, totalCostPerRelease, precedences, exclusions, couplings).flatten
+      end if
+    end apply
+  end releasePlanningProblem
+
+end csp
