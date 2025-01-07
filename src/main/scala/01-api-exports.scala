@@ -2,7 +2,6 @@ package reqt
 
 // exports to shape the surface api
 
-
 export Model.{toModel, concatAdjacent} // extension methods on Seq[Elem]
 
 export Show.show   // extension for pretty Model using enum types and apply 
