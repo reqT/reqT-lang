@@ -44,7 +44,9 @@ val quickRefFile ="reqT-quickref.tex"
 
   println(s"Generating $quickRefFile in $targetDir")
   meta.QuickRef.toLatex.saveTo(targetDir + quickRefFile)
-  println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
+
+  // TODO: This should be moved to publish:::
+  //println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)
