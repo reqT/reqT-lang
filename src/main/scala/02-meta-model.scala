@@ -414,7 +414,7 @@ object meta:
           |\\usepackage{fancyhdr}
           |\\pagestyle{fancy}
           |\\chead{\\url{http://github.com/reqT/reqT-lang/docs/reqT-quickref.pdf}}
-          |\\lhead{The reqT  QuickRef}
+          |\\lhead{QuickRef reqT v4}
           |\\rhead{Compiled \\today}
           |
           |\\usepackage{hyperref}
@@ -452,7 +452,7 @@ object meta:
           |
           |\\begin{multicols*}{4}
           |
-          |\\section*{The reqT meta-model}
+          |\\section*{The reqT v4 meta-model}
           |\\raggedright
           |A model is a sequence of elements. An element can be a node or a relation. A node can be an entity or an attribute. An entity has a type and an id. An attribute has a type and a value and it can be a string attribute or an integer attribute. A relation connects an entity to a sub-model via a relation type.
           |

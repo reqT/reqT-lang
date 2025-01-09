@@ -43,7 +43,9 @@ val quickRefFile ="reqT-quickref.tex"
       fixCmd(cmd).!
 
   println(s"Generating $quickRefFile in $targetDir")
-  meta.QuickRef.toLatex.saveTo(targetDir + quickRefFile)
+  val latex = meta.QuickRef.toLatex
+  latex.saveTo(targetDir + quickRefFile)
+  latex.saveTo(docsDir + quickRefFile)
 
   // TODO: This should be moved to publish:::
   //println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
