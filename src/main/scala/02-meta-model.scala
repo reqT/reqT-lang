@@ -413,7 +413,7 @@ object meta:
           |
           |\\usepackage{fancyhdr}
           |\\pagestyle{fancy}
-          |\\chead{\\url{http://github.com/reqT/reqT-lang/docs/reqT-quickref.pdf}}
+          |\\chead{\\url{https://github.com/reqT/reqT-lang/blob/main/docs/reqT-quickref.tex}}
           |\\lhead{QuickRef reqT v4}
           |\\rhead{Compiled \\today}
           |
