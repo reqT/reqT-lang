@@ -47,8 +47,7 @@ val quickRefFile ="reqT-quickref.tex"
   latex.saveTo(targetDir + quickRefFile)
   latex.saveTo(docsDir + quickRefFile)
 
-  // TODO: This should be moved to publish:::
-  //println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
+  println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)
