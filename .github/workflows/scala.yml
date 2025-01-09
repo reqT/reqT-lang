@@ -39,7 +39,7 @@ jobs:
     - name: Setup dependencies
       run: |
         sudo apt-get update &&
-        sudo apt-get install texlive -y
+        sudo apt-get install texlive-full -y
       shell: bash
   
     - name: Run tests
