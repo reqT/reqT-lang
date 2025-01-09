@@ -2,12 +2,11 @@ package reqt
 
 object LatexGen:
   def defineColors: String = 
-    s"""|%\\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-        |\\definecolor{entityColor}{RGB}{0,100,200}
+    s"""|\\definecolor{entityColor}{RGB}{0,100,200}
         |\\definecolor{attributeColor}{RGB}{0,100,50}
         |\\definecolor{relationColor}{RGB}{160,0,30}
         |""".stripMargin
-
+  
   def lstDefineStyle: String = 
     s"""|\\lstdefinestyle{reqT}{
         |  %belowcaptionskip=1\\baselineskip,

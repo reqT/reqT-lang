@@ -6,7 +6,7 @@ object meta:
   trait ConceptGroup
 
   enum EntGroup extends ConceptGroup:
-    case ContextEnt, GeneralEnt, DataEnt, FunctionalEnt, QualityEnt, DesignEnt, VariabilityEnt
+    case GeneralEnt, ContextEnt, DataEnt, FunctionalEnt, QualityEnt, DesignEnt, VariabilityEnt
   import EntGroup.* 
 
   enum RelGroup extends ConceptGroup:
@@ -31,10 +31,10 @@ object meta:
     // https://www.atlassian.com/agile/project-management/epics-stories-themes
     GeneralEnt -> "Feature" -> "A releasable characteristic of a product. A high-level, coherent bundle of requirements.",
     GeneralEnt -> "Goal" -> "An intention of a stakeholder or desired system property.",
-    GeneralEnt -> "Idea" -> "A concept or thought (potentially interesting).",
+    GeneralEnt -> "Idea" -> "A concept or thought, potentially interesting.",
     GeneralEnt -> "Image" -> "A visual representation, picture or diagram.",
-    GeneralEnt -> "Interface" -> "A defined way to interact with a system.",
-    GeneralEnt -> "Issue" -> "Something needed to be fixed or work to do.",
+    GeneralEnt -> "Interface" -> "A way to interact with a system.",
+    GeneralEnt -> "Issue" -> "Something to be fixed or work to do.",
     GeneralEnt -> "Item" -> "An article in a collection, enumeration, or series.",
     GeneralEnt -> "Label" -> "A descriptive tag used to classify something.",
     GeneralEnt -> "Req" -> "Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.",
@@ -46,7 +46,7 @@ object meta:
 
     DataEnt -> "Data" -> "A data entity, type, class, or record stored or processed by a system.", // or Data or DataEntity or DataType?
     DataEnt -> "Class" -> "An extensible template for creating objects. A set of objects with certain attributes in common. A category.",  // somewhat redundant with Data but the latter is more general
-    DataEnt -> "Field" -> "A data attribute that is part of another entity, such as a class",  // or DataField or DataAttribute or DataProperty
+    DataEnt -> "Field" -> "A data attribute that is part of another entity, such as a class.",  // or DataField or DataAttribute or DataProperty
     DataEnt -> "Member" -> "A data entity that is part of another entity. More specific alternatives: field, function.",  // or DataField or DataAttribute or DataProperty
     DataEnt -> "Relationship" -> "A specific way that data types are connected.", // or Association or Relation or DataRelation
 
@@ -76,6 +76,10 @@ object meta:
 
   val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
 
+  val entTypeGroupMap: Map[EntType, EntGroup] = entityConceptGroups.map((gn, d) => EntType.valueOf(gn._2) -> gn._1).toMap
+
+  val entGroupTypesMap: Map[EntGroup, Set[EntType]] = entTypeGroupMap.toSeq.groupBy(_._2).map((x, xs) => x -> xs.map(_._1).toSet)
+
   val strAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note with a remark or a discussion on an entity.",
     "Constraints" -> "A collection of propositions that constrain a solution space or restrict possible attribute values.",
@@ -84,7 +88,7 @@ object meta:
     "Expectation" -> "A required output of a test in order to be counted as passed.",
     "Failure" -> "A description of a runtime error that prevents the normal execution of a system.",
     "Gist" -> "A short and simple description. A summary capturing the essence of an entity.",
-    "Title" -> "A general or descriptive heading. One or more leading # indicate heading level.",
+    "Title" -> "A general or descriptive heading.",
     "Input" -> "Data consumed by an entity, ",
     "Location" -> "A location of a resource such as a web address or a path to a file of persistent data.",
     "Output" -> "Data produced by an entity, e.g. a function or a test.",
@@ -101,7 +105,7 @@ object meta:
     "Frequency" -> "A number of occurrences per time unit. ",
     "Max" -> "A maximum estimated or assigned value.",
     "Min" -> "A minimum estimated or assigned value.",
-    "Order" -> "An ordinal number of an entity (1st, 2nd, ...).",
+    "Order" -> "An ordinal number (1st, 2nd, ...).",
     "Prio" -> "A level of importance of an entity. Short for priority.",
     "Probability" -> "A likelihood expressed as whole percentages that something (e.g. a risk) occurs.",
     "Profit" -> "A gain or return of some entity, e.g. in monetary terms.",
@@ -329,6 +333,7 @@ object meta:
         |
         |extension (e: Ent)
         |""".stripMargin ++ relationNames.map(entExtensions).mkString("","\n", "").stripMargin
+  end generate
 
   def graph(showElem: Boolean = true, showElemType: Boolean = true): String = 
     import GraphVizGen.*
@@ -386,3 +391,106 @@ object meta:
           recordNode(strAttrType, fontSize = 9)  ("enum " + strAttrType, strAttrTypeValues),
           recordNode(intAttrType, fontSize = 9)  ("enum " + intAttrType, intAttrTypeValues),
         ) else Seq()))
+
+  end graph
+
+  object QuickRef:
+    val ending = "\\end{multicols*}\n\\end{document}"
+
+    val preamble = 
+      s"""|%!TEX encoding = UTF-8 Unicode
+          |\\documentclass[a4paper,oneside]{article}
+          |
+          |\\usepackage[top=18mm,bottom=3mm, hmargin=10mm,landscape]{geometry}
+          |
+          |\\usepackage[utf8]{inputenc}
+          |\\usepackage[T1]{fontenc}
+          |
+          |\\usepackage{tgtermes}
+          |\\usepackage{lmodern}
+          |\\usepackage[scaled=0.9]{beramono} % inconsolata or beramono ???
+          |\\usepackage{microtype} % Slightly tweak font spacing for aesthetics
+          |
+          |\\usepackage{fancyhdr}
+          |\\pagestyle{fancy}
+          |\\chead{\\url{http://github.com/reqT/reqT-lang/docs/reqT-quickref.pdf}}
+          |\\lhead{The reqT  QuickRef}
+          |\\rhead{Compiled \\today}
+          |
+          |\\usepackage{hyperref}
+          |\\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+          |\\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+          |${LatexGen.defineColors}
+          |\\usepackage{listings}
+          |${LatexGen.lstDefineStyle}
+          |\\lstset{style=reqT}
+          |\\usepackage{multicol}
+          |
+          |\\setlength\\parindent{0em}
+          |\\setlength\\headsep{1em}
+          |\\setlength\\footskip{0em}
+          |\\usepackage{titlesec}
+          |  \\titlespacing{\\section}{0pt}{3pt}{2pt}
+          |  \\titlespacing{\\subsection}{0pt}{3pt}{2pt}
+          |  \\titlespacing{\\subsubsection}{0pt}{3pt}{2pt}
+          |
+          |\\usepackage{graphicx}
+          |
+          |\\pagenumbering{gobble}
+          |
+          |\\renewcommand{\\rmdefault}{\\sfdefault}
+          |
+          |\\begin{document}
+          |""".stripMargin 
+
+    def conceptDef(concept: String, definition: String): String = 
+      s"\\hangindent=1em\\lstinline+$concept+ $definition \n"
+
+    val body = 
+      s"""|
+          |\\fontsize{9.1}{11}\\selectfont
+          |
+          |\\begin{multicols*}{4}
+          |
+          |\\section*{The reqT meta-model}
+          |\\raggedright
+          |A model is a sequence of elements. An element can be a node or a relation. A node can be an entity or an attribute. An entity has a type and an id. An attribute has a type and a value and it can be a string attribute or an integer attribute. A relation connects an entity to a sub-model via a relation type.
+          |
+          |\\noindent\\hspace*{-2.1em}\\includegraphics[width=8.2cm]{metamodel-Elem-GENERATED.pdf}
+          |
+          |\\section*{\\texttt{enum EntType}}
+          |${
+            val subsections = for eg <- EntGroup.values yield
+              val head = s"\\subsection*{\\texttt{EntGroup.$eg}}"
+              val es = entGroupTypesMap(eg).toSeq.map(_.toString).sorted
+              val xs = es.map(e => conceptDef(e, conceptMap(e).descr)) 
+              head + xs.mkString("\n", "\n", "\n")
+            subsections.mkString("\n")
+          }
+          |
+          |\\section*{\\texttt{enum relType}}
+          |${
+            val xs = for (s, c) <- relTypes yield
+              conceptDef(s, conceptMap(s).descr)
+            xs.mkString("\n")
+            }
+          |
+          |\\section*{\\texttt{enum StrAttrType}}
+          |${
+            val xs = for (s, c) <- strAttrConcepts yield
+              conceptDef(s, conceptMap(s).descr)
+            xs.mkString("\n")
+          }
+          |
+          |\\section*{\\texttt{enum IntAttrType}}
+          |${
+            val xs = for (s, c) <- intAttrConcepts yield
+              conceptDef(s, conceptMap(s).descr)
+            xs.mkString("\n")
+          } 
+          |
+          |""".stripMargin
+
+    val toLatex = preamble + body + ending
+
+    

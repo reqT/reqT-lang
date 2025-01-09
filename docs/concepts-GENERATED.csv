@@ -22,16 +22,16 @@ Example	Attr	StrAttr	A description that illustrates some entity by a typical ins
 Expectation	Attr	StrAttr	A required output of a test in order to be counted as passed.
 Failure	Attr	StrAttr	A description of a runtime error that prevents the normal execution of a system.
 Feature	EntType	GeneralEnt	A releasable characteristic of a product. A high-level, coherent bundle of requirements.
-Field	EntType	DataEnt	A data attribute that is part of another entity, such as a class
+Field	EntType	DataEnt	A data attribute that is part of another entity, such as a class.
 Frequency	Attr	IntAttr	A number of occurrences per time unit. 
 Function	EntType	FunctionalEnt	A description of how input is mapped to output. A capability of a system to do something specific.
 Gist	Attr	StrAttr	A short and simple description. A summary capturing the essence of an entity.
 Goal	EntType	GeneralEnt	An intention of a stakeholder or desired system property.
-Idea	EntType	GeneralEnt	A concept or thought (potentially interesting).
+Idea	EntType	GeneralEnt	A concept or thought, potentially interesting.
 Image	EntType	GeneralEnt	A visual representation, picture or diagram.
 Input	Attr	StrAttr	Data consumed by an entity, 
-Interface	EntType	GeneralEnt	A defined way to interact with a system.
-Issue	EntType	GeneralEnt	Something needed to be fixed or work to do.
+Interface	EntType	GeneralEnt	A way to interact with a system.
+Issue	EntType	GeneralEnt	Something to be fixed or work to do.
 Item	EntType	GeneralEnt	An article in a collection, enumeration, or series.
 Label	EntType	GeneralEnt	A descriptive tag used to classify something.
 Location	Attr	StrAttr	A location of a resource such as a web address or a path to a file of persistent data.
@@ -40,7 +40,7 @@ Member	EntType	DataEnt	A data entity that is part of another entity. More specif
 Min	Attr	IntAttr	A minimum estimated or assigned value.
 Model	Model	General	A collection of model elements, which can be entities, attributes or relations.
 Module	EntType	DesignEnt	A collection of coherent functions and interfaces.
-Order	Attr	IntAttr	An ordinal number of an entity (1st, 2nd, ...).
+Order	Attr	IntAttr	An ordinal number (1st, 2nd, ...).
 Output	Attr	StrAttr	Data produced by an entity, e.g. a function or a test.
 Prio	Attr	IntAttr	A level of importance of an entity. Short for priority.
 Probability	Attr	IntAttr	A likelihood expressed as whole percentages that something (e.g. a risk) occurs.
@@ -67,7 +67,7 @@ Task	EntType	FunctionalEnt	A piece of work by users, potentially supported by a 
 Term	EntType	GeneralEnt	A word or group of words having a particular meaning in a particular domain.
 Test	EntType	GeneralEnt	A procedure to check if requirements are met.
 Text	Attr	StrAttr	An paragraph or general description.
-Title	Attr	StrAttr	A general or descriptive heading. One or more leading # indicate heading level.
+Title	Attr	StrAttr	A general or descriptive heading.
 UseCase	EntType	FunctionalEnt	A goal-fulfilling interaction between users and a product in a specific usage context.
 User	EntType	ContextEnt	A human interacting with a system.
 Value	Attr	IntAttr	Some general integer value.

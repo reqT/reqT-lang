@@ -6,10 +6,12 @@ extension (s: String)
     try pw.write(s) finally pw.close()
 
 val modelFile = "src/main/scala/03-model-GENERATED.scala"
-val docsDir = "docs"
+val docsDir = "docs/"
+val targetDir = "target/"
 val langSpecFile = docsDir + "/langSpec-GENERATED.md"
 val conceptFile = docsDir + "/concepts-GENERATED.csv"
-def graphFile(mod: String) = docsDir + s"/metamodel$mod-GENERATED.dot"
+def graphFile(mod: String) = s"metamodel$mod-GENERATED.dot"
+val quickRefFile ="reqT-quickref.tex"
 
 @main def generateLang = 
   println(s"Generating $modelFile")
@@ -23,11 +25,26 @@ def graphFile(mod: String) = docsDir + s"/metamodel$mod-GENERATED.dot"
   println(s"Generating $conceptFile")
   meta.csv("\t").saveTo(conceptFile)
 
+  val gfs = IArray("-Model", "-Elem", "-ElemType", "-All").map(graphFile)
   println(s"Generating graph files: metamodel-*-GENERATED.dot")
-  meta.graph(showElem=false, showElemType=false).saveTo(graphFile("-Model"))
-  meta.graph(showElem=true, showElemType=false).saveTo(graphFile("-Elem"))
-  meta.graph(showElem=false, showElemType=true).saveTo(graphFile("-ElemType"))
-  meta.graph(showElem=true, showElemType=true).saveTo(graphFile("-All"))
+  meta.graph(showElem=false, showElemType=false).saveTo(docsDir + gfs(0))
+  meta.graph(showElem=true, showElemType=false) .saveTo(docsDir + gfs(1))
+  meta.graph(showElem=false, showElemType=true) .saveTo(docsDir + gfs(2))
+  meta.graph(showElem=true, showElemType=true)  .saveTo(docsDir + gfs(3))
+
+  if isDotInstalled() then 
+    import scala.sys.process._
+    for f <- gfs do
+      println(s"Generating pdf files in $targetDir for graph: $f")
+      val q = if (isWindows) '"'.toString else ""
+      val cmd =  
+        Seq("dot",s"-Tpdf", "-o", s"$targetDir$q${newFileType(f, ".pdf")}$q",
+      s"$q$docsDir$f$q")
+      fixCmd(cmd).!
+
+  println(s"Generating $quickRefFile in $targetDir")
+  meta.QuickRef.toLatex.saveTo(targetDir + quickRefFile)
+  println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)
@@ -37,7 +54,7 @@ object showDeprecations:
       def p = xs.sorted.mkString(", ").wrap(72)
 
     s"""|
-        |--++ CHANGES SINCE reqT ${old.version}
+        |--++ CHANGES SINCE reqT ${old.version3}
         |  -- Deleted entities:   ${deletedEntities.size}    \n${deletedEntities.p}
         |  ++ Added entities:     ${addedEntities.size}      \n${addedEntities.p}
         |  -- Deleted attributes: ${deletedAttributes.size}  \n${deletedAttributes.p}
@@ -59,7 +76,7 @@ object showDeprecations:
   def addedRelations   = meta.relationNames.diff(old.relations)
 
   object old:
-    val version = "3.1.7"
+    val version3 = "3.1.7"
 
     val entities = Vector("Term", "Barrier", "Member", "Target", "Function", "MockUp", "Interface", "Event", "Scenario", "Release", "App", "Configuration", "UseCase", "Req", "Ticket", "Goal", "Variant", "Meta", "Story", "Section", "Resource", "Quality", "Service", "Actor", "System", "Label", "VariationPoint", "Component", "Design", "User", "Breakpoint", "Test", "Relationship", "Item", "Issue", "WorkPackage", "Class", "Product", "State", "Epic", "Screen", "Feature", "Data", "Domain", "Risk", "Stakeholder", "Task", "Module", "Idea")
 
