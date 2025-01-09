@@ -78,6 +78,13 @@ m.toMarkdown:
 
 * Run `sbt build` in terminal.
 
+* The `build` task runs these all these tasks but you can run each of them separately inside sbt:
+  * `meta`    generate meta files, or use the underlying `Test / run` task
+  * `test`    run all tests
+  * `package` build a jar in target/scala-x.y.z
+  * `build`   clean + all of the above
+
+
 ## How to publish
 
 For maintainers of https://github.com/reqT/reqT-lang
