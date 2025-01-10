@@ -11,7 +11,7 @@ val targetDir = "target/"
 val langSpecFile = docsDir + "/langSpec-GENERATED.md"
 val conceptFile = docsDir + "/concepts-GENERATED.csv"
 def graphFile(mod: String) = s"metamodel$mod-GENERATED.dot"
-val quickRefFile ="reqT-quickref.tex"
+val quickRefFile ="reqT-quickref-GENERATED.tex"
 
 @main def generateLang = 
   println(s"Generating $modelFile")
