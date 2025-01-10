@@ -10,7 +10,7 @@ Comment	Attr	StrAttr	A note with a remark or a discussion on an entity.
 Component	EntType	DesignEnt	A composable part of a system architecture. A reusable, interchangeable system unit or functionality.
 Configuration	EntType	VariabilityEnt	A specific combination of variants.
 Constraints	Attr	StrAttr	A collection of propositions that constrain a solution space or restrict possible attribute values.
-Cost	Attr	IntAttr	An expenditure of something, such as time or effort, necessary for the implementation of an entity.
+Cost	Attr	IntAttr	An expenditure of something, such as time or effort, necessary if implementing an entity.
 Damage	Attr	IntAttr	A characterization of the negative consequences if some entity (e.g. a risk) occurs.
 Data	EntType	DataEnt	A data entity, type, class, or record stored or processed by a system.
 Deprecated	Attr	StrAttr	A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.
@@ -46,7 +46,7 @@ Prio	Attr	IntAttr	A level of importance of an entity. Short for priority.
 Probability	Attr	IntAttr	A likelihood expressed as whole percentages that something (e.g. a risk) occurs.
 Product	EntType	ContextEnt	An artifact offered to users or customers, e.g. an app, service or  embedded system.
 Profit	Attr	IntAttr	A gain or return of some entity, e.g. in monetary terms.
-Prototype	EntType	DesignEnt	A system with limited functionality used to demonstrate a design idea.
+Prototype	EntType	DesignEnt	A mockup or system with limited functionality to demonstrate a design idea.
 Quality	EntType	QualityEnt	An aspect of system quality, distinguishing characteristic or degree of goodness.
 Relationship	EntType	DataEnt	A specific way that data types are connected.
 Release	EntType	ContextEnt	A specific version of a product offered to end users at a specific time.
@@ -78,7 +78,7 @@ WorkPackage	EntType	GeneralEnt	A coherent collection of (development) activities
 binds	RelType	VariabilityRel	Ties a value to an option. A configuration binds a variation point.
 deprecates	RelType	GeneralRel	Makes outdated. An entity deprecates (supersedes) another entity.
 excludes	RelType	DependencyRel	Prevents an entity combination. One feature excludes another in a release.
-has	RelType	GeneralRel	Expresses containment, substructure, composition or aggregation. An entity contains another entity.
+has	RelType	GeneralRel	Expresses containment, substructure, composition or aggregation. One entity contains another.
 helps	RelType	GoalRel	Positive influence. A goal supports the fulfillment of another goal.
 hurts	RelType	GoalRel	Negative influence. A goal hinders another goal.
 impacts	RelType	GeneralRel	Some unspecific influence. A new feature impacts an existing component.
@@ -87,5 +87,5 @@ interactsWith	RelType	ContextRel	A communication relation. A user interacts with
 is	RelType	ClassRel	One entity inherits properties of another entity. A specialization, extension or subtype relation. 
 precedes	RelType	DependencyRel	Temporal ordering. A feature precedes (should be implemented before) another feature.
 relatesTo	RelType	GeneralRel	Some general, unspecific relation to another entity.
-requires	RelType	DependencyRel	A requested combination. One function requires that a another function is also implemented.
+requires	RelType	DependencyRel	A requested combination. One function requires that a another function is implemented.
 verifies	RelType	DependencyRel	Gives evidence of correctness. A test verifies the implementation of a feature.

@@ -8,6 +8,7 @@ object LatexGen:
         |""".stripMargin
   
   def lstDefineStyle: String = 
+    import meta.{entityNames, relationNames, attributeNames}
     s"""|\\lstdefinestyle{reqT}{
         |  %belowcaptionskip=1\\baselineskip,
         |  breaklines=true,
@@ -15,11 +16,11 @@ object LatexGen:
         |  showspaces=false,
         |  %breakatwhitespace=true,
         |  basicstyle=\\ttfamily\\small,
-        |  emph={${meta.entityNames.mkString{","}}},
+        |  emph={${entityNames.mkString{","}}},
         |  emphstyle=\\bfseries\\color{entityColor},
-        |  emph={[2]${meta.relationNames.mkString{","}}},
+        |  emph={[2]${(relationNames ++ relationNames.map(_.capitalize)).mkString{","}}},
         |  emphstyle={[2]\\bfseries\\color{relationColor}},
-        |  emph={[3]${meta.attributeNames.mkString{","}}},
+        |  emph={[3]${attributeNames.mkString{","}}},
         |  emphstyle={[3]\\bfseries\\color{attributeColor}},  
         |}
         |""".stripMargin

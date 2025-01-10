@@ -29,7 +29,9 @@ object Elem:
 sealed trait Node extends Elem:
   def t: NodeType
 
-sealed trait ElemType
+sealed trait ElemType:
+  def conceptGroup: meta.ConceptGroup = meta.groupMap(this.toString)
+
 sealed trait NodeType extends ElemType
 sealed trait AttrType[T] extends NodeType:
   def apply(value: T): Attr[T]
@@ -49,10 +51,12 @@ sealed trait Attr[T] extends Node:
   def value: T
 
 final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]
-case object StrAttr extends meta.ConceptGroup
+case object StrAttr extends meta.ConceptGroup:
+  def types: Seq[StrAttrType] = ???
 
-final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int], meta.ConceptGroup
-case object IntAttr extends meta.ConceptGroup
+final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int]
+case object IntAttr extends meta.ConceptGroup:
+  def types: Seq[IntAttrType] = ???
 
 final case class Undefined[T](t: AttrType[T]) extends Attr[T]:
   def value: T = throw new java.util.NoSuchElementException

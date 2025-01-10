@@ -34,7 +34,7 @@
   basicstyle=\ttfamily\small,
   emph={Actor,App,Barrier,Breakpoint,Class,Component,Configuration,Data,Design,Domain,Epic,Event,Feature,Field,Function,Goal,Idea,Image,Interface,Issue,Item,Label,Member,Module,Product,Prototype,Quality,Relationship,Release,Req,Resource,Risk,Scenario,Screen,Section,Service,Stakeholder,State,Story,System,Target,Task,Term,Test,UseCase,User,Variant,VariationPoint,WorkPackage},
   emphstyle=\bfseries\color{entityColor},
-  emph={[2]binds,deprecates,excludes,has,helps,hurts,impacts,implements,interactsWith,is,precedes,relatesTo,requires,verifies},
+  emph={[2]binds,deprecates,excludes,has,helps,hurts,impacts,implements,interactsWith,is,precedes,relatesTo,requires,verifies,Binds,Deprecates,Excludes,Has,Helps,Hurts,Impacts,Implements,InteractsWith,Is,Precedes,RelatesTo,Requires,Verifies},
   emphstyle={[2]\bfseries\color{relationColor}},
   emph={[3]Benefit,Capacity,Comment,Constraints,Cost,Damage,Deprecated,Example,Expectation,Failure,Frequency,Gist,Input,Location,Max,Min,Order,Output,Prio,Probability,Profit,Spec,Text,Title,Value,Why},
   emphstyle={[3]\bfseries\color{attributeColor}},  
@@ -47,9 +47,15 @@
 \setlength\headsep{1em}
 \setlength\footskip{0em}
 \usepackage{titlesec}
-  \titlespacing{\section}{0pt}{3pt}{2pt}
-  \titlespacing{\subsection}{0pt}{3pt}{2pt}
+  \titlespacing{\section}{0pt}{3.5pt}{2pt}
+  \titlespacing{\subsection}{0pt}{3.5pt}{2pt}
   \titlespacing{\subsubsection}{0pt}{3pt}{2pt}
+
+\usepackage{titlesec}
+
+\titleformat*{\section}{\normalfont\fontsize{12}{15}\bfseries}
+
+\titleformat*{\subsection}{\normalfont\fontsize{10}{12}\bfseries}
 
 \usepackage{graphicx}
 
@@ -57,217 +63,286 @@
 
 \renewcommand{\rmdefault}{\sfdefault}
 
+\newcommand\Concept[2]{\hangindent=1em\lstinline+#1+ #2}
+
 \begin{document}
 
 \fontsize{9.1}{11}\selectfont
 
 \begin{multicols*}{4}
-
-\section*{The reqT v4 meta-model}
 \raggedright
-A model is a sequence of elements. An element can be a node or a relation. A node can be an entity or an attribute. An entity has a type and an id. An attribute has a type and a value and it can be a string attribute or an integer attribute. A relation connects an entity to a sub-model via a relation type.
+
+\section*{What is reqT?}
+The reqT requirements modelling language 
+helps you structure requirements into semi-formal 
+natural-language models using 
+common requirements engineering concepts.
+
+
+\section*{reqT Markdown syntax}
+A reqT model in markdown syntax starts with \lstinline+*+ followed by an element and a colon and an optional relation followed by an indented list of sub-elements.
+
+\begin{lstlisting}
+* Feature: helloWorld has
+  * Spec: Show informal greeting.
+  * Prio: 1
+
+\end{lstlisting}
+
+\section*{reqT Metamodel}
+
+A model is a sequence of elements. 
+An element can be a node or a relation. 
+A node can be an entity or an attribute. 
+An entity has a type and an id. 
+An attribute has a type and a value. 
+An attribute can be a string attribute or an integer attribute. 
+A relation connects an entity to a sub-model via a relation type.
+
 
 \noindent\hspace*{-2.1em}\includegraphics[width=8.2cm]{metamodel-Elem-GENERATED.pdf}
 
-\section*{\texttt{enum EntType}}
-\subsection*{\texttt{EntGroup.GeneralEnt}}
-\hangindent=1em\lstinline+Epic+ A coherent collection of features, stories, use cases or issues. A large part of a release. 
+\section*{\texttt{EntType}.values}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{GeneralEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Epic}{A coherent collection of features, stories, use cases or issues. A large part of a release.}
 
-\hangindent=1em\lstinline+Feature+ A releasable characteristic of a product. A high-level, coherent bundle of requirements. 
+\Concept{Feature}{A releasable characteristic of a product. A high-level, coherent bundle of requirements.}
 
-\hangindent=1em\lstinline+Goal+ An intention of a stakeholder or desired system property. 
+\Concept{Goal}{An intention of a stakeholder or desired system property.}
 
-\hangindent=1em\lstinline+Idea+ A concept or thought, potentially interesting. 
+\Concept{Idea}{A concept or thought, potentially interesting.}
 
-\hangindent=1em\lstinline+Image+ A visual representation, picture or diagram. 
+\Concept{Image}{A visual representation, picture or diagram.}
 
-\hangindent=1em\lstinline+Interface+ A way to interact with a system. 
+\Concept{Interface}{A way to interact with a system.}
 
-\hangindent=1em\lstinline+Issue+ Something to be fixed or work to do. 
+\Concept{Issue}{Something to be fixed or work to do.}
 
-\hangindent=1em\lstinline+Item+ An article in a collection, enumeration, or series. 
+\Concept{Item}{An article in a collection, enumeration, or series.}
 
-\hangindent=1em\lstinline+Label+ A descriptive tag used to classify something. 
+\Concept{Label}{A descriptive tag used to classify something.}
 
-\hangindent=1em\lstinline+Req+ Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement. 
+\Concept{Req}{Something needed or wanted. An abstract term denoting any type of information relevant to the (specification of) intentions behind system development. Short for requirement.}
 
-\hangindent=1em\lstinline+Section+ A part of a requirements document. 
+\Concept{Section}{A part of a requirements document.}
 
-\hangindent=1em\lstinline+Term+ A word or group of words having a particular meaning in a particular domain. 
+\Concept{Term}{A word or group of words having a particular meaning in a particular domain.}
 
-\hangindent=1em\lstinline+Test+ A procedure to check if requirements are met. 
+\Concept{Test}{A procedure to check if requirements are met.}
 
-\hangindent=1em\lstinline+WorkPackage+ A coherent collection of (development) activities. 
+\Concept{WorkPackage}{A coherent collection of (development) activities.}
 
 
-\subsection*{\texttt{EntGroup.ContextEnt}}
-\hangindent=1em\lstinline+Actor+ A role played by a user or external system that interacts with the system (product, app, or service) under development. 
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{ContextEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Actor}{A role played by a user or external system that interacts with the system (product, app, or service) under development.}
 
-\hangindent=1em\lstinline+App+ A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application. 
+\Concept{App}{A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application.}
 
-\hangindent=1em\lstinline+Domain+ The application area of a product with its surrounding entities, e.g. users or other systems. 
+\Concept{Domain}{The application area of a product with its surrounding entities, e.g. users or other systems.}
 
-\hangindent=1em\lstinline+Product+ An artifact offered to users or customers, e.g. an app, service or  embedded system. 
+\Concept{Product}{An artifact offered to users or customers, e.g. an app, service or  embedded system.}
 
-\hangindent=1em\lstinline+Release+ A specific version of a product offered to end users at a specific time. 
+\Concept{Release}{A specific version of a product offered to end users at a specific time.}
 
-\hangindent=1em\lstinline+Resource+ A capability of, or support for product development, e.g. a development team or some testing equipment. 
+\Concept{Resource}{A capability of, or support for product development, e.g. a development team or some testing equipment.}
 
-\hangindent=1em\lstinline+Risk+ Something negative that may happen. 
+\Concept{Risk}{Something negative that may happen.}
 
-\hangindent=1em\lstinline+Scenario+ A narrative of foreseeable interactions of user roles (actors) and the system (product, app, or service) under development.. 
+\Concept{Scenario}{A narrative of foreseeable interactions of user roles (actors) and the system (product, app, or service) under development..}
 
-\hangindent=1em\lstinline+Service+ System use that provides value to stakeholders. System actions that stakeholders are willing to pay for. 
+\Concept{Service}{System use that provides value to stakeholders. System actions that stakeholders are willing to pay for.}
 
-\hangindent=1em\lstinline+Stakeholder+ A role, person or legal entity with a stake in the development or operation of a product. 
+\Concept{Stakeholder}{A role, person or legal entity with a stake in the development or operation of a product.}
 
-\hangindent=1em\lstinline+System+ A set of software or hardware components interacting with users or systems. 
+\Concept{System}{A set of software or hardware components interacting with users or systems.}
 
-\hangindent=1em\lstinline+User+ A human interacting with a system. 
+\Concept{User}{A human interacting with a system.}
 
 
-\subsection*{\texttt{EntGroup.DataEnt}}
-\hangindent=1em\lstinline+Class+ An extensible template for creating objects. A set of objects with certain attributes in common. A category. 
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{DataEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Class}{An extensible template for creating objects. A set of objects with certain attributes in common. A category.}
 
-\hangindent=1em\lstinline+Data+ A data entity, type, class, or record stored or processed by a system. 
+\Concept{Data}{A data entity, type, class, or record stored or processed by a system.}
 
-\hangindent=1em\lstinline+Field+ A data attribute that is part of another entity, such as a class. 
+\Concept{Field}{A data attribute that is part of another entity, such as a class.}
 
-\hangindent=1em\lstinline+Member+ A data entity that is part of another entity. More specific alternatives: field, function. 
+\Concept{Member}{A data entity that is part of another entity. More specific alternatives: field, function.}
 
-\hangindent=1em\lstinline+Relationship+ A specific way that data types are connected. 
+\Concept{Relationship}{A specific way that data types are connected.}
 
 
-\subsection*{\texttt{EntGroup.FunctionalEnt}}
-\hangindent=1em\lstinline+Event+ Something that can happen in the domain or in the system. 
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{FunctionalEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Event}{Something that can happen in the domain or in the system.}
 
-\hangindent=1em\lstinline+Function+ A description of how input is mapped to output. A capability of a system to do something specific. 
+\Concept{Function}{A description of how input is mapped to output. A capability of a system to do something specific.}
 
-\hangindent=1em\lstinline+State+ A mode or condition of something in the domain or in the system. A configuration of data. 
+\Concept{State}{A mode or condition of something in the domain or in the system. A configuration of data.}
 
-\hangindent=1em\lstinline+Story+ A description of what a user wants in order to achieve a goal. Short for user story. 
+\Concept{Story}{A description of what a user wants in order to achieve a goal. Short for user story.}
 
-\hangindent=1em\lstinline+Task+ A piece of work by users, potentially supported by a system. Short for user task 
+\Concept{Task}{A piece of work by users, potentially supported by a system. Short for user task}
 
-\hangindent=1em\lstinline+UseCase+ A goal-fulfilling interaction between users and a product in a specific usage context. 
+\Concept{UseCase}{A goal-fulfilling interaction between users and a product in a specific usage context.}
 
 
-\subsection*{\texttt{EntGroup.QualityEnt}}
-\hangindent=1em\lstinline+Barrier+ Something that makes it difficult to achieve a goal or a higher quality level. 
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{QualityEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Barrier}{Something that makes it difficult to achieve a goal or a higher quality level.}
 
-\hangindent=1em\lstinline+Breakpoint+ A point of change, representing an important shift in the relation between quality and benefit. 
+\Concept{Breakpoint}{A point of change, representing an important shift in the relation between quality and benefit.}
 
-\hangindent=1em\lstinline+Quality+ An aspect of system quality, distinguishing characteristic or degree of goodness. 
+\Concept{Quality}{An aspect of system quality, distinguishing characteristic or degree of goodness.}
 
-\hangindent=1em\lstinline+Target+ A desired quality level or quality goal. 
+\Concept{Target}{A desired quality level or quality goal.}
 
 
-\subsection*{\texttt{EntGroup.DesignEnt}}
-\hangindent=1em\lstinline+Component+ A composable part of a system architecture. A reusable, interchangeable system unit or functionality. 
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{DesignEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Component}{A composable part of a system architecture. A reusable, interchangeable system unit or functionality.}
 
-\hangindent=1em\lstinline+Design+ A specific realization. A description of an implementation. 
+\Concept{Design}{A specific realization. A description of an implementation.}
 
-\hangindent=1em\lstinline+Module+ A collection of coherent functions and interfaces. 
+\Concept{Module}{A collection of coherent functions and interfaces.}
 
-\hangindent=1em\lstinline+Prototype+ A system with limited functionality used to demonstrate a design idea. 
+\Concept{Prototype}{A mockup or system with limited functionality to demonstrate a design idea.}
 
-\hangindent=1em\lstinline+Screen+ A design of (a part of) a user interface. 
+\Concept{Screen}{A design of (a part of) a user interface.}
 
 
-\subsection*{\texttt{EntGroup.VariabilityEnt}}
-\hangindent=1em\lstinline+Configuration+ A specific combination of variants. 
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{VariabilityEnt}}\textcolor{gray}{.types}}}}}
+\Concept{Configuration}{A specific combination of variants.}
 
-\hangindent=1em\lstinline+Variant+ An object or system property that can be chosen from a set of options. 
+\Concept{Variant}{An object or system property that can be chosen from a set of options.}
 
-\hangindent=1em\lstinline+VariationPoint+ An opportunity of choice among variants. 
+\Concept{VariationPoint}{An opportunity of choice among variants.}
 
 
 
-\section*{\texttt{enum relType}}
-\hangindent=1em\lstinline+deprecates+ Makes outdated. An entity deprecates (supersedes) another entity. 
+\section*{reqT Scala DSL constructors}
+\lstinline+EntType+, \lstinline+StrAttrType+ and \lstinline+IntAttrType+ enums have apply-methods that construct \lstinline+Ent+, \lstinline+StrAttr+ and \lstinline+IntAttr+ instances respectively. Each instance of \lstinline+Ent+ has lower-case relation constructors (see \lstinline+enum relType+ on next page):
+\begin{lstlisting}
+Model(
+  Feature("helloWorld").has(
+    Spec("Show informal greeting."),
+    Prio(1)))
 
-\hangindent=1em\lstinline+impacts+ Some unspecific influence. A new feature impacts an existing component. 
+\end{lstlisting}
 
-\hangindent=1em\lstinline+excludes+ Prevents an entity combination. One feature excludes another in a release. 
 
-\hangindent=1em\lstinline+helps+ Positive influence. A goal supports the fulfillment of another goal. 
+\section*{reqT Scala case classes}
+Each constructor instantiate the metamodel classes using nested Scala case class structures:
+\begin{lstlisting}
+Model(
+  Rel(Ent(Feature,"helloWorld"),
+    Has, Model(
+      StrAttr(Spec,
+        "Show informal greeting."),
+      IntAttr(Prio,1))))
 
-\hangindent=1em\lstinline+binds+ Ties a value to an option. A configuration binds a variation point. 
-
-\hangindent=1em\lstinline+requires+ A requested combination. One function requires that a another function is also implemented. 
-
-\hangindent=1em\lstinline+interactsWith+ A communication relation. A user interacts with an interface. 
-
-\hangindent=1em\lstinline+is+ One entity inherits properties of another entity. A specialization, extension or subtype relation.  
-
-\hangindent=1em\lstinline+precedes+ Temporal ordering. A feature precedes (should be implemented before) another feature. 
-
-\hangindent=1em\lstinline+implements+ Realisation of an entity, e.g. a component implements a feature. 
-
-\hangindent=1em\lstinline+hurts+ Negative influence. A goal hinders another goal. 
-
-\hangindent=1em\lstinline+has+ Expresses containment, substructure, composition or aggregation. An entity contains another entity. 
-
-\hangindent=1em\lstinline+verifies+ Gives evidence of correctness. A test verifies the implementation of a feature. 
-
-\hangindent=1em\lstinline+relatesTo+ Some general, unspecific relation to another entity. 
-
-
-\section*{\texttt{enum StrAttrType}}
-\hangindent=1em\lstinline+Comment+ A note with a remark or a discussion on an entity. 
-
-\hangindent=1em\lstinline+Constraints+ A collection of propositions that constrain a solution space or restrict possible attribute values. 
-
-\hangindent=1em\lstinline+Deprecated+ A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation. 
-
-\hangindent=1em\lstinline+Example+ A description that illustrates some entity by a typical instance. 
-
-\hangindent=1em\lstinline+Expectation+ A required output of a test in order to be counted as passed. 
-
-\hangindent=1em\lstinline+Failure+ A description of a runtime error that prevents the normal execution of a system. 
-
-\hangindent=1em\lstinline+Gist+ A short and simple description. A summary capturing the essence of an entity. 
-
-\hangindent=1em\lstinline+Input+ Data consumed by an entity,  
-
-\hangindent=1em\lstinline+Location+ A location of a resource such as a web address or a path to a file of persistent data. 
-
-\hangindent=1em\lstinline+Output+ Data produced by an entity, e.g. a function or a test. 
-
-\hangindent=1em\lstinline+Spec+ A definition of an entity. Short for specification 
-
-\hangindent=1em\lstinline+Text+ An paragraph or general description. 
-
-\hangindent=1em\lstinline+Title+ A general or descriptive heading. 
-
-\hangindent=1em\lstinline+Why+ A description of intention or rationale of an entity. 
-
-
-\section*{\texttt{enum IntAttrType}}
-\hangindent=1em\lstinline+Benefit+ A characterization of a good or helpful result or effect (e.g. of a feature). 
-
-\hangindent=1em\lstinline+Capacity+ An amount that can be held or contained (e.g. by a resource). 
-
-\hangindent=1em\lstinline+Cost+ An expenditure of something, such as time or effort, necessary for the implementation of an entity. 
-
-\hangindent=1em\lstinline+Damage+ A characterization of the negative consequences if some entity (e.g. a risk) occurs. 
-
-\hangindent=1em\lstinline+Frequency+ A number of occurrences per time unit.  
-
-\hangindent=1em\lstinline+Max+ A maximum estimated or assigned value. 
-
-\hangindent=1em\lstinline+Min+ A minimum estimated or assigned value. 
-
-\hangindent=1em\lstinline+Order+ An ordinal number (1st, 2nd, ...). 
-
-\hangindent=1em\lstinline+Prio+ A level of importance of an entity. Short for priority. 
-
-\hangindent=1em\lstinline+Probability+ A likelihood expressed as whole percentages that something (e.g. a risk) occurs. 
-
-\hangindent=1em\lstinline+Profit+ A gain or return of some entity, e.g. in monetary terms. 
-
-\hangindent=1em\lstinline+Value+ Some general integer value. 
- 
+\end{lstlisting}
 
 \end{multicols*}
+
+\begin{multicols}{2}
+\raggedright
+
+\section*{\texttt{RelType.values}}
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{GeneralRel}}\textcolor{gray}{.types}}}}}
+\Concept{Deprecates}{Makes outdated. An entity deprecates (supersedes) another entity.}
+
+\Concept{Has}{Expresses containment, substructure, composition or aggregation. One entity contains another.}
+
+\Concept{Impacts}{Some unspecific influence. A new feature impacts an existing component.}
+
+\Concept{RelatesTo}{Some general, unspecific relation to another entity.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{ClassRel}}\textcolor{gray}{.types}}}}}
+\Concept{Is}{One entity inherits properties of another entity. A specialization, extension or subtype relation. }
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{ContextRel}}\textcolor{gray}{.types}}}}}
+\Concept{InteractsWith}{A communication relation. A user interacts with an interface.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{DependencyRel}}\textcolor{gray}{.types}}}}}
+\Concept{Excludes}{Prevents an entity combination. One feature excludes another in a release.}
+
+\Concept{Implements}{Realisation of an entity, e.g. a component implements a feature.}
+
+\Concept{Precedes}{Temporal ordering. A feature precedes (should be implemented before) another feature.}
+
+\Concept{Requires}{A requested combination. One function requires that a another function is implemented.}
+
+\Concept{Verifies}{Gives evidence of correctness. A test verifies the implementation of a feature.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{GoalRel}}\textcolor{gray}{.types}}}}}
+\Concept{Helps}{Positive influence. A goal supports the fulfillment of another goal.}
+
+\Concept{Hurts}{Negative influence. A goal hinders another goal.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{VariabilityRel}}\textcolor{gray}{.types}}}}}
+\Concept{Binds}{Ties a value to an option. A configuration binds a variation point.}
+
+
+\newcolumn
+\section*{\texttt{StrAttrType.values}}
+\Concept{Comment}{A note with a remark or a discussion on an entity.}
+
+\Concept{Constraints}{A collection of propositions that constrain a solution space or restrict possible attribute values.}
+
+\Concept{Deprecated}{A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.}
+
+\Concept{Example}{A description that illustrates some entity by a typical instance.}
+
+\Concept{Expectation}{A required output of a test in order to be counted as passed.}
+
+\Concept{Failure}{A description of a runtime error that prevents the normal execution of a system.}
+
+\Concept{Gist}{A short and simple description. A summary capturing the essence of an entity.}
+
+\Concept{Input}{Data consumed by an entity, }
+
+\Concept{Location}{A location of a resource such as a web address or a path to a file of persistent data.}
+
+\Concept{Output}{Data produced by an entity, e.g. a function or a test.}
+
+\Concept{Spec}{A definition of an entity. Short for specification}
+
+\Concept{Text}{An paragraph or general description.}
+
+\Concept{Title}{A general or descriptive heading.}
+
+\Concept{Why}{A description of intention or rationale of an entity.}
+
+
+\section*{\texttt{IntAttrType.values}}
+\Concept{Benefit}{A characterization of a good or helpful result or effect (e.g. of a feature).}
+
+\Concept{Capacity}{An amount that can be held or contained (e.g. by a resource).}
+
+\Concept{Cost}{An expenditure of something, such as time or effort, necessary if implementing an entity.}
+
+\Concept{Damage}{A characterization of the negative consequences if some entity (e.g. a risk) occurs.}
+
+\Concept{Frequency}{A number of occurrences per time unit. }
+
+\Concept{Max}{A maximum estimated or assigned value.}
+
+\Concept{Min}{A minimum estimated or assigned value.}
+
+\Concept{Order}{An ordinal number (1st, 2nd, ...).}
+
+\Concept{Prio}{A level of importance of an entity. Short for priority.}
+
+\Concept{Probability}{A likelihood expressed as whole percentages that something (e.g. a risk) occurs.}
+
+\Concept{Profit}{A gain or return of some entity, e.g. in monetary terms.}
+
+\Concept{Value}{Some general integer value.}
+ 
+\end{multicols}
+
+
 \end{document}

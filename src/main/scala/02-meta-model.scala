@@ -3,17 +3,20 @@ package reqt
 import scala.collection.immutable.ArraySeq
 
 object meta:
-  trait ConceptGroup
+  trait ConceptGroup:
+    def types: Seq[ElemType]
 
   enum EntGroup extends ConceptGroup:
+    def types: Seq[EntType] = entGroupTypesMap(this).toSeq.sortBy(_.toString)
     case GeneralEnt, ContextEnt, DataEnt, FunctionalEnt, QualityEnt, DesignEnt, VariabilityEnt
   import EntGroup.* 
 
   enum RelGroup extends ConceptGroup:
-    case GeneralRel, GoalRel, VariabilityRel, ClassRel, DependencyRel, ContextRel 
+    def types: Seq[RelType] = relGroupTypesMap(this).toSeq.sortBy(_.toString)
+    case GeneralRel, ClassRel, ContextRel, DependencyRel, GoalRel, VariabilityRel
   import RelGroup.* 
 
-  val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
+  lazy val entityConceptGroups: ArraySeq[((EntGroup,String),String)] = ArraySeq(
     ContextEnt -> "Actor" -> "A role played by a user or external system that interacts with the system (product, app, or service) under development.",
     ContextEnt -> "App" -> "A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application.",
     ContextEnt -> "Domain" -> "The application area of a product with its surrounding entities, e.g. users or other systems.",
@@ -54,7 +57,7 @@ object meta:
     // https://softwareengineering.stackexchange.com/questions/178927/is-there-a-difference-between-a-component-and-a-module
     DesignEnt -> "Design" -> "A specific realization. A description of an implementation.",
     DesignEnt -> "Module" -> "A collection of coherent functions and interfaces.",
-    DesignEnt -> "Prototype" -> "A system with limited functionality used to demonstrate a design idea.",
+    DesignEnt -> "Prototype" -> "A mockup or system with limited functionality to demonstrate a design idea.",
     DesignEnt -> "Screen" -> "A design of (a part of) a user interface.",
 
     FunctionalEnt -> "Event" -> "Something that can happen in the domain or in the system.",
@@ -74,13 +77,13 @@ object meta:
     VariabilityEnt -> "VariationPoint" -> "An opportunity of choice among variants.",
   )
 
-  val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
+  lazy val entityConcepts: ArraySeq[(String,String)] = entityConceptGroups.map((gn, d) => gn._2 -> d).sorted
 
-  val entTypeGroupMap: Map[EntType, EntGroup] = entityConceptGroups.map((gn, d) => EntType.valueOf(gn._2) -> gn._1).toMap
+  lazy val entTypeGroupMap: Map[EntType, EntGroup] = entityConceptGroups.map((gn, d) => EntType.valueOf(gn._2) -> gn._1).toMap
 
-  val entGroupTypesMap: Map[EntGroup, Set[EntType]] = entTypeGroupMap.toSeq.groupBy(_._2).map((x, xs) => x -> xs.map(_._1).toSet)
+  lazy val entGroupTypesMap: Map[EntGroup, Set[EntType]] = entTypeGroupMap.toSeq.groupBy(_._2).map((x, xs) => x -> xs.map(_._1).toSet)
 
-  val strAttrConcepts = ArraySeq[(String,String)](
+  lazy val strAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note with a remark or a discussion on an entity.",
     "Constraints" -> "A collection of propositions that constrain a solution space or restrict possible attribute values.",
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
@@ -97,10 +100,10 @@ object meta:
     "Why" -> "A description of intention or rationale of an entity.",
   ).sorted
 
-  val intAttrConcepts = ArraySeq[(String,String)](
+  lazy val intAttrConcepts = ArraySeq[(String,String)](
     "Benefit" -> "A characterization of a good or helpful result or effect (e.g. of a feature).",
     "Capacity" -> "An amount that can be held or contained (e.g. by a resource).",
-    "Cost" -> "An expenditure of something, such as time or effort, necessary for the implementation of an entity.",
+    "Cost" -> "An expenditure of something, such as time or effort, necessary if implementing an entity.",
     "Damage" -> "A characterization of the negative consequences if some entity (e.g. a risk) occurs.",
     "Frequency" -> "A number of occurrences per time unit. ",
     "Max" -> "A maximum estimated or assigned value.",
@@ -112,16 +115,16 @@ object meta:
     "Value" -> "Some general integer value.",
   ).sorted
 
-  val relationConceptGroups = ArraySeq[((RelGroup,String),String)](
+  lazy val relationConceptGroups = ArraySeq[((RelGroup,String),String)](
     ClassRel -> "is" -> "One entity inherits properties of another entity. A specialization, extension or subtype relation. ",
     ContextRel -> "interactsWith" -> "A communication relation. A user interacts with an interface.",
     DependencyRel -> "excludes" -> "Prevents an entity combination. One feature excludes another in a release.",
     DependencyRel -> "implements" -> "Realisation of an entity, e.g. a component implements a feature.",
     DependencyRel -> "precedes" -> "Temporal ordering. A feature precedes (should be implemented before) another feature.",
-    DependencyRel -> "requires" -> "A requested combination. One function requires that a another function is also implemented.",
+    DependencyRel -> "requires" -> "A requested combination. One function requires that a another function is implemented.",
     DependencyRel -> "verifies" -> "Gives evidence of correctness. A test verifies the implementation of a feature.",
     GeneralRel -> "deprecates" -> "Makes outdated. An entity deprecates (supersedes) another entity.",
-    GeneralRel -> "has" -> "Expresses containment, substructure, composition or aggregation. An entity contains another entity.",
+    GeneralRel -> "has" -> "Expresses containment, substructure, composition or aggregation. One entity contains another.",
     GeneralRel -> "impacts" -> "Some unspecific influence. A new feature impacts an existing component.",
     GeneralRel -> "relatesTo" -> "Some general, unspecific relation to another entity.",
     GoalRel -> "helps" -> "Positive influence. A goal supports the fulfillment of another goal.",
@@ -129,15 +132,20 @@ object meta:
     VariabilityRel -> "binds" -> "Ties a value to an option. A configuration binds a variation point.",
   )
 
-  val relationConcepts: ArraySeq[(String,String)] = relationConceptGroups.map((gn, d) => gn._2 -> d).sorted
+  lazy val relationConcepts: ArraySeq[(String,String)] = relationConceptGroups.map((gn, d) => gn._2 -> d).sorted
+
+  lazy val relTypeGroupMap: Map[RelType, RelGroup] = relationConceptGroups.map((gn, d) => RelType.valueOf(gn._2.capitalize) -> gn._1).toMap
+
+  lazy val relGroupTypesMap: Map[RelGroup, Set[RelType]] = relTypeGroupMap.toSeq.groupBy(_._2).map((x, xs) => x -> xs.map(_._1).toSet)
+
 
   case class Concept(name: String, descr: String, tpe: String, group: String)
 
-  val generalConcepts: Seq[Concept] = Seq(
+  lazy val generalConcepts: Seq[Concept] = Seq(
     Concept("Model", "A collection of model elements, which can be entities, attributes or relations.", "Model", "General")
   )
 
-  val concepts: ArraySeq[Concept] = (
+  lazy val concepts: ArraySeq[Concept] = (
     entityConceptGroups.map{case ((g,n), d) => Concept(n, d, "EntType", g.toString)} ++
     strAttrConcepts.map((n, d) => Concept(n,  d, "Attr","StrAttr")) ++
     intAttrConcepts.map((n, d) => Concept(n,  d, "Attr","IntAttr")) ++
@@ -145,24 +153,24 @@ object meta:
     generalConcepts
   ).sortBy(_.name)
 
-  val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
+  lazy val conceptMap: Map[String, Concept] = concepts.map(c => (c.name, c)).toMap
 
-  val groupMap: Map[String, ConceptGroup] = 
+  lazy val groupMap: Map[String, ConceptGroup] = 
     (entityConceptGroups.map{case ((g,n),d) => (n, g)} 
       ++ relationConceptGroups.map{case ((g,n),d) => (n.capitalize, g)} 
       ++ strAttrConcepts.map{case (n, d) => (n,StrAttr) }
       ++ intAttrConcepts.map{case (n, d) => (n, IntAttr) }).toMap
 
   def describe(str: String): (String, Option[String]) = 
-    val lower = str.toLowerCase
-    val opt: Option[Concept] = conceptMap.get(lower)
-    (if opt.isDefined then opt else conceptMap.get(lower.capitalize)) match
+    val deCap = str.deCapitalize
+    val opt: Option[Concept] = conceptMap.get(deCap)
+    (if opt.isDefined then opt else conceptMap.get(deCap.capitalize)) match
       case Some(Concept(name, descr, tpe, group)) => name -> Some(s"$descr [$tpe:$group]")
       case None => str -> None
 
   def similarConcepts(c: String, n: Int = 5): Seq[String] = conceptNames
       //.map(n => c.toLowerCase.sorted.diff(n.toLowerCase.sorted) -> n) //not as good as Levenshtein 
-      .map(n => (if n.startsWith(c.toLowerCase.capitalize) then 1 else c.editDistanceTo(n)) -> n) 
+      .map(n => (if n.startsWith(c.capitalize) then 1 else c.editDistanceTo(n)) -> n) 
       .sortBy(_._1)
       .take(n)
       .map(_._2)
@@ -173,11 +181,6 @@ object meta:
       val (c, dOpt) = describe(fw)
       dOpt.getOrElse(s"Unknown concept: $fw. Did you mean: ${similarConcepts(c).mkString(", ")}")
     
-    def findConceptGroup: Option[ConceptGroup] = 
-      val fw = concept.toString.firstWord
-      val normalized = fw.toLowerCase.capitalize
-      groupMap.get(normalized)
-
   val entityNames: ArraySeq[String]   = entityConcepts.map(_._1)
   val strAttrNames: ArraySeq[String]  = strAttrConcepts.map(_._1)
   val intAttrNames: ArraySeq[String]  = intAttrConcepts.map(_._1)
@@ -277,7 +280,9 @@ object meta:
         |sealed trait Node extends Elem:
         |  def t: NodeType
         |
-        |sealed trait ElemType
+        |sealed trait ElemType:
+        |  def conceptGroup: meta.ConceptGroup = meta.groupMap(this.toString)
+        |
         |sealed trait NodeType extends ElemType
         |sealed trait AttrType[T] extends NodeType:
         |  def apply(value: T): Attr[T]
@@ -297,10 +302,12 @@ object meta:
         |  def value: T
         |
         |final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]
-        |case object StrAttr extends meta.ConceptGroup
+        |case object StrAttr extends meta.ConceptGroup:
+        |  def types: Seq[StrAttrType] = ???
         |
-        |final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int], meta.ConceptGroup
-        |case object IntAttr extends meta.ConceptGroup
+        |final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int]
+        |case object IntAttr extends meta.ConceptGroup:
+        |  def types: Seq[IntAttrType] = ???
         |
         |final case class Undefined[T](t: AttrType[T]) extends Attr[T]:
         |  def value: T = throw new java.util.NoSuchElementException
@@ -395,8 +402,48 @@ object meta:
   end graph
 
   object QuickRef:
+    val intro = 
+      s"""|The reqT requirements modelling language 
+          |helps you structure requirements into semi-formal 
+          |natural-language models using 
+          |common requirements engineering concepts.
+          |""".stripMargin
+
+    val helloMarkdown = 
+      s"""|* Feature: helloWorld has
+          |  * Spec: Show informal greeting.
+          |  * Prio: 1
+          |""".stripMargin
+    
+    val helloConstructors =
+      s"""|Model(
+          |  Feature("helloWorld").has(
+          |    Spec("Show informal greeting."),
+          |    Prio(1)))
+          |""".stripMargin
+
+    val helloClasses =
+      s"""|Model(
+          |  Rel(Ent(Feature,"helloWorld"),
+          |    Has, Model(
+          |      StrAttr(Spec,
+          |        "Show informal greeting."),
+          |      IntAttr(Prio,1))))
+          |""".stripMargin
+
+    val metaModelDescription = 
+      s"""|A model is a sequence of elements. 
+          |An element can be a node or a relation. 
+          |A node can be an entity or an attribute. 
+          |An entity has a type and an id. 
+          |An attribute has a type and a value. 
+          |An attribute can be a string attribute or an integer attribute. 
+          |A relation connects an entity to a sub-model via a relation type.
+          |""".stripMargin
+    
     val fileName = "reqT-quickref-GENERATED"
-    val ending = "\\end{multicols*}\n\\end{document}"
+    
+    val ending = "\n\\end{document}"
 
     val preamble = 
       s"""|%!TEX encoding = UTF-8 Unicode
@@ -431,9 +478,15 @@ object meta:
           |\\setlength\\headsep{1em}
           |\\setlength\\footskip{0em}
           |\\usepackage{titlesec}
-          |  \\titlespacing{\\section}{0pt}{3pt}{2pt}
-          |  \\titlespacing{\\subsection}{0pt}{3pt}{2pt}
+          |  \\titlespacing{\\section}{0pt}{3.5pt}{2pt}
+          |  \\titlespacing{\\subsection}{0pt}{3.5pt}{2pt}
           |  \\titlespacing{\\subsubsection}{0pt}{3pt}{2pt}
+          |
+          |\\usepackage{titlesec}
+          |
+          |\\titleformat*{\\section}{\\normalfont\\fontsize{12}{15}\\bfseries}
+          |
+          |\\titleformat*{\\subsection}{\\normalfont\\fontsize{10}{12}\\bfseries}
           |
           |\\usepackage{graphicx}
           |
@@ -441,54 +494,89 @@ object meta:
           |
           |\\renewcommand{\\rmdefault}{\\sfdefault}
           |
+          |\\newcommand\\Concept[2]{\\hangindent=1em\\lstinline+#1+ #2}
+          |
           |\\begin{document}
           |""".stripMargin 
 
+    def code(s: String, esc: Char = '+') = s"\\lstinline$esc$s$esc"
+    def codeBlock(s: String) = s"\\begin{lstlisting}\n$s\n\\end{lstlisting}\n"
+
     def conceptDef(concept: String, definition: String): String = 
-      s"\\hangindent=1em\\lstinline+$concept+ $definition \n"
+      s"\\Concept{$concept}{$definition}\n"
 
     val body = 
       s"""|
           |\\fontsize{9.1}{11}\\selectfont
           |
           |\\begin{multicols*}{4}
-          |
-          |\\section*{The reqT v4 meta-model}
           |\\raggedright
-          |A model is a sequence of elements. An element can be a node or a relation. A node can be an entity or an attribute. An entity has a type and an id. An attribute has a type and a value and it can be a string attribute or an integer attribute. A relation connects an entity to a sub-model via a relation type.
+          |
+          |\\section*{What is reqT?}
+          |$intro
+          |
+          |\\section*{reqT Markdown syntax}
+          |A reqT model in markdown syntax starts with ${code("*")} followed by an element and a colon and an optional relation followed by an indented list of sub-elements.
+          |
+          |\\begin{lstlisting}
+          |$helloMarkdown
+          |\\end{lstlisting}
+          |
+          |\\section*{reqT Metamodel}
+          |
+          |$metaModelDescription
           |
           |\\noindent\\hspace*{-2.1em}\\includegraphics[width=8.2cm]{metamodel-Elem-GENERATED.pdf}
           |
-          |\\section*{\\texttt{enum EntType}}
+          |\\section*{\\texttt{EntType}.values}
           |${
             val subsections = for eg <- EntGroup.values yield
-              val head = s"\\subsection*{\\texttt{EntGroup.$eg}}"
+              val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{meta.EntGroup.}\\textcolor{black}{$eg}}\\textcolor{gray}{.types}}}}}"
               val es = entGroupTypesMap(eg).toSeq.map(_.toString).sorted
               val xs = es.map(e => conceptDef(e, conceptMap(e).descr)) 
               head + xs.mkString("\n", "\n", "\n")
             subsections.mkString("\n")
           }
           |
-          |\\section*{\\texttt{enum relType}}
-          |${
-            val xs = for (s, c) <- relTypes yield
-              conceptDef(s, conceptMap(s).descr)
-            xs.mkString("\n")
-            }
+          |\\section*{reqT Scala DSL constructors}
+          |${code{"EntType"}}, ${code("StrAttrType")} and ${code("IntAttrType")} enums have apply-methods that construct ${code{"Ent"}}, ${code("StrAttr")} and ${code("IntAttr")} instances respectively. Each instance of ${code{"Ent"}} has lower-case relation constructors (see ${code("enum relType")} on next page):
+          |${codeBlock(helloConstructors)}
           |
-          |\\section*{\\texttt{enum StrAttrType}}
+          |\\section*{reqT Scala case classes}
+          |Each constructor instantiate the metamodel classes using nested Scala case class structures:
+          |${codeBlock(helloClasses)}
+          |\\end{multicols*}
+          |
+          |\\begin{multicols}{2}
+          |\\raggedright
+          |
+          |\\section*{\\texttt{RelType.values}}
+          |
+          |${
+            val subsections = for rg <- RelGroup.values yield
+              println(s"==== DEBUG: rg=$rg")
+              val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{meta.RelGroup.}\\textcolor{black}{$rg}}\\textcolor{gray}{.types}}}}}"
+              val rs = relGroupTypesMap(rg).toSeq.map(_.toString).sorted
+              println(s"==== DEBUG: rs=$rs")
+              val xs = rs.map(r => conceptDef(r, conceptMap(r.deCapitalize).descr)) 
+              head + xs.mkString("\n", "\n", "\n")
+            subsections.mkString("\n")
+          }
+          |\\newcolumn
+          |\\section*{\\texttt{StrAttrType.values}}
           |${
             val xs = for (s, c) <- strAttrConcepts yield
               conceptDef(s, conceptMap(s).descr)
             xs.mkString("\n")
           }
           |
-          |\\section*{\\texttt{enum IntAttrType}}
+          |\\section*{\\texttt{IntAttrType.values}}
           |${
             val xs = for (s, c) <- intAttrConcepts yield
               conceptDef(s, conceptMap(s).descr)
             xs.mkString("\n")
           } 
+          |\\end{multicols}
           |
           |""".stripMargin
 
