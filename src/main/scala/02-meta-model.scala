@@ -531,7 +531,7 @@ object meta:
           |\\section*{\\texttt{EntType}.values}
           |${
             val subsections = for eg <- EntGroup.values yield
-              val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{meta.EntGroup.}\\textcolor{black}{$eg}}\\textcolor{gray}{.types}}}}}"
+              val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{EntGroup.}\\textcolor{black}{$eg}}\\textcolor{gray}{.types}}}}}"
               val es = entGroupTypesMap(eg).toSeq.map(_.toString).sorted
               val xs = es.map(e => conceptDef(e, conceptMap(e).descr)) 
               head + xs.mkString("\n", "\n", "\n")
@@ -546,38 +546,39 @@ object meta:
           |Each constructor instantiate the metamodel classes using nested Scala case class structures:
           |${codeBlock(helloClasses)}
           |\\end{multicols*}
-          |
-          |\\begin{multicols}{2}
+          |%\\raggedcolumns
+          |\\begin{multicols*}{4}
           |\\raggedright
           |
-          |\\section*{\\texttt{RelType.values}}
+          |%\\vfill\\null\\columnbreak
           |
-          |${
-            val subsections = for rg <- RelGroup.values yield
-              println(s"==== DEBUG: rg=$rg")
-              val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{meta.RelGroup.}\\textcolor{black}{$rg}}\\textcolor{gray}{.types}}}}}"
-              val rs = relGroupTypesMap(rg).toSeq.map(_.toString).sorted
-              println(s"==== DEBUG: rs=$rs")
-              val xs = rs.map(r => conceptDef(r, conceptMap(r.deCapitalize).descr)) 
-              head + xs.mkString("\n", "\n", "\n")
-            subsections.mkString("\n")
-          }
-          |\\newcolumn
           |\\section*{\\texttt{StrAttrType.values}}
           |${
             val xs = for (s, c) <- strAttrConcepts yield
               conceptDef(s, conceptMap(s).descr)
             xs.mkString("\n")
           }
-          |
+          |%\\vfill\\null\\columnbreak
           |\\section*{\\texttt{IntAttrType.values}}
           |${
             val xs = for (s, c) <- intAttrConcepts yield
               conceptDef(s, conceptMap(s).descr)
             xs.mkString("\n")
           } 
-          |\\end{multicols}
           |
+          |\\section*{\\texttt{RelType.values}}
+          |
+          |${
+            val subsections = for rg <- RelGroup.values yield
+              println(s"==== DEBUG: rg=$rg")
+              val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{RelGroup.}\\textcolor{black}{$rg}}\\textcolor{gray}{.types}}}}}"
+              val rs = relGroupTypesMap(rg).toSeq.map(_.toString).sorted
+              println(s"==== DEBUG: rs=$rs")
+              val xs = rs.map(r => conceptDef(r, conceptMap(r.deCapitalize).descr)) 
+              head + xs.mkString("\n", "\n", "\n")
+            subsections.mkString("\n")
+          }
+          |\\end{multicols*}
           |""".stripMargin
 
     val toLatex = preamble + body + ending

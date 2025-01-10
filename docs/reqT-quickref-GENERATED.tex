@@ -103,7 +103,7 @@ A relation connects an entity to a sub-model via a relation type.
 \noindent\hspace*{-2.1em}\includegraphics[width=8.2cm]{metamodel-Elem-GENERATED.pdf}
 
 \section*{\texttt{EntType}.values}
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{GeneralEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{GeneralEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Epic}{A coherent collection of features, stories, use cases or issues. A large part of a release.}
 
 \Concept{Feature}{A releasable characteristic of a product. A high-level, coherent bundle of requirements.}
@@ -133,7 +133,7 @@ A relation connects an entity to a sub-model via a relation type.
 \Concept{WorkPackage}{A coherent collection of (development) activities.}
 
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{ContextEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{ContextEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Actor}{A role played by a user or external system that interacts with the system (product, app, or service) under development.}
 
 \Concept{App}{A computer program, or group of programs designed for end users, normally with a graphical user interface. Short for application.}
@@ -159,7 +159,7 @@ A relation connects an entity to a sub-model via a relation type.
 \Concept{User}{A human interacting with a system.}
 
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{DataEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{DataEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Class}{An extensible template for creating objects. A set of objects with certain attributes in common. A category.}
 
 \Concept{Data}{A data entity, type, class, or record stored or processed by a system.}
@@ -171,7 +171,7 @@ A relation connects an entity to a sub-model via a relation type.
 \Concept{Relationship}{A specific way that data types are connected.}
 
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{FunctionalEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{FunctionalEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Event}{Something that can happen in the domain or in the system.}
 
 \Concept{Function}{A description of how input is mapped to output. A capability of a system to do something specific.}
@@ -185,7 +185,7 @@ A relation connects an entity to a sub-model via a relation type.
 \Concept{UseCase}{A goal-fulfilling interaction between users and a product in a specific usage context.}
 
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{QualityEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{QualityEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Barrier}{Something that makes it difficult to achieve a goal or a higher quality level.}
 
 \Concept{Breakpoint}{A point of change, representing an important shift in the relation between quality and benefit.}
@@ -195,7 +195,7 @@ A relation connects an entity to a sub-model via a relation type.
 \Concept{Target}{A desired quality level or quality goal.}
 
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{DesignEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{DesignEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Component}{A composable part of a system architecture. A reusable, interchangeable system unit or functionality.}
 
 \Concept{Design}{A specific realization. A description of an implementation.}
@@ -207,7 +207,7 @@ A relation connects an entity to a sub-model via a relation type.
 \Concept{Screen}{A design of (a part of) a user interface.}
 
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.EntGroup.}\textcolor{black}{VariabilityEnt}}\textcolor{gray}{.types}}}}}
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{VariabilityEnt}}\textcolor{gray}{.types}}}}}
 \Concept{Configuration}{A specific combination of variants.}
 
 \Concept{Variant}{An object or system property that can be chosen from a set of options.}
@@ -240,53 +240,12 @@ Model(
 \end{lstlisting}
 
 \end{multicols*}
-
-\begin{multicols}{2}
+%\raggedcolumns
+\begin{multicols*}{4}
 \raggedright
 
-\section*{\texttt{RelType.values}}
+%\vfill\null\columnbreak
 
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{GeneralRel}}\textcolor{gray}{.types}}}}}
-\Concept{Deprecates}{Makes outdated. An entity deprecates (supersedes) another entity.}
-
-\Concept{Has}{Expresses containment, substructure, composition or aggregation. One entity contains another.}
-
-\Concept{Impacts}{Some unspecific influence. A new feature impacts an existing component.}
-
-\Concept{RelatesTo}{Some general, unspecific relation to another entity.}
-
-
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{ClassRel}}\textcolor{gray}{.types}}}}}
-\Concept{Is}{One entity inherits properties of another entity. A specialization, extension or subtype relation. }
-
-
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{ContextRel}}\textcolor{gray}{.types}}}}}
-\Concept{InteractsWith}{A communication relation. A user interacts with an interface.}
-
-
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{DependencyRel}}\textcolor{gray}{.types}}}}}
-\Concept{Excludes}{Prevents an entity combination. One feature excludes another in a release.}
-
-\Concept{Implements}{Realisation of an entity, e.g. a component implements a feature.}
-
-\Concept{Precedes}{Temporal ordering. A feature precedes (should be implemented before) another feature.}
-
-\Concept{Requires}{A requested combination. One function requires that a another function is implemented.}
-
-\Concept{Verifies}{Gives evidence of correctness. A test verifies the implementation of a feature.}
-
-
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{GoalRel}}\textcolor{gray}{.types}}}}}
-\Concept{Helps}{Positive influence. A goal supports the fulfillment of another goal.}
-
-\Concept{Hurts}{Negative influence. A goal hinders another goal.}
-
-
-\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{meta.RelGroup.}\textcolor{black}{VariabilityRel}}\textcolor{gray}{.types}}}}}
-\Concept{Binds}{Ties a value to an option. A configuration binds a variation point.}
-
-
-\newcolumn
 \section*{\texttt{StrAttrType.values}}
 \Concept{Comment}{A note with a remark or a discussion on an entity.}
 
@@ -316,7 +275,7 @@ Model(
 
 \Concept{Why}{A description of intention or rationale of an entity.}
 
-
+%\vfill\null\columnbreak
 \section*{\texttt{IntAttrType.values}}
 \Concept{Benefit}{A characterization of a good or helpful result or effect (e.g. of a feature).}
 
@@ -342,7 +301,49 @@ Model(
 
 \Concept{Value}{Some general integer value.}
  
-\end{multicols}
 
+\section*{\texttt{RelType.values}}
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{RelGroup.}\textcolor{black}{GeneralRel}}\textcolor{gray}{.types}}}}}
+\Concept{Deprecates}{Makes outdated. An entity deprecates (supersedes) another entity.}
+
+\Concept{Has}{Expresses containment, substructure, composition or aggregation. One entity contains another.}
+
+\Concept{Impacts}{Some unspecific influence. A new feature impacts an existing component.}
+
+\Concept{RelatesTo}{Some general, unspecific relation to another entity.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{RelGroup.}\textcolor{black}{ClassRel}}\textcolor{gray}{.types}}}}}
+\Concept{Is}{One entity inherits properties of another entity. A specialization, extension or subtype relation. }
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{RelGroup.}\textcolor{black}{ContextRel}}\textcolor{gray}{.types}}}}}
+\Concept{InteractsWith}{A communication relation. A user interacts with an interface.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{RelGroup.}\textcolor{black}{DependencyRel}}\textcolor{gray}{.types}}}}}
+\Concept{Excludes}{Prevents an entity combination. One feature excludes another in a release.}
+
+\Concept{Implements}{Realisation of an entity, e.g. a component implements a feature.}
+
+\Concept{Precedes}{Temporal ordering. A feature precedes (should be implemented before) another feature.}
+
+\Concept{Requires}{A requested combination. One function requires that a another function is implemented.}
+
+\Concept{Verifies}{Gives evidence of correctness. A test verifies the implementation of a feature.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{RelGroup.}\textcolor{black}{GoalRel}}\textcolor{gray}{.types}}}}}
+\Concept{Helps}{Positive influence. A goal supports the fulfillment of another goal.}
+
+\Concept{Hurts}{Negative influence. A goal hinders another goal.}
+
+
+\subsection*{\underline{\texttt{\textit{{\textcolor{gray}{RelGroup.}\textcolor{black}{VariabilityRel}}\textcolor{gray}{.types}}}}}
+\Concept{Binds}{Ties a value to an option. A configuration binds a variation point.}
+
+
+\end{multicols*}
 
 \end{document}
