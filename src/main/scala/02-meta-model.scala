@@ -395,6 +395,7 @@ object meta:
   end graph
 
   object QuickRef:
+    val fileName = "reqT-quickref-GENERATED"
     val ending = "\\end{multicols*}\n\\end{document}"
 
     val preamble = 
@@ -413,7 +414,7 @@ object meta:
           |
           |\\usepackage{fancyhdr}
           |\\pagestyle{fancy}
-          |\\chead{\\url{https://github.com/reqT/reqT-lang/blob/main/docs/reqT-quickref.tex}}
+          |\\chead{\\url{https://github.com/reqT/reqT-lang/blob/main/docs/$fileName.tex}}
           |\\lhead{QuickRef reqT v4}
           |\\rhead{Compiled \\today}
           |

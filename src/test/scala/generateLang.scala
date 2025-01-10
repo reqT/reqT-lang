@@ -11,7 +11,7 @@ val targetDir = "target/"
 val langSpecFile = docsDir + "/langSpec-GENERATED.md"
 val conceptFile = docsDir + "/concepts-GENERATED.csv"
 def graphFile(mod: String) = s"metamodel$mod-GENERATED.dot"
-val quickRefFile ="reqT-quickref-GENERATED.tex"
+val quickRefTexFile = meta.QuickRef.fileName + ".tex"
 
 @main def generateLang = 
   println(s"Generating $modelFile")
@@ -42,12 +42,12 @@ val quickRefFile ="reqT-quickref-GENERATED.tex"
       s"$q$docsDir$f$q")
       fixCmd(cmd).!
 
-  println(s"Generating $quickRefFile in $targetDir")
+  println(s"Generating $quickRefTexFile in $targetDir")
   val latex = meta.QuickRef.toLatex
-  latex.saveTo(targetDir + quickRefFile)
-  latex.saveTo(docsDir + quickRefFile)
+  latex.saveTo(targetDir + quickRefTexFile)
+  latex.saveTo(docsDir + quickRefTexFile)
 
-  println(os.proc("latexmk", "-pdf", "-silent", quickRefFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
+  println(os.proc("latexmk", "-pdf", "-silent", quickRefTexFile).call(cwd = os.pwd / targetDir.stripSuffix("/"))) 
 
 object showDeprecations:
   def apply(isVisible: Boolean = true) = if isVisible then println(report)
