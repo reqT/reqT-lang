@@ -3,6 +3,7 @@
 .metals
 .scala-build
 .vscode
+!.vscode/settings.json
 **/target
 project/project
 project/metals.sbt
