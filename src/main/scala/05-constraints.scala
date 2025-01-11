@@ -281,7 +281,7 @@ object csp:
     val isOperand: Set[String] = mk.oper.keySet
 
     def parseIdent(s: String): (String, String) = 
-      val fw = s.firstWord
+      val fw = s.initLetters
       val rest = s.stripPrefix(fw).trim
       if fw == "Path" then 
         ??? // (Path.fromString(s), rest) 
@@ -306,7 +306,7 @@ object csp:
       (op,  s.stripPrefix(op).trim)
 
     def parseConstr(s: String): Constr =
-      val fw = s.firstWord
+      val fw = s.initLetters
       if isConstrClass(fw) then 
         val rest1 = s.stripPrefix(fw)
         val (inside, rest2) = parseInside(rest1)

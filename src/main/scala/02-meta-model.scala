@@ -177,10 +177,13 @@ object meta:
 
   extension (concept: Any) 
     def help: String = 
-      val fw = concept.toString.firstWord
+      val fw = concept.toString.initLetters
       val (c, dOpt) = describe(fw)
-      dOpt.getOrElse(s"Unknown concept: $fw. Did you mean: ${similarConcepts(c).mkString(", ")}")
+      dOpt.getOrElse(s"Unknown concept: $concept. Did you mean: ${similarConcepts(c).mkString(", ")}")
     
+    /** Same as help */ 
+    def ? : String = concept.help
+
   val entityNames: ArraySeq[String]   = entityConcepts.map(_._1)
   val strAttrNames: ArraySeq[String]  = strAttrConcepts.map(_._1)
   val intAttrNames: ArraySeq[String]  = intAttrConcepts.map(_._1)
@@ -207,7 +210,7 @@ object meta:
 
   def parseConcept(s: String): (Option[Elem | ElemType | Link], String) =
     val trimmed = s.trim
-    val fw = trimmed.firstWord
+    val fw = trimmed.initLetters
     val rest1 = trimmed.drop(fw.length).trim
     if rest1.isEmpty then 
       if fw.isNodeType then (Some(nodeTypes(fw)), "")
@@ -228,7 +231,7 @@ object meta:
           (Some(entTypes(fw).apply(unquoted)), rest2afterParen)
         else 
           val relPart = rest2afterParen.drop(1)
-          val relWord = relPart.firstWord
+          val relWord = relPart.initLetters
           val rest3 = relPart.drop(relWord.length)
           if relWord.isRelType then (Some(Link(entTypes(fw).apply(unquoted), relTypes(relWord))), rest3)
           else (None, s)

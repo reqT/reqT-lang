@@ -13,7 +13,7 @@ export MarkdownParser.toModel // string extension to parse markdown Model
 
 export StringUtils.* // general extensions only depending on Scala stdlib
 
-export meta.{help, RelGroup, EntGroup}  // to explore concepts
+export meta.{help, ?, RelGroup, EntGroup}  // to explore concepts
 
 export csp.* // types and extensions for expressing constraint satisfaction problems
 
