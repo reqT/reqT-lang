@@ -27,7 +27,7 @@ object StringUtils:
      */
     def stripLeadingWhitespace: String = s.dropWhile(_.isWhitespace)
 
-    def firstWord: String = s.takeWhile(_.isLetter)
+    def initLetters: String = s.takeWhile(_.isLetter)
 
     def deCapitalize: String = s.take(1).toLowerCase ++ s.drop(1)
 
