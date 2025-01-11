@@ -2,34 +2,39 @@
 
 # reqT-lang
 
-* reqT-lang is a library and language for software requirements modelling written in Scala.
+* reqT-lang helps you model requirements using common requirements engineering concepts. 
 
-* reqT-lang helps you structure requirements into semi-formal natural-language models using common requirements engineering concepts. 
+* reqT-lang gives structure to natural language requirements, enabling analysis, graph generation and scripting.
 
 * reqT-lang is used by the command line and desktop tool [reqT](https://github.com/reqT).
 
-* The reqT-lang library includes a parser and other utilities for the reqT language. The reqT parser produces an immutable tree-like data type called `Model` that is expressed using a Scala-embedded DSL. 
+* reqT-lang includes a parser and other utilities for the reqT language. The reqT parser produces an immutable tree-like data type called `Model` that is expressed using a Scala-embedded DSL. 
 
 * With the reqT Scala-embedded DSL you can analyze and transform your requirements models using the power of the Scala standard library and the extensive open source ecosystem of Scala, Java and Javascript. 
 
-* See [the language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) and [meta-language concepts definitions](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv).
+* reqT-lang is written in Scala and cross-compiled to for the JVM, Javascript (TODO) and Native (Linux, TODO) runtimes.
+
+* Documentation:
+  * [reqT Quickref](TODO)
+  * [reqT language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) 
+  * [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv). 
 
 ## How to use reqT-lang as a library
 
 You can manage your requirements with the reqT-lang library, the Scala compiler and your favorite editor, e.g. in VS Code with the Scala Metals extension.
 
-### Use reqT-lang with scala-cli
+### Use reqT-lang with scala
 
-* Install scala-cli from https://scala-cli.virtuslab.org/install
+* Install scala from https://www.scala-lang.org/
 
 * Create a file `hello-reqt.scala` with this code:
 ```scala
-//> using scala 3.4
+//> using scala 3.6.2
 //> using dep "reqt-lang:reqt-lang:4.2.0,url=https://github.com/reqT/reqT-lang/releases/download/4.2.0/reqt-lang_3-4.2.0.jar"
 
 import reqt.*
 
-extension (m: Model) 
+extension (m: Model) // build your own extensions on Model objects
   def trim =
     val empty = Text("")
     val elems: Vector[Elem] = 
@@ -50,7 +55,7 @@ extension (m: Model)
 
 ```
 
-* run with `scala-cli run hello-reqt.scala` and you should get this output:
+* run with `scala run hello-reqt.scala` and you should get this output:
 ```
 hello reqt
 
@@ -96,3 +101,5 @@ For maintainers of https://github.com/reqT/reqT-lang
 * Create a release on  https://github.com/reqT/reqT-lang
 
 * Upload the jar in target/scala-x.y.z named something similar to reqT-lang_3-VERSION.jar
+
+The above is automated by `scala run publish.sh`
