@@ -343,7 +343,7 @@ object meta:
   end generate
 
   def graph(showElem: Boolean = true, showElemType: Boolean = true): String = 
-    import GraphVizGen.*
+    import GraphvizGen.*
     val (model, elem, node, rel, ent, attr, strAttr, intAttr) = 
         ("Model", "Elem", "Node_", "Rel", "Ent", "Attr", "StrAttr", "IntAttr")
 

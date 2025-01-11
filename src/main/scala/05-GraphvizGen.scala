@@ -1,6 +1,7 @@
 package reqt
 
-object GraphVizGen:
+/** https://graphviz.org/ */ 
+object GraphvizGen:
   /** https://graphviz.org/docs/attrs/rankdir/ */
   enum RankDir { case LR, RL, TB, BT}
 
@@ -12,7 +13,7 @@ object GraphVizGen:
       case Out => "out"
       case Empty => ""
 
-  case class GraphVizSettings(
+  case class GraphvizSettings(
     isFlat: Boolean = false, 
     fontName: String = "Sans",
     fontSize: Int = 10,
@@ -23,22 +24,23 @@ object GraphVizGen:
     // nodeShape: String = "record",  //https://graphviz.org/docs/attr-types/shape/
     compound: Boolean = true,
   )
-  object GraphVizSettings:
-    given default: GraphVizSettings = GraphVizSettings()
+  object GraphvizSettings:
+    given default: GraphvizSettings = GraphvizSettings()
 
-  type GraphVizCtx = GraphVizSettings ?=> String
+  type GraphvizCtx = GraphvizSettings ?=> String
 
   extension (m: Model)
-    def toGraph: GraphVizCtx = 
-      if summon[GraphVizSettings].isFlat then modelToGraphFlat(m) else modelToGraphNested(m)
+    def toGraph: GraphvizCtx = 
+      if summon[GraphvizSettings].isFlat then modelToGraphFlat(m) else modelToGraphNested(m)
 
-  def modelToGraphNested(m: Model): GraphVizCtx = preamble + nestedBody(m) + ending
-  def modelToGraphFlat(m: Model): GraphVizCtx = preamble + flatBody(m) + ending
+    def toContextDiagram: GraphvizCtx = contextDiagram(m)
 
+  def modelToGraphNested(m: Model): GraphvizCtx = preamble + nestedBody(m) + ending
+  def modelToGraphFlat(m: Model): GraphvizCtx = preamble + flatBody(m) + ending
 
   // --- BEGIN copied from reqT 3.1.7; to be refactored
-  def formats: GraphVizCtx = 
-    val s = summon[GraphVizSettings]
+  def formats: GraphvizCtx = 
+    val s = summon[GraphvizSettings]
     import s.*
 
     val clusterRank = //https://graphviz.org/docs/attrs/clusterrank/
@@ -49,7 +51,7 @@ object GraphVizGen:
         |edge [fontname="Sans", fontsize=9];
         |""".stripMargin
 
-  def preamble: GraphVizCtx = s"""digraph ${q}reqT.Model${q} { $nl$formats$nl"""
+  def preamble: GraphvizCtx = s"""digraph ${q}reqT.Model${q} { $nl$formats$nl"""
   def ending: String = "\n}"
 
   def style(elem: Elem): String = elem match
@@ -111,7 +113,7 @@ object GraphVizGen:
 
   // --- END old copied on-going refactoring
 
-  // --- below methods are used in reqt.meta.graph
+  // --- below methods are used in reqt.meta.graph 
 
   def recordNode(
     nodeName: String,
@@ -130,7 +132,7 @@ object GraphVizGen:
     (rankSame: Seq[Seq[String]])
     (edges: Seq[(String, String)])
     (nodeFormats: Seq[String]) 
-    (using settings: GraphVizSettings): String =
+    (using settings: GraphvizSettings): String =
       val s = settings.copy(rankDir = RankDir.BT)
       import s.*
       s"""|digraph $title {
@@ -157,3 +159,22 @@ object GraphVizGen:
           |${edges.map((f,t) => edge(f,t)).mkString("  ", "\n  ", "\n")}
           |}
           |""".stripMargin
+
+  def contextDiagram(M: Model) =  //TODO
+    """
+    /* TODO 
+      here is an example to illustrate how to use the a png for nodes in graphviz
+      in order to put the label below the actor it needs to be clustered
+      inspired by the buggy thing here: https://martin.elwin.com/blog/2008/05/uml-use-case-diagrams-graphviz/
+    */
+    digraph G {
+      rankdir=LR;
+
+      subgraph clusterUser {label="User"; labelloc="b"; peripheries=0; user; };
+      user [shapefile="actor.png", peripheries=0, label=""];
+
+      login [label="Log In", shape=ellipse];
+
+      user->login [arrowhead=none];
+    }
+    """
