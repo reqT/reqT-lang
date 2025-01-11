@@ -2,7 +2,7 @@
 .bloop
 .metals
 .scala-build
-.vscode
+.vscode/*
 !.vscode/settings.json
 **/target
 project/project
