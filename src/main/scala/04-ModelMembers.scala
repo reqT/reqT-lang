@@ -348,7 +348,7 @@ transparent trait ModelMembers:
   def toMarkdown: String =
     // TODO turn tweaks below into default args or context using MarkdownSettings
     val MaxLen = 72  // Limit for creating one-liners in pretty markdown; TODO: should this be hardcoded???
-    val isDetectOneLiner = true  // perhaps not allow one liner un-parsing as it is non-regular
+    val isDetectOneLiner = true  // perhaps not allow one liner un-parsing as it is non-regular???
     val isInsertColon = true
 
     val colonOpt = if isInsertColon then ":" else ""
@@ -396,6 +396,8 @@ transparent trait ModelMembers:
     recur(0, self)
     sb.toString
   end toMarkdown
+
+  def md = toMarkdown
 
   def showCompact: String = elems.map(_.show).mkString("Model(",",",")")
   def showLines: String = elems.map(_.show).mkString("Model(\n  ",",\n  ","\n)")
