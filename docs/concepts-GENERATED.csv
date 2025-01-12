@@ -9,7 +9,7 @@ Class	EntType	DataEnt	An extensible template for creating objects. A set of obje
 Comment	Attr	StrAttr	A note with a remark or a discussion on an entity.
 Component	EntType	DesignEnt	A composable part of a system architecture. A reusable, interchangeable system unit or functionality.
 Configuration	EntType	VariabilityEnt	A specific combination of variants.
-Constraints	Attr	StrAttr	A collection of propositions that constrain a solution space or restrict possible attribute values.
+Constraints	Attr	StrAttr	Propositions that constrain a solution space or restrict possible attribute values.
 Cost	Attr	IntAttr	An expenditure of something, such as time or effort, necessary if implementing an entity.
 Damage	Attr	IntAttr	A characterization of the negative consequences if some entity (e.g. a risk) occurs.
 Data	EntType	DataEnt	A data entity, type, class, or record stored or processed by a system.

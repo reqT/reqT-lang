@@ -190,10 +190,10 @@ class TestModelOps extends munit.FunSuite:
       ),
     )
     
-    assert(m.rankBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
+    assert(m.sortLeafRelsBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
 
-    assert(m.rankBy(Order) == m.rankBy(Prio))
-    assert(m.rankBy(Prio).toModel.withRank(Order).toModel.rankBy(Order) == m.rankBy(Order))
+    assert(m.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Prio))
+    assert(m.sortLeafRelsBy(Prio).toModel.withRank(Order).toModel.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Order))
 
   test("Model Examples          "):
     assert(examples.Prioritization.normalizedVotes().intValues.sum == 99)
