@@ -2,17 +2,15 @@
 
 # reqT-lang
 
-* reqT-lang helps you model requirements using common requirements engineering concepts. 
+* reqT-lang is a software requirements modelling language based on common requirements engineering concepts. 
 
-* reqT-lang gives structure to natural language requirements, enabling analysis, graph generation and scripting.
+* reqT-lang provides structure to natural language requirements, enabling analysis, graph generation and scripting.
 
-* reqT-lang is used by the command line and desktop tool [reqT](https://github.com/reqT).
+* reqT-lang is used by the reqT desktop tool [reqT](https://github.com/reqT).
 
-* reqT-lang includes a parser and other utilities for the reqT language. The reqT parser produces an immutable tree-like data type called `Model` that is expressed using a Scala-embedded DSL. 
+* The reqT-lang parser produces an immutable tree-like data structure called `Model` expressed in a Scala-embedded DSL, enabling analysis and transform of models using the powerful of Scala language and ecosystem. 
 
-* With the reqT Scala-embedded DSL you can analyze and transform your requirements models using the power of the Scala standard library and the extensive open source ecosystem of Scala, Java and Javascript. 
-
-* reqT-lang is written in Scala and cross-compiled to for the JVM, Javascript (TODO) and Native (Linux, TODO) runtimes.
+* reqT-lang is written in Scala and cross-compiled to the JVM, Javascript (TODO) and Native (Linux, TODO) runtimes.
 
 * Documentation:
   * [reqT Quickref](TODO)
