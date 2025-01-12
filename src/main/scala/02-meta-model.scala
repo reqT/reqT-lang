@@ -85,7 +85,7 @@ object meta:
 
   lazy val strAttrConcepts = ArraySeq[(String,String)](
     "Comment" -> "A note with a remark or a discussion on an entity.",
-    "Constraints" -> "A collection of propositions that constrain a solution space or restrict possible attribute values.",
+    "Constraints" -> "Propositions that constrain a solution space or restrict possible attribute values.",
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
     "Example" -> "A description that illustrates some entity by a typical instance.",
     "Expectation" -> "A required output of a test in order to be counted as passed.",
