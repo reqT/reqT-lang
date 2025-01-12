@@ -318,13 +318,14 @@ object Prioritization:
 
     val relations: Vector[Rel] = requirements.map: r =>
       val result: Vector[Double] = voters.map: s =>
-        val weighted = (m/s.has/voterPrioType).head * (m/s.has/r.has/verdictType).head * 100.0 
+        val weighted = 
+          (m/s.has/voterPrioType).head * (m/s.has/r.has/verdictType).head * 100.0 
         val tot = benefitSum(s) * prioSum
         weighted / tot
       val verdict = math.round(result.sum).toInt
       r has verdictType(verdict)
     
-    Model(Section("Normalized Votes").has(relations*))
+    Model(Section("NormalizedVotes").has(relations*))
 
 object QualityModel:
   val StartupQuality = Model(
