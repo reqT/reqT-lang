@@ -4,7 +4,7 @@ package reqt
 transparent trait ModelMembers:
   self: Model =>
 
-  /** The number of elems at top level plus the sizes of all sub models **/
+  /** The number of elems at top level plus the sum of sizes of all sub models **/
   def size: Int =
     var n = elems.size
     elems.foreach:
@@ -122,23 +122,34 @@ transparent trait ModelMembers:
 
   def nonTypeDistinctIds: Map[String, Set[EntType]] = idTypeMap.filter((id, xs) => xs.size > 1)
 
+  def attrsOfType(sat: StrAttrType): Vector[StrAttr] = 
+    nodes.collect { case a: StrAttr if a.t == sat => a }
+
+  def attrsOfType(iat: IntAttrType): Vector[IntAttr] = 
+    nodes.collect { case a: IntAttr if a.t == iat => a }
+
   def entsOfId(id: String): Vector[Ent] = idMap.get(id).getOrElse(Vector())
 
-  def getEntOfId(id: String): Ent = idMap(id).head
+  def entsOfType(et: EntType): Vector[Ent] = nodes.collect { case e: Ent if e.t == et => e }
 
-  def entTypesOfId(id: String): Set[EntType] = idTypeMap(id)
+  def entTypesOfId(id: String): Set[EntType] = idTypeMap.getOrElse(id, Set())
+  
+  def firstEntOfId(id: String): Option[Ent] = entsOfId(id).headOption
 
-  def rankBy[T](iat: IntAttrType, rt: RelType = Has): Vector[Ent] = 
+  def sortLeafRelsBy[T](iat: IntAttrType, rt: RelType = Has): Vector[Ent] = 
     val lrs: Model = leafRelsOf(iat)
     lrs.ents.sortBy(e => (lrs / Link(e, rt) / iat).headOption)
 
   def withRank(iat: IntAttrType, rt: RelType = Has): Vector[Rel] =
     ents.zipWithIndex.map((e, i) => Rel(e, rt, Model(iat.apply(i + 1))))
 
-  /** A new Model with distinct elems (non-recursive). **/
+  def withRankDistinct(et: EntType, iat: IntAttrType, rt: RelType = Has): Vector[Rel] =
+    entsOfType(et).distinct.zipWithIndex.map((e, i) => Rel(e, rt, Model(iat.apply(i + 1))))
+
+  /** A new Model with distinct top-level elems (non-recursive). **/
   def distinctTopElems: Model = Model(elems.distinct) 
 
-  /** A new Model that is distinct by attribute type (non-recursive). **/
+  /** A new Model that is distinct by top-level attribute type (non-recursive). **/
   def distinctTopAttrType: Model =
     val foundAttrTypes: collection.mutable.Set[AttrType[?]] = collection.mutable.Set()
     val es = elems.flatMap:
@@ -150,7 +161,7 @@ transparent trait ModelMembers:
       case e => Vector(e)
     Model(es)
 
-  /** A new Model that removes Ent that are also part of Links. **/
+  /** A new Model that removes top-level Ent that are themselves part of Links. **/
   def distinctEntLinks: Model =
     val es = elems.flatMap:
       case e: Ent => 
@@ -208,7 +219,7 @@ transparent trait ModelMembers:
 
     Model(ess.flatten.toVector)
 
-  /** A new model constructed by adding all elems using add one by one giving no duplicates. */
+  /** A new model constructed by adding all elems using add one by one giving no duplicates per level. */
   def distinct = Model() ++ self  // TODO: investigate if this is redundant to distinctElemsDeep???
 
   /** A Model in normal form: elems are added one by one replacing same nodes and then sorted. **/
