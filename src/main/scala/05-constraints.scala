@@ -175,16 +175,16 @@ object csp:
   case class Bounds(seq1: Seq[Var], domain: Seq[Range]) extends ConstrSeq1
 
   extension (v: Var)
-    infix def in(r: Range): Constr = Bounds(Seq(v), Seq(r))
+    infix def in(r: Range): Bounds = Bounds(Seq(v), Seq(r))
     infix def in(rs: Seq[Range]): Constr = Bounds(Seq(v), rs)
 
   extension (vs: Seq[Var])
-    infix def in(r: Range): Constr = Bounds(vs, Seq(r))
-    infix def in(rs: Seq[Range]): Constr = Bounds(vs, rs)
+    infix def in(r: Range): Bounds = Bounds(vs, Seq(r))
+    infix def in(rs: Seq[Range]): Bounds = Bounds(vs, rs)
 
   extension (b: Bounds)
-    infix def in(r: Range): Constr = b.copy(domain = b.domain :+ r)
-    infix def in(rs: Seq[Range]): Constr = b.copy(domain = b.domain ++ rs)
+    infix def in(r: Range): Bounds = b.copy(domain = b.domain :+ r)
+    infix def in(rs: Seq[Range]): Bounds = b.copy(domain = b.domain ++ rs)
 
   case class AbsXeqY(x: Var, y: Var) extends Constr2, PrimitiveConstr
 
