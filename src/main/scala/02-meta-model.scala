@@ -573,10 +573,8 @@ object meta:
           |
           |${
             val subsections = for rg <- RelGroup.values yield
-              println(s"==== DEBUG: rg=$rg")
               val head = s"\\subsection*{\\underline{\\texttt{\\textit{{\\textcolor{gray}{RelGroup.}\\textcolor{black}{$rg}}\\textcolor{gray}{.types}}}}}"
               val rs = relGroupTypesMap(rg).toSeq.map(_.toString).sorted
-              println(s"==== DEBUG: rs=$rs")
               val xs = rs.map(r => conceptDef(r, conceptMap(r.deCapitalize).descr)) 
               head + xs.mkString("\n", "\n", "\n")
             subsections.mkString("\n")
