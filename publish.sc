@@ -88,9 +88,6 @@ else
     println(createCmd.showSeq)
     println(uploadCmd1.showSeq)
     println(uploadCmd2.showSeq)
-
-
-      
-
+    
 
 
