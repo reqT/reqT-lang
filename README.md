@@ -96,7 +96,7 @@ For maintainers of https://github.com/reqT/reqT-lang
 
 * Run `sbt package`
 
-* Create a release on  https://github.com/reqT/reqT-lang
+* Create a release on https://github.com/reqT/reqT-lang
 
 * Upload the jar in target/scala-x.y.z named something similar to reqT-lang_3-VERSION.jar
 
