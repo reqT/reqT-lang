@@ -251,7 +251,8 @@ object csp:
 
 
   object parseConstraints: 
-    //This is unfinished job... TODO: consider only parse simple rels such as x > y x > 1 x <= y x === 0
+    // This is work in progress... More complicated than first anticipated to parse all constr with Path etc
+    // TODO: consider only parse simple rels such as x > y x > 1 x <= y x === 0
     import parseUtils.*
     object mk:
       type Param = Var | Int | Boolean
@@ -336,9 +337,12 @@ object csp:
       val nonEmptyTrimmedLines = s.toLines.map(_.trim).filter(_.nonEmpty)
       nonEmptyTrimmedLines.map(parseConstr).toSeq
 
-    def apply(s: String): (Seq[Constr], String) = parseLines(s) match
-      case scala.util.Failure(exception) => (Seq(), exception.getMessage)
-      case scala.util.Success(value)     => (value, "")
+    def apply(s: String): Either[String, Seq[Constr]] = parseLines(s) match
+      case scala.util.Failure(exception) => Left(exception.getMessage)
+      case scala.util.Success(value)     => Right(value)
+    
+    extension (s: String) def toConstr: Either[String, Seq[Constr]] = apply(s)
+    extension (sa: StrAttr) def toConstr: Either[String, Seq[Constr]] = apply(sa.value)
 
   end parseConstraints
 
