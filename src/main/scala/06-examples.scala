@@ -130,11 +130,11 @@ object Lauesen:
       ),
       Class("Stay").relatesTo(
         Class("RoomState"),
-        Class("Service"),
+        Class("RoomService"),
         Min(1),
       ),
       Class("ServiceType").relatesTo(
-        Class("Service"),
+        Class("RoomService"),
         Min(1),
       ),
       Class("Room").relatesTo(
@@ -161,7 +161,7 @@ object Lauesen:
       Field("name"),
       Field("price"),
     ),
-    Class("Service").has(
+    Class("RoomService").has(
       Field("serviceDate"),
       Field("serviceCount"),
     ),
