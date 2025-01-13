@@ -284,25 +284,25 @@ object Prioritization:
   val DollarTest = Model(
     Stakeholder("a").has(
       Prio(2),
-      Req("1") has Benefit(5),
-      Req("2") has Benefit(300),
-      Req("3") has Benefit(8),
-      Req("4") has Benefit(9),
-      Req("5") has Benefit(100),
-      Req("6") has Benefit(10),
-      Req("7") has Benefit(20)),
+      Req("r1") has Benefit(5),
+      Req("r2") has Benefit(300),
+      Req("r3") has Benefit(8),
+      Req("r4") has Benefit(9),
+      Req("r5") has Benefit(100),
+      Req("r6") has Benefit(10),
+      Req("r7") has Benefit(20)),
     Stakeholder("b").has(
       Prio(4),
-      Req("1") has Benefit(100),
-      Req("2") has Benefit(7),
-      Req("3") has Benefit(20),
-      Req("4") has Benefit(80),
-      Req("5") has Benefit(10),
-      Req("6") has Benefit(90),
-      Req("7") has Benefit(20)))
+      Req("r1") has Benefit(100),
+      Req("r2") has Benefit(7),
+      Req("r3") has Benefit(20),
+      Req("r4") has Benefit(80),
+      Req("r5") has Benefit(10),
+      Req("r6") has Benefit(90),
+      Req("r7") has Benefit(20)))
 
   def normalizedVotes(
-    m: Model = DollarTest,
+    m: Model,
     voterType: EntType = Stakeholder,
     voterPrioType: IntAttrType = Prio, 
     requirementType: EntType = Req, 

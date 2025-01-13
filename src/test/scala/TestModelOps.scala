@@ -196,7 +196,8 @@ class TestModelOps extends munit.FunSuite:
     assert(m.sortLeafRelsBy(Prio).toModel.withRank(Order).toModel.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Order))
 
   test("Model Examples          "):
-    assert(examples.Prioritization.normalizedVotes().intValues.sum == 99)
+    import examples.Prioritization.*
+    assert(normalizedVotes(DollarTest).intValues.sum == 99)
 
 
 
