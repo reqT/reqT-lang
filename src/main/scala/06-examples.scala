@@ -133,7 +133,7 @@ object Lauesen:
         Class("RoomService"),
         Min(1),
       ),
-      Class("ServiceType").relatesTo(
+      Class("RoomServiceType").relatesTo(
         Class("RoomService"),
         Min(1),
       ),
@@ -157,7 +157,7 @@ object Lauesen:
       Field("paymethod"),
       Field("employee"),
     ),
-    Class("ServiceType").has(
+    Class("RoomServiceType").has(
       Field("name"),
       Field("price"),
     ),
