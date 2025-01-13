@@ -28,9 +28,8 @@ println(s"""\n*** Step 1: sbt "clean; package" """)
 if yes("Do you want a clean build (Y/n)? ") then
   os.proc("sbt", "clean;package").call(cwd = wd, stdout = os.Inherit)
 
+val jar = s"$wd/target/scala-$scalaVer/reqt-lang_3-$reqTLangVer.jar"
 
-val dir = s"${os.pwd}/target/scala-$scalaVer"
-val jar = s"$dir/reqt-lang_3-$reqTLangVer.jar"
 val quickref = s"reqT-quickref-GENERATED.tex" 
 
 if !os.exists(os.Path(jar)) then 
@@ -84,6 +83,7 @@ else
     val uploadCmd1 = Seq("gh", "release", "upload", "v" + reqTLangVer, jar)
 
     val uploadCmd2 = Seq("gh", "release", "upload", "v" + reqTLangVer, s"$wd/target/metamodel-*")
+    
     val uploadCmd3 = Seq("gh", "release", "upload", "v" + reqTLangVer, s"$wd/target/${quickref.stripSuffix(".tex")}.pdf")
     
     val ghOpt = util.Try{os.proc("which", "gh").call(cwd = wd)}.toOption
