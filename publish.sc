@@ -1,4 +1,4 @@
-//> using scala 3.6.2
+//> using scala 3.3.4
 //> using toolkit default
 // run with `scala-cli run publish.sc`
 
