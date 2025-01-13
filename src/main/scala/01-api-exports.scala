@@ -20,5 +20,6 @@ export StringUtils.* // general extensions only depending on Scala stdlib
 export meta.{help, ?, RelGroup, EntGroup}  // to explore concepts
 
 export csp.* // types and extensions for expressing constraint satisfaction problems
+export parseConstraints.toConstr // extension to parse String and StrAttr(value)
 
 
