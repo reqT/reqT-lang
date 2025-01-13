@@ -1,5 +1,5 @@
 //> using scala 3.3.4
-//> using toolkit default
+//> using toolkit 0.6.0
 // run with `scala-cli run publish.sc`
 
 println("*** Publish the reqT-lang jar to github using sbt and gh ***\n")
@@ -16,8 +16,6 @@ def getFromBuild(key: String): Option[String] = util.Try{
     value.stripPrefix("\"").stripSuffix("\"")
   }.toOption
 
-extension (s: Seq[String]) def showSeq = s.mkString(" ")
-
 val scalaVer = getFromBuild("scalaVer").getOrElse("")
 val reqTLangVer = getFromBuild("reqTLangVer").getOrElse("")
 
@@ -33,6 +31,7 @@ if yes("Do you want a clean build (Y/n)? ") then
 
 val dir = s"${os.pwd}/target/scala-$scalaVer"
 val jar = s"$dir/reqt-lang_3-$reqTLangVer.jar"
+val quickref = s"reqT-quickref-GENERATED.tex" 
 
 if !os.exists(os.Path(jar)) then 
   println(s"Error: Missing jar-file; $jar")
@@ -72,12 +71,21 @@ else
         generate("png")
     end if
 
+    println(s"\nCopying $quickref to target")
+    os.copy(wd / "docs" / quickref, wd / "target" / quickref, replaceExisting = true)
+
+    val latexmkQuickrefCmd = Seq(s"latexmk", "-pdf", "-silent", quickref)
+    
+    println(s"Running ${latexmkQuickrefCmd.mkString(" ")}")
+    os.proc(latexmkQuickrefCmd).call(cwd = wd / "target")
+
     val createCmd = Seq("gh", "release", "create", "v" + reqTLangVer, "--generate-notes") ++ preRel
 
     val uploadCmd1 = Seq("gh", "release", "upload", "v" + reqTLangVer, jar)
 
-    val uploadCmd2 = Seq("gh", "release", "upload", "v" + reqTLangVer, s"${os.pwd}/target/metamodel-*")
-
+    val uploadCmd2 = Seq("gh", "release", "upload", "v" + reqTLangVer, s"$wd/target/metamodel-*")
+    val uploadCmd3 = Seq("gh", "release", "upload", "v" + reqTLangVer, s"$wd/target/${quickref.stripSuffix(".tex")}.pdf")
+    
     val ghOpt = util.Try{os.proc("which", "gh").call(cwd = wd)}.toOption
 
     if ghOpt == None then 
@@ -85,9 +93,10 @@ else
       println("Install from here: https://github.com/cli/cli/")
 
     println("\nRun these commands in terminal:\n")
-    println(createCmd.showSeq)
-    println(uploadCmd1.showSeq)
-    println(uploadCmd2.showSeq)
+    println(createCmd.mkString(" "))
+    println(uploadCmd1.mkString(" "))
+    println(uploadCmd2.mkString(" "))
+    println(uploadCmd3.mkString(" "))
     
 
 
