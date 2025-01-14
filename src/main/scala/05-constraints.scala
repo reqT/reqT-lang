@@ -251,91 +251,108 @@ object csp:
 
 
   object parseConstraints: 
-    // This is work in progress... More complicated than first anticipated to parse all constr with Path etc
-    // TODO: consider only parse simple rels such as x > y x > 1 x <= y x === 0
-    import parseUtils.*
-    object mk:
-      type Param = Var | Int | Boolean
+    private object NotReadyShouldProbablyBeRewriteFromScratch:
+      // This is work in progress... More complicated than first anticipated to parse all constr with Path etc
+      // TODO: consider only parse simple rels such as x > y x > 1 x <= y x === 0
+      import parseUtils.*
+      object mk:
+        type Param = Var | Int | Boolean
 
-      type ConstrMaker = Seq[Param] => Constr
-      
-      private def bang(x: Param) = throw err.badParamType(x.toString)
-      
-      extension (x: Param)
-        def asVar: Var      = x match { case x: Var     => x case _ => bang(x)}
-        def asInt: Int      = x match { case x: Int     => x case _ => bang(x)}
-        def asBool: Boolean = x match { case x: Boolean => x case _ => bang(x)}
+        type ConstrMaker = Seq[Param] => Constr
+        
+        private def bang(x: Param) = throw err.badParamType(x.toString)
+        
+        extension (x: Param)
+          def asVar: Var      = x match { case x: Var     => x case _ => bang(x)}
+          def asInt: Int      = x match { case x: Int     => x case _ => bang(x)}
+          def asBool: Boolean = x match { case x: Boolean => x case _ => bang(x)}
 
-      val constr: Map[String, ConstrMaker] = Map(
-        "XeqY" -> (xs => XeqY(xs(0).asVar, xs(1).asVar)),   //should these be strings and xs(0).parseVar ???
-        "XeqC" -> (xs => XeqC(xs(0).asVar, xs(1).asInt)),
-      )
+        val constr: Map[String, ConstrMaker] = Map(
+          "XeqY" -> (xs => XeqY(xs(0).asVar, xs(1).asVar)),   //should these be strings and xs(0).parseVar ???
+          "XeqC" -> (xs => XeqC(xs(0).asVar, xs(1).asInt)),
+        )
 
-      val oper: Map[String, ConstrMaker] = Map(
-        ">" -> {xs => XgtY(xs(0).asVar, xs(1).asVar)},
-        "<" -> {xs => XltY(xs(0).asVar, xs(1).asVar)},
-      )
-    end mk
+        val oper: Map[String, ConstrMaker] = Map(
+          ">" -> {xs => XgtY(xs(0).asVar, xs(1).asVar)},
+          "<" -> {xs => XltY(xs(0).asVar, xs(1).asVar)},
+        )
+      end mk
 
-    val isConstrClass: Set[String] = mk.constr.keySet
+      val isConstrClass: Set[String] = mk.constr.keySet
 
-    val isOperand: Set[String] = mk.oper.keySet
+      val isOperand: Set[String] = mk.oper.keySet
 
-    def parseIdent(s: String): (String, String) = 
-      val fw = s.initLetters
-      val rest = s.stripPrefix(fw).trim
-      if fw == "Path" then 
-        ??? // (Path.fromString(s), rest) 
-      else 
-        if fw.isEmpty || !fw(0).isUnicodeIdentifierStart || !fw.drop(1).forall(_.isUnicodeIdentifierPart) 
-        then throw err.badIdentifier(fw) 
-        (fw, rest)
+      def parseIdent(s: String): (String, String) = 
+        val fw = s.initLetters
+        val rest = s.stripPrefix(fw).trim
+        if fw == "Path" then 
+          ??? // (Path.fromString(s), rest) 
+        else 
+          if fw.isEmpty || !fw(0).isUnicodeIdentifierStart || !fw.drop(1).forall(_.isUnicodeIdentifierPart) 
+          then throw err.badIdentifier(fw) 
+          (fw, rest)
 
-    def parseVar(s: String): (Var, String) = 
-      val (inside, rest) = parseInside(s.stripPrefix("Var"))
-      val id: (String | Path) = 
-        if inside.startsWith("Path") then Path.fromString(inside).getOrElse(throw err.illegalPath(inside))
-        else inside
-      (Var(id), rest)
+      def parseVar(s: String): (Var, String) = 
+        val (inside, rest) = parseInside(s.stripPrefix("Var"))
+        val id: (String | Path) = 
+          if inside.startsWith("Path") then Path.fromString(inside).getOrElse(throw err.illegalPath(inside))
+          else inside
+        (Var(id), rest)
 
-    def parseVarList(s: String): Seq[Var] = 
-      val xs = s.splitEscaped(',', '"')
-      ???
-      
-    def parseOperator(s: String): (String, String) = 
-      val op = s.takeWhile(!_.isWhitespace)
-      (op,  s.stripPrefix(op).trim)
+      def parseVarList(s: String): Seq[Var] = 
+        val xs = s.splitEscaped(',', '"')
+        ???
+        
+      def parseOperator(s: String): (String, String) = 
+        val op = s.takeWhile(!_.isWhitespace)
+        (op,  s.stripPrefix(op).trim)
 
-    def parseConstr(s: String): Constr =
-      val fw = s.initLetters
-      if isConstrClass(fw) then 
-        val rest1 = s.stripPrefix(fw)
-        val (inside, rest2) = parseInside(rest1)
-        if rest2.nonEmpty then throw err.unknownTrailing(rest2) else
-          val vs = parseVarList(inside) 
-          mk.constr(fw)(vs) 
-        end if 
-      else if fw == "Var" then 
-        val (v1, rest1) = parseVar(s)
-        val (op, rest2) = parseOperator(rest1) 
-        if !isOperand(op) then throw err.operatorExpected(s"$op $rest2")
-        val (v2, rest3) = parseVar(rest2)
-        if rest3.nonEmpty then throw err.unknownTrailing(rest3)
-        mk.oper(op)(Seq(v1, v2))
-      else if fw == "Path" then 
-        ???  // use Path.fromString
-      else if isIdStart(s) then 
-        val (i1, rest1) = parseIdent(s)
-        val (op, rest2) = parseOperator(rest1) 
-        if !isOperand(op) then throw err.operatorExpected(s"$op $rest2")
-        val (i2, rest3) = parseIdent(rest2)
-        if rest3.nonEmpty then throw err.unknownTrailing(rest3)
-        mk.oper(op)(Seq(Var(i1), Var(i2)))
-      else throw err.varExpected(s) 
+      def parseConstr(s: String): Constr =
+        val fw = s.initLetters
+        if isConstrClass(fw) then 
+          val rest1 = s.stripPrefix(fw)
+          val (inside, rest2) = parseInside(rest1)
+          if rest2.nonEmpty then throw err.unknownTrailing(rest2) else
+            val vs = parseVarList(inside) 
+            mk.constr(fw)(vs) 
+          end if 
+        else if fw == "Var" then 
+          val (v1, rest1) = parseVar(s)
+          val (op, rest2) = parseOperator(rest1) 
+          if !isOperand(op) then throw err.operatorExpected(s"$op $rest2")
+          val (v2, rest3) = parseVar(rest2)
+          if rest3.nonEmpty then throw err.unknownTrailing(rest3)
+          mk.oper(op)(Seq(v1, v2))
+        else if fw == "Path" then 
+          ???  // use Path.fromString
+        else if isIdStart(s) then 
+          val (i1, rest1) = parseIdent(s)
+          val (op, rest2) = parseOperator(rest1) 
+          if !isOperand(op) then throw err.operatorExpected(s"$op $rest2")
+          val (i2, rest3) = parseIdent(rest2)
+          if rest3.nonEmpty then throw err.unknownTrailing(rest3)
+          mk.oper(op)(Seq(Var(i1), Var(i2)))
+        else throw err.varExpected(s) 
+    end NotReadyShouldProbablyBeRewriteFromScratch
     
+    def parseLine(line: String): Constr = 
+      /* TODO parse more here but perhaps 
+         don't try to do too as much as in NotReadyShouldProbablyBeRewriteFromScratch */
+      val parts = line.split(" ").map(_.trim).filter(_.nonEmpty)
+      if parts.length != 3 then throw err.unknown(line)
+      else
+        val a = parts(0)
+        val op = parts(1)
+        val b = parts(2)
+        op match  
+          case ">" => XgtY(Var(a), Var(b))
+          case "<" => XltY(Var(a), Var(b))
+          case "=" => XeqY(Var(a), Var(b))
+          case _ => throw err.unknown(line)
+
     def parseLines(s: String): util.Try[Seq[Constr]] = util.Try:
       val nonEmptyTrimmedLines = s.toLines.map(_.trim).filter(_.nonEmpty)
-      nonEmptyTrimmedLines.map(parseConstr).toSeq
+      nonEmptyTrimmedLines.map(parseLine).toSeq
 
     def apply(s: String): Either[String, Seq[Constr]] = parseLines(s) match
       case scala.util.Failure(exception) => Left(exception.getMessage)
