@@ -13,9 +13,9 @@
 * reqT-lang is written in Scala and cross-compiled to the JVM, Javascript (TODO) and Native (Linux, TODO) runtimes.
 
 * Documentation:
-  * [reqT Quickref](TODO)
+  * The [reqT Quickref](https://github.com/reqT/reqT-lang/releases/download/v4.3.1/reqT-quickref-GENERATED.pdf)
+  * All [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv) in tabular format. 
   * [reqT language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) 
-  * [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv). 
 
 ## How to use reqT-lang as a library
 
