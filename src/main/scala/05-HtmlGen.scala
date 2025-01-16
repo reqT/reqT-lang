@@ -1,6 +1,8 @@
 package reqt
 
 object HtmlGen:
+  def defaultTitle = "Untitled"
+
   def defaultStyle = 
     s"""|html{overflow-y:scroll;}
         |
@@ -51,26 +53,19 @@ object HtmlGen:
         |
         |td.name{width:100px;font-style:italic;}""".stripMargin
 
-  case class HtmlSettings(title: String = "Untitled", style: String = defaultStyle)
-  object HtmlSettings:
-    given default: HtmlSettings = HtmlSettings()
-  end HtmlSettings
-
-  def preamble(m: Model)(using hs: HtmlSettings): String = 
-    val title = (m / Title).headOption.getOrElse(hs.title)
+  def preamble(m: Model, fallBackTitle: String, style: String): String = 
+    val t = (m / Title).headOption.getOrElse(fallBackTitle)
     s"""|<!DOCTYPE html>
         |<html>
         |<head>
-        |<title>$title</title>
-        |${if hs.style.isEmpty then "" else s"<style>\n${hs.style}\n</style>"}
+        |<title>$t</title>
+        |${if style.isEmpty then "" else s"<style>\n$style\n</style>"}
         |</head>""".stripMargin
 
-  type HtmlCtx = HtmlSettings ?=> String
-
-  def elemListItem(level: Int, cls: String = "")(et: ElemType)(after: String = ""): HtmlCtx = 
+  def elemListItem(level: Int, cls: String = "")(et: ElemType)(after: String = ""): String = 
     ("  " * level) + s"""<li><span class="$cls"> $et</span>: $after </li>""" 
 
-  def renderHtmlBody(m: Model, level: Int): HtmlCtx = 
+  def renderHtmlBody(m: Model, level: Int): String = 
     val ind = ("  " * level)
     val lines: Vector[String] = m.elems.map: 
       case Ent(t, id)        => elemListItem(level, "entityColor"   )(t)(id) 
@@ -84,9 +79,13 @@ object HtmlGen:
     lines.mkString(s"$ind<ul>\n","\n",s"\n$ind</ul>")
 
   extension (m: Model) 
-    def toHtmlBody: HtmlCtx = 
+    def toHtmlBody: String = 
       if m.elems.isEmpty then "<ul><li>Empty Model</li></ul>"
       else renderHtmlBody(m, 0)
-    def toHtml: HtmlCtx = s"${preamble(m)}\n<body>\n${m.toHtmlBody}\n</body>\n</html>\n"
+
+    def toHtml: String = toHtml()
+
+    def toHtml(fallBackTitle: String = defaultTitle, style: String = defaultStyle): String = 
+      s"${preamble(m, fallBackTitle, style)}\n<body>\n${m.toHtmlBody}\n</body>\n</html>\n"
   
 end HtmlGen
