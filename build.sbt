@@ -1,4 +1,4 @@
-lazy val reqTLangVer = "4.3.2"
+lazy val reqTLangVer = "4.4.0"
 lazy val scalaVer    = "3.3.4"  // use LTS only
 lazy val munitVer    = "1.0.3"
 lazy val oslibVer    = "0.11.3"
