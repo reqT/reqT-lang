@@ -84,8 +84,8 @@ object meta:
   lazy val entGroupTypesMap: Map[EntGroup, Set[EntType]] = entTypeGroupMap.toSeq.groupBy(_._2).map((x, xs) => x -> xs.map(_._1).toSet)
 
   lazy val strAttrConcepts = ArraySeq[(String,String)](
-    "Comment" -> "A note with a remark or a discussion on an entity.",
-    "Constraints" -> "Propositions that constrain a solution space or restrict possible attribute values.",
+    "Comment" -> "A note, remark or discussion.",
+    "Constraints" -> "Propositions that constrain a solution space or restrict attribute values.",
     "Deprecated" -> "A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.",
     "Example" -> "A description that illustrates some entity by a typical instance.",
     "Expectation" -> "A required output of a test in order to be counted as passed.",
@@ -97,7 +97,7 @@ object meta:
     "Output" -> "Data produced by an entity, e.g. a function or a test.",
     "Spec" -> "A definition of an entity. Short for specification",
     "Text" -> "An paragraph or general description.", 
-    "Why" -> "A description of intention or rationale of an entity.",
+    "Why" -> "A description of intention or rationale.",
   ).sorted
 
   lazy val intAttrConcepts = ArraySeq[(String,String)](
@@ -410,6 +410,8 @@ object meta:
           |helps you structure requirements into semi-formal 
           |natural-language models using 
           |common requirements engineering concepts.
+          |
+          |
           |""".stripMargin
 
     val helloMarkdown = 
@@ -435,13 +437,13 @@ object meta:
           |""".stripMargin
 
     val metaModelDescription = 
-      s"""|A model is a sequence of elements. 
-          |An element can be a node or a relation. 
-          |A node can be an entity or an attribute. 
-          |An entity has a type and an id. 
-          |An attribute has a type and a value. 
-          |An attribute can be a string attribute or an integer attribute. 
-          |A relation connects an entity to a sub-model via a relation type.
+      s"""|A \\textbf{Model} is a sequence of \\textbf{elements}. 
+          |An element can be a \\textbf{node} or a \\textbf{relation}. 
+          |A node can be an \\textbf{entity} or an \\textbf{attribute}. 
+          |An entity has a \\textit{type} and an \\textit{id}. 
+          |An attribute has a \\texttt{type} and a \\texttt{value}. 
+          |An attribute can be a \\textbf{string attribute} or an \\textbf{integer attribute}. 
+          |A relation connects an entity to a \\textit{sub-model} via a relation type.
           |""".stripMargin
     
     val fileName = "reqT-quickref-GENERATED"
@@ -464,8 +466,8 @@ object meta:
           |
           |\\usepackage{fancyhdr}
           |\\pagestyle{fancy}
-          |\\chead{\\url{https://github.com/reqT/reqT-lang/blob/main/docs/$fileName.tex}}
-          |\\lhead{QuickRef reqT v4}
+          |\\chead{\\url{https://reqT.github.io}}
+          |\\lhead{QuickRef reqT v4.3}
           |\\rhead{Compiled \\today}
           |
           |\\usepackage{hyperref}
@@ -510,7 +512,7 @@ object meta:
 
     val body = 
       s"""|
-          |\\fontsize{9.1}{11}\\selectfont
+          |\\fontsize{9.0}{10.5}\\selectfont
           |
           |\\begin{multicols*}{4}
           |\\raggedright
@@ -525,11 +527,22 @@ object meta:
           |$helloMarkdown
           |\\end{lstlisting}
           |
+          |\\section*{reqT Scala DSL constructors}
+          |${code{"EntType"}}, ${code("StrAttrType")} and ${code("IntAttrType")} enums have apply-methods that construct ${code{"Ent"}}, ${code("StrAttr")} and ${code("IntAttr")} instances respectively. Each instance of ${code{"Ent"}} has lower-case relation constructors (see ${code("enum relType")} on next page):
+          |${codeBlock(helloConstructors)}
+          |
+          |\\section*{reqT Scala case classes}
+          |Each constructor instantiate the metamodel classes using nested Scala case class structures:
+          |${codeBlock(helloClasses)}
+          |
           |\\section*{reqT Metamodel}
           |
           |$metaModelDescription
           |
-          |\\noindent\\hspace*{-2.1em}\\includegraphics[width=8.2cm]{metamodel-Elem-GENERATED.pdf}
+          |\\section*{reqT Metamodel class diagram}
+          |Leafs are implemented as Scala \\textbf{case classes}. \\\\Fields \\texttt{t} are Scala \\textbf{enum} types.
+          |
+          |\\noindent\\hspace*{-3.1em}\\vspace{-3em}\\includegraphics[width=8.2cm,trim={0 0 0 3em},clip]{metamodel-Elem-GENERATED.pdf}
           |
           |\\section*{\\texttt{EntType}.values}
           |${
@@ -541,33 +554,7 @@ object meta:
             subsections.mkString("\n")
           }
           |
-          |\\section*{reqT Scala DSL constructors}
-          |${code{"EntType"}}, ${code("StrAttrType")} and ${code("IntAttrType")} enums have apply-methods that construct ${code{"Ent"}}, ${code("StrAttr")} and ${code("IntAttr")} instances respectively. Each instance of ${code{"Ent"}} has lower-case relation constructors (see ${code("enum relType")} on next page):
-          |${codeBlock(helloConstructors)}
-          |
-          |\\section*{reqT Scala case classes}
-          |Each constructor instantiate the metamodel classes using nested Scala case class structures:
-          |${codeBlock(helloClasses)}
-          |\\end{multicols*}
-          |%\\raggedcolumns
-          |\\begin{multicols*}{4}
-          |\\raggedright
-          |
           |%\\vfill\\null\\columnbreak
-          |
-          |\\section*{\\texttt{StrAttrType.values}}
-          |${
-            val xs = for (s, c) <- strAttrConcepts yield
-              conceptDef(s, conceptMap(s).descr)
-            xs.mkString("\n")
-          }
-          |%\\vfill\\null\\columnbreak
-          |\\section*{\\texttt{IntAttrType.values}}
-          |${
-            val xs = for (s, c) <- intAttrConcepts yield
-              conceptDef(s, conceptMap(s).descr)
-            xs.mkString("\n")
-          } 
           |
           |\\section*{\\texttt{RelType.values}}
           |
@@ -579,7 +566,42 @@ object meta:
               head + xs.mkString("\n", "\n", "\n")
             subsections.mkString("\n")
           }
+          |
+          |\\vfill\\null\\columnbreak
+          |\\section*{\\texttt{StrAttrType.values}}
+          |${
+            val xs = for (s, c) <- strAttrConcepts yield
+              conceptDef(s, conceptMap(s).descr)
+            xs.mkString("\n")
+          }
+          |
+          |\\section*{\\texttt{IntAttrType.values}}
+          |${
+            val xs = for (s, c) <- intAttrConcepts yield
+              conceptDef(s, conceptMap(s).descr)
+            xs.mkString("\n")
+          } 
+          |
+          |\\section*{Examples}
+          |
+          |\\subsection*{examples.Lauesen.ContextDiagramSimple}
+          |${codeBlock(examples.Lauesen.ContextDiagramSimple.toMarkdown)}
+          |
+          |\\subsection*{examples.Lauesen.DataRelations}
+          |${codeBlock(examples.Lauesen.DataRelations.toMarkdown)}
+          |
+          |\\subsection*{examples.Prioritization.DollarTest}
+          |${codeBlock(examples.Prioritization.DollarTest.toMarkdown)}
+          |
+          |\\vfill\\null\\columnbreak
+          |\\subsection*{examples.Lauesen.DataEntities}
+          |${codeBlock(examples.Lauesen.DataEntities.elems.collect{case rel@Rel(e,r,m) if e.id.startsWith("R") => rel}.toModel.toMarkdown)}
+          | 
+          |\\subsection*{examples.constraintProblems.\\\\releasePlanSimple}
+          |${codeBlock(examples.constraintProblems.releasePlanSimple.toMarkdown)}
+          | 
           |\\end{multicols*}
+          |
           |""".stripMargin
 
     val toLatex = preamble + body + ending

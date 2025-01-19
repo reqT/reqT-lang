@@ -13,15 +13,16 @@
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\chead{\url{https://github.com/reqT/reqT-lang/blob/main/docs/reqT-quickref-GENERATED.tex}}
-\lhead{QuickRef reqT v4}
+\chead{\url{https://reqT.github.io}}
+\lhead{QuickRef reqT v4.3}
 \rhead{Compiled \today}
 
 \usepackage{hyperref}
 \hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
 \usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
 \definecolor{entityColor}{RGB}{0,100,200}
-\definecolor{attributeColor}{RGB}{0,100,50}
+\definecolor{stringAttributeColor}{RGB}{180,100,40}
+\definecolor{intAttributeColor}{RGB}{0,120,50}
 \definecolor{relationColor}{RGB}{160,0,30}
 
 \usepackage{listings}
@@ -36,8 +37,10 @@
   emphstyle=\bfseries\color{entityColor},
   emph={[2]binds,deprecates,excludes,has,helps,hurts,impacts,implements,interactsWith,is,precedes,relatesTo,requires,verifies,Binds,Deprecates,Excludes,Has,Helps,Hurts,Impacts,Implements,InteractsWith,Is,Precedes,RelatesTo,Requires,Verifies},
   emphstyle={[2]\bfseries\color{relationColor}},
-  emph={[3]Benefit,Capacity,Comment,Constraints,Cost,Damage,Deprecated,Example,Expectation,Failure,Frequency,Gist,Input,Location,Max,Min,Order,Output,Prio,Probability,Profit,Spec,Text,Title,Value,Why},
-  emphstyle={[3]\bfseries\color{attributeColor}},  
+  emph={[3]Comment,Constraints,Deprecated,Example,Expectation,Failure,Gist,Input,Location,Output,Spec,Text,Title,Why},
+  emphstyle={[3]\bfseries\color{stringAttributeColor}},  
+  emph={[4]Benefit,Capacity,Cost,Damage,Frequency,Max,Min,Order,Prio,Probability,Profit,Value},
+  emphstyle={[4]\bfseries\color{intAttributeColor}},  
 }
 
 \lstset{style=reqT}
@@ -67,7 +70,7 @@
 
 \begin{document}
 
-\fontsize{9.1}{11}\selectfont
+\fontsize{9.0}{10.5}\selectfont
 
 \begin{multicols*}{4}
 \raggedright
@@ -77,6 +80,8 @@ The reqT requirements modelling language
 helps you structure requirements into semi-formal 
 natural-language models using 
 common requirements engineering concepts.
+
+
 
 
 \section*{reqT Markdown syntax}
@@ -89,18 +94,45 @@ A reqT model in markdown syntax starts with \lstinline+*+ followed by an element
 
 \end{lstlisting}
 
+\section*{reqT Scala DSL constructors}
+\lstinline+EntType+, \lstinline+StrAttrType+ and \lstinline+IntAttrType+ enums have apply-methods that construct \lstinline+Ent+, \lstinline+StrAttr+ and \lstinline+IntAttr+ instances respectively. Each instance of \lstinline+Ent+ has lower-case relation constructors (see \lstinline+enum relType+ on next page):
+\begin{lstlisting}
+Model(
+  Feature("helloWorld").has(
+    Spec("Show informal greeting."),
+    Prio(1)))
+
+\end{lstlisting}
+
+
+\section*{reqT Scala case classes}
+Each constructor instantiate the metamodel classes using nested Scala case class structures:
+\begin{lstlisting}
+Model(
+  Rel(Ent(Feature,"helloWorld"),
+    Has, Model(
+      StrAttr(Spec,
+        "Show informal greeting."),
+      IntAttr(Prio,1))))
+
+\end{lstlisting}
+
+
 \section*{reqT Metamodel}
 
-A model is a sequence of elements. 
-An element can be a node or a relation. 
-A node can be an entity or an attribute. 
-An entity has a type and an id. 
-An attribute has a type and a value. 
-An attribute can be a string attribute or an integer attribute. 
-A relation connects an entity to a sub-model via a relation type.
+A \textbf{Model} is a sequence of \textbf{elements}. 
+An element can be a \textbf{node} or a \textbf{relation}. 
+A node can be an \textbf{entity} or an \textbf{attribute}. 
+An entity has a \textit{type} and an \textit{id}. 
+An attribute has a \texttt{type} and a \texttt{value}. 
+An attribute can be a \textbf{string attribute} or an \textbf{integer attribute}. 
+A relation connects an entity to a \textit{sub-model} via a relation type.
 
 
-\noindent\hspace*{-2.1em}\includegraphics[width=8.2cm]{metamodel-Elem-GENERATED.pdf}
+\section*{reqT Metamodel class diagram}
+Leafs are implemented as Scala \textbf{case classes}. \\Fields \texttt{t} are Scala \textbf{enum} types.
+
+\noindent\hspace*{-3.1em}\vspace{-3em}\includegraphics[width=8.2cm,trim={0 0 0 3em},clip]{metamodel-Elem-GENERATED.pdf}
 
 \section*{\texttt{EntType}.values}
 \subsection*{\underline{\texttt{\textit{{\textcolor{gray}{EntGroup.}\textcolor{black}{GeneralEnt}}\textcolor{gray}{.types}}}}}
@@ -216,91 +248,7 @@ A relation connects an entity to a sub-model via a relation type.
 
 
 
-\section*{reqT Scala DSL constructors}
-\lstinline+EntType+, \lstinline+StrAttrType+ and \lstinline+IntAttrType+ enums have apply-methods that construct \lstinline+Ent+, \lstinline+StrAttr+ and \lstinline+IntAttr+ instances respectively. Each instance of \lstinline+Ent+ has lower-case relation constructors (see \lstinline+enum relType+ on next page):
-\begin{lstlisting}
-Model(
-  Feature("helloWorld").has(
-    Spec("Show informal greeting."),
-    Prio(1)))
-
-\end{lstlisting}
-
-
-\section*{reqT Scala case classes}
-Each constructor instantiate the metamodel classes using nested Scala case class structures:
-\begin{lstlisting}
-Model(
-  Rel(Ent(Feature,"helloWorld"),
-    Has, Model(
-      StrAttr(Spec,
-        "Show informal greeting."),
-      IntAttr(Prio,1))))
-
-\end{lstlisting}
-
-\end{multicols*}
-%\raggedcolumns
-\begin{multicols*}{4}
-\raggedright
-
 %\vfill\null\columnbreak
-
-\section*{\texttt{StrAttrType.values}}
-\Concept{Comment}{A note with a remark or a discussion on an entity.}
-
-\Concept{Constraints}{Propositions that constrain a solution space or restrict possible attribute values.}
-
-\Concept{Deprecated}{A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.}
-
-\Concept{Example}{A description that illustrates some entity by a typical instance.}
-
-\Concept{Expectation}{A required output of a test in order to be counted as passed.}
-
-\Concept{Failure}{A description of a runtime error that prevents the normal execution of a system.}
-
-\Concept{Gist}{A short and simple description. A summary capturing the essence of an entity.}
-
-\Concept{Input}{Data consumed by an entity, }
-
-\Concept{Location}{A location of a resource such as a web address or a path to a file of persistent data.}
-
-\Concept{Output}{Data produced by an entity, e.g. a function or a test.}
-
-\Concept{Spec}{A definition of an entity. Short for specification}
-
-\Concept{Text}{An paragraph or general description.}
-
-\Concept{Title}{A general or descriptive heading.}
-
-\Concept{Why}{A description of intention or rationale of an entity.}
-
-%\vfill\null\columnbreak
-\section*{\texttt{IntAttrType.values}}
-\Concept{Benefit}{A characterization of a good or helpful result or effect (e.g. of a feature).}
-
-\Concept{Capacity}{An amount that can be held or contained (e.g. by a resource).}
-
-\Concept{Cost}{An expenditure of something, such as time or effort, necessary if implementing an entity.}
-
-\Concept{Damage}{A characterization of the negative consequences if some entity (e.g. a risk) occurs.}
-
-\Concept{Frequency}{A number of occurrences per time unit. }
-
-\Concept{Max}{A maximum estimated or assigned value.}
-
-\Concept{Min}{A minimum estimated or assigned value.}
-
-\Concept{Order}{An ordinal number (1st, 2nd, ...).}
-
-\Concept{Prio}{A level of importance of an entity. Short for priority.}
-
-\Concept{Probability}{A likelihood expressed as whole percentages that something (e.g. a risk) occurs.}
-
-\Concept{Profit}{A gain or return of some entity, e.g. in monetary terms.}
-
-\Concept{Value}{Some general integer value.}
- 
 
 \section*{\texttt{RelType.values}}
 
@@ -344,6 +292,175 @@ Model(
 \Concept{Binds}{Ties a value to an option. A configuration binds a variation point.}
 
 
+
+\vfill\null\columnbreak
+\section*{\texttt{StrAttrType.values}}
+\Concept{Comment}{A note, remark or discussion.}
+
+\Concept{Constraints}{Propositions that constrain a solution space or restrict attribute values.}
+
+\Concept{Deprecated}{A description of why an entity should be avoided, often because it is superseded by another entity, as indicated by a 'deprecates' relation.}
+
+\Concept{Example}{A description that illustrates some entity by a typical instance.}
+
+\Concept{Expectation}{A required output of a test in order to be counted as passed.}
+
+\Concept{Failure}{A description of a runtime error that prevents the normal execution of a system.}
+
+\Concept{Gist}{A short and simple description. A summary capturing the essence of an entity.}
+
+\Concept{Input}{Data consumed by an entity, }
+
+\Concept{Location}{A location of a resource such as a web address or a path to a file of persistent data.}
+
+\Concept{Output}{Data produced by an entity, e.g. a function or a test.}
+
+\Concept{Spec}{A definition of an entity. Short for specification}
+
+\Concept{Text}{An paragraph or general description.}
+
+\Concept{Title}{A general or descriptive heading.}
+
+\Concept{Why}{A description of intention or rationale.}
+
+
+\section*{\texttt{IntAttrType.values}}
+\Concept{Benefit}{A characterization of a good or helpful result or effect (e.g. of a feature).}
+
+\Concept{Capacity}{An amount that can be held or contained (e.g. by a resource).}
+
+\Concept{Cost}{An expenditure of something, such as time or effort, necessary if implementing an entity.}
+
+\Concept{Damage}{A characterization of the negative consequences if some entity (e.g. a risk) occurs.}
+
+\Concept{Frequency}{A number of occurrences per time unit. }
+
+\Concept{Max}{A maximum estimated or assigned value.}
+
+\Concept{Min}{A minimum estimated or assigned value.}
+
+\Concept{Order}{An ordinal number (1st, 2nd, ...).}
+
+\Concept{Prio}{A level of importance of an entity. Short for priority.}
+
+\Concept{Probability}{A likelihood expressed as whole percentages that something (e.g. a risk) occurs.}
+
+\Concept{Profit}{A gain or return of some entity, e.g. in monetary terms.}
+
+\Concept{Value}{Some general integer value.}
+ 
+
+\section*{Examples}
+
+\subsection*{examples.Lauesen.ContextDiagramSimple}
+\begin{lstlisting}
+* Section: context has
+  * Product: hotelApp interactsWith
+    * User: receptionist
+    * User: guest
+    * System: accounting
+    * System: telephony
+
+\end{lstlisting}
+
+
+\subsection*{examples.Lauesen.DataRelations}
+\begin{lstlisting}
+* Class: Guest relatesTo
+  * Class: Stay
+  * Min: 1
+* Class: Stay relatesTo
+  * Class: RoomState
+  * Class: RoomService
+  * Min: 1
+* Class: RoomServiceType relatesTo
+  * Class: RoomService
+  * Min: 1
+* Class: Room relatesTo
+  * Class: RoomState
+  * Min: 1
+
+\end{lstlisting}
+
+
+\subsection*{examples.Prioritization.DollarTest}
+\begin{lstlisting}
+* Stakeholder: a has
+  * Prio: 2
+  * Req: r1 has Benefit: 5
+  * Req: r2 has Benefit: 300
+  * Req: r3 has Benefit: 8
+  * Req: r4 has Benefit: 9
+  * Req: r5 has Benefit: 100
+  * Req: r6 has Benefit: 10
+  * Req: r7 has Benefit: 20
+* Stakeholder: b has
+  * Prio: 4
+  * Req: r1 has Benefit: 100
+  * Req: r2 has Benefit: 7
+  * Req: r3 has Benefit: 20
+  * Req: r4 has Benefit: 80
+  * Req: r5 has Benefit: 10
+  * Req: r6 has Benefit: 90
+  * Req: r7 has Benefit: 20
+
+\end{lstlisting}
+
+
+\vfill\null\columnbreak
+\subsection*{examples.Lauesen.DataEntities}
+\begin{lstlisting}
+* Class: RoomServiceType has
+  * Field: name
+  * Field: price
+* Class: RoomService has
+  * Field: serviceDate
+  * Field: serviceCount
+* Class: Room has
+  * Field: roomId
+  * Field: bedCount
+  * Field: roomType
+  * Field: price1
+  * Field: price2
+* Class: RoomState has
+  * Field: date
+  * Field: personCount
+  * Field: state
+
+\end{lstlisting}
+
+ 
+\subsection*{examples.constraintProblems.\\releasePlanSimple}
+\begin{lstlisting}
+* Stakeholder: X has
+  * Prio: 1
+  * Feature: 1 has Benefit: 4
+  * Feature: 2 has Benefit: 2
+  * Feature: 3 has Benefit: 1
+* Stakeholder: Y has
+  * Prio: 2
+  * Feature: 1 has Benefit: 2
+  * Feature: 2 has Benefit: 1
+  * Feature: 3 has Benefit: 1
+* Release: A precedes Release: B
+* Resource: dev has
+  * Feature: 1 has Cost: 10
+  * Feature: 2 has Cost: 70
+  * Feature: 3 has Cost: 40
+  * Release: A has Capacity: 100
+  * Release: B has Capacity: 100
+* Resource: test has
+  * Feature: 1 has Cost: 40
+  * Feature: 2 has Cost: 10
+  * Feature: 3 has Cost: 70
+  * Release: A has Capacity: 100
+  * Release: B has Capacity: 100
+* Feature: 3 precedes Feature: 1
+
+\end{lstlisting}
+
+ 
 \end{multicols*}
+
 
 \end{document}

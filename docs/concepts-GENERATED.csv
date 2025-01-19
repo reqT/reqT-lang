@@ -6,10 +6,10 @@ Benefit	Attr	IntAttr	A characterization of a good or helpful result or effect (e
 Breakpoint	EntType	QualityEnt	A point of change, representing an important shift in the relation between quality and benefit.
 Capacity	Attr	IntAttr	An amount that can be held or contained (e.g. by a resource).
 Class	EntType	DataEnt	An extensible template for creating objects. A set of objects with certain attributes in common. A category.
-Comment	Attr	StrAttr	A note with a remark or a discussion on an entity.
+Comment	Attr	StrAttr	A note, remark or discussion.
 Component	EntType	DesignEnt	A composable part of a system architecture. A reusable, interchangeable system unit or functionality.
 Configuration	EntType	VariabilityEnt	A specific combination of variants.
-Constraints	Attr	StrAttr	Propositions that constrain a solution space or restrict possible attribute values.
+Constraints	Attr	StrAttr	Propositions that constrain a solution space or restrict attribute values.
 Cost	Attr	IntAttr	An expenditure of something, such as time or effort, necessary if implementing an entity.
 Damage	Attr	IntAttr	A characterization of the negative consequences if some entity (e.g. a risk) occurs.
 Data	EntType	DataEnt	A data entity, type, class, or record stored or processed by a system.
@@ -73,7 +73,7 @@ User	EntType	ContextEnt	A human interacting with a system.
 Value	Attr	IntAttr	Some general integer value.
 Variant	EntType	VariabilityEnt	An object or system property that can be chosen from a set of options.
 VariationPoint	EntType	VariabilityEnt	An opportunity of choice among variants.
-Why	Attr	StrAttr	A description of intention or rationale of an entity.
+Why	Attr	StrAttr	A description of intention or rationale.
 WorkPackage	EntType	GeneralEnt	A coherent collection of (development) activities.
 binds	RelType	VariabilityRel	Ties a value to an option. A configuration binds a variation point.
 deprecates	RelType	GeneralRel	Makes outdated. An entity deprecates (supersedes) another entity.

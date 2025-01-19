@@ -16,7 +16,7 @@ val menu: Map[String, Model] = Map(
   "Prioritization: 100$ test" -> Prioritization.DollarTest,
   "Release Plan, simple" -> constraintProblems.releasePlanSimple,
   "QUPER Model: StartupQuality" -> QualityModel.StartupQuality,
-  "Variability Model: Color" -> VariabilityModel.AppearanceVariation,
+  "Variability Model: Color" -> VariabilityModel.Appearance,
 )
 
 object constraintProblems:
@@ -82,7 +82,6 @@ object Lauesen:
   )
 
   val ContextDiagramSimple = Model(
-    Title("Context Diagram, simple"),
     Section("context").has(
       Product("hotelApp").interactsWith(
         User("receptionist"),
@@ -123,7 +122,6 @@ object Lauesen:
   )
 
   val DataRelations = Model(
-      Title("Data Relations"),
       Class("Guest").relatesTo(
         Class("Stay"),
         Min(1),
@@ -180,9 +178,8 @@ object Lauesen:
   )
 
   val StateMachine = Model(
-    Title("State Machine"),
+    Title("Room State Model"),
     Section("roomState").has(
-      Title("Room State Model"),
       State("free").has(
         Event("book").precedes(
           State("booked"),
@@ -254,7 +251,7 @@ object Lauesen:
     Feature("deepTopStuff") has (Feature("Gurka") has Spec("hejsan")),
     Section("context") has (
       Text("This section describes the context of the system."),
-      Image("context-diagram.svg"),
+      Image("ctxImg") has Location("context-diagram.png"),
       Product("hotelApp") implements (
         Interface("receptionUI") has User("receptionist"),
         Interface("guestUI") has User("guest"),
@@ -354,7 +351,7 @@ object QualityModel:
   )
 
 object VariabilityModel:
-  val AppearanceVariation = Model(
+  val Appearance = Model(
   Component("appearance") has (
     VariationPoint("color") has (
       Min(0), Max(2),
