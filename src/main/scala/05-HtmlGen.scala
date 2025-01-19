@@ -65,27 +65,50 @@ object HtmlGen:
   def elemListItem(level: Int, cls: String = "")(et: ElemType)(after: String = ""): String = 
     ("  " * level) + s"""<li><span class="$cls"> $et</span>: $after </li>""" 
 
-  def renderHtmlBody(m: Model, level: Int): String = 
+  def renderHtmlBody(m: Model, level: Int, insertImagesWithLocation: Boolean, parent: Option[Ent]): String = 
     val ind = ("  " * level)
     val lines: Vector[String] = m.elems.map: 
       case Ent(t, id)        => elemListItem(level, "entityColor"   )(t)(id) 
-      case StrAttr(t, value) => elemListItem(level, "attributeColor")(t)(value)
+
+      case StrAttr(t, value) => 
+        val imgTag: String = 
+          parent.map: p => 
+            if p.t == Image && t == Location then 
+              "\n" + ("  " * level) + s"""<img src="$value" alt="${p.t}: ${p.id} has $t: $value" class="imageLocation">"""
+            else ""
+          .getOrElse("")
+
+        if imgTag.nonEmpty then imgTag
+        else elemListItem(level, "attributeColor")(t)(value) 
+      
       case IntAttr(t, value) => elemListItem(level, "attributeColor")(t)(value.toString)
+      
       case Undefined(t)      => elemListItem(level, "attributeColor")(t)("???")
+      
       case Rel(e, t, sub)    => 
-          s"""$ind<li><span class="entityColor"> ${e.t}</span>: ${e.id}""" 
-          + s"""<span class="relationColor"> ${t.show}</span></li>\n"""
-          + (if sub.elems.nonEmpty then renderHtmlBody(sub, level + 1) else "")
+        s"""$ind<li><span class="entityColor"> ${e.t}</span>: ${e.id}""" 
+        + s"""<span class="relationColor"> ${t.show}</span></li>\n"""
+        + (if sub.elems.nonEmpty then renderHtmlBody(sub, level + 1, insertImagesWithLocation, Some(e)) else "")
+    
     lines.mkString(s"$ind<ul>\n","\n",s"\n$ind</ul>")
+  end renderHtmlBody
 
   extension (m: Model) 
-    def toHtmlBody: String = 
-      if m.elems.isEmpty then "<ul><li>Empty Model</li></ul>"
-      else renderHtmlBody(m, 0)
-
     def toHtml: String = toHtml()
+    def toHtmlBody: String = toHtmlBody()
 
-    def toHtml(fallBackTitle: String = defaultTitle, style: String = defaultStyle): String = 
+    def toHtmlBody(
+      insertImagesWithLocation: Boolean = true,
+    ): String = 
+      if m.elems.isEmpty then "<ul><li>Empty Model</li></ul>"
+      else renderHtmlBody(m, 0, insertImagesWithLocation, parent = None)
+
+
+    def toHtml(
+      insertImagesWithLocation: Boolean = true, 
+      fallBackTitle: String = defaultTitle, 
+      style: String = defaultStyle,
+    ): String = 
       s"${preamble(m, fallBackTitle, style)}\n<body>\n${m.toHtmlBody}\n</body>\n</html>\n"
   
 end HtmlGen
