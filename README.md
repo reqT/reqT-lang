@@ -3,7 +3,7 @@
 # reqT-lang
 
 Docs at [reqt.github.io](https://reqt.github.io/)
-* reqT-lang is a scalable modelling language based on [essential requirements engineering concepts](https://github.com/reqT/reqT-lang/releases/download/v4.3.1/reqT-quickref-GENERATED.pdf). 
+* reqT-lang is a scalable modelling language based on [essential requirements engineering concepts](https://github.com/reqT/reqT-lang/releases/latest/download/reqT-quickref-GENERATED.pdf). 
 * reqT-lang gives structure to natural language requirements, enabling analysis and visualization.
 * reqT-lang is used by the reqT desktop tool [reqT](https://github.com/reqT).
 * The reqT-lang parser produces an immutable tree-like data structure called `Model` expressed in a Scala-embedded DSL, enabling analysis and transform of models using the powerful of Scala language and ecosystem. 
@@ -11,7 +11,7 @@ Docs at [reqt.github.io](https://reqt.github.io/)
 
 Visit:
 * [reqT homepage](https://reqt.github.io/) with instructions on [how to get started](https://reqt.github.io/#getting-started-with-reqt)
-* The [reqT Quickref](https://github.com/reqT/reqT-lang/releases/download/v4.3.1/reqT-quickref-GENERATED.pdf)
+* The [reqT Quickref]((https://github.com/reqT/reqT-lang/releases/latest/download/reqT-quickref-GENERATED.pdf)
 * All [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv) in tabular format. 
 * [reqT language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) 
 
