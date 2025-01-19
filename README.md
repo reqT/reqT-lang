@@ -2,78 +2,18 @@
 
 # reqT-lang
 
-* reqT-lang is a software requirements modelling language based on common requirements engineering concepts. 
-
-* reqT-lang provides structure to natural language requirements, enabling analysis, graph generation and scripting.
-
+Docs at [reqt.github.io](https://reqt.github.io/)
+* reqT-lang is a scalable modelling language based on [essential requirements engineering concepts](https://github.com/reqT/reqT-lang/releases/download/v4.3.1/reqT-quickref-GENERATED.pdf). 
+* reqT-lang gives structure to natural language requirements, enabling analysis and visualization.
 * reqT-lang is used by the reqT desktop tool [reqT](https://github.com/reqT).
-
 * The reqT-lang parser produces an immutable tree-like data structure called `Model` expressed in a Scala-embedded DSL, enabling analysis and transform of models using the powerful of Scala language and ecosystem. 
-
 * reqT-lang is written in Scala and cross-compiled to the JVM, Javascript (TODO) and Native (Linux, TODO) runtimes.
 
-* Documentation:
-  * The [reqT Quickref](https://github.com/reqT/reqT-lang/releases/download/v4.3.1/reqT-quickref-GENERATED.pdf)
-  * All [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv) in tabular format. 
-  * [reqT language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) 
-
-## How to use reqT-lang as a library
-
-You can manage your requirements with the reqT-lang library, the Scala compiler and your favorite editor, e.g. in VS Code with the Scala Metals extension.
-
-### Use reqT-lang with scala
-
-* Install scala from https://www.scala-lang.org/
-
-* Create a file `hello-reqt.scala` with this code:
-```scala
-//> using scala 3.6.2
-//> using dep "reqt-lang:reqt-lang:4.2.0,url=https://github.com/reqT/reqT-lang/releases/download/4.2.0/reqt-lang_3-4.2.0.jar"
-
-import reqt.*
-
-extension (m: Model) // build your own extensions on Model objects
-  def trim =
-    val empty = Text("")
-    val elems: Vector[Elem] = 
-      m.elems
-        .reverse.dropWhile(_ == empty)
-        .reverse.dropWhile(_ == empty)
-    Model(elems)
-
-@main def hello = 
-  println("hello reqt")
-  val m: Model = m"""
-    * Feature hello has
-      * Spec an informal greeting
-  """.trim
-  println(s"\nm.toString:\n$m")
-  println(s"\nm.show:\n${m.show}")
-  println(s"\nm.toMarkdown:\n${m.toMarkdown}")
-
-```
-
-* run with `scala run hello-reqt.scala` and you should get this output:
-```
-hello reqt
-
-m.toString:
-Model(Rel(Ent(Feature,hello),Has,Model(StrAttr(Spec,an informal greeting))))
-
-m.show:
-Model(
-  Feature("hello").has(
-    Spec("an informal greeting"),
-  ),
-)
-
-m.toMarkdown:
-* Feature hello has Spec an informal greeting
-
-```
-
-### Use reqT-lang with sbt
-
+Visit:
+* [reqT homepage](https://reqt.github.io/) with instructions on [how to get started](https://reqt.github.io/#getting-started-with-reqt)
+* The [reqT Quickref](https://github.com/reqT/reqT-lang/releases/download/v4.3.1/reqT-quickref-GENERATED.pdf)
+* All [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv) in tabular format. 
+* [reqT language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) 
 
 ## How to build the reqT-lang library
 
@@ -86,7 +26,6 @@ m.toMarkdown:
   * `test`    run all tests
   * `package` build a jar in target/scala-x.y.z
   * `build`   clean + all of the above
-
 
 ## How to publish
 
