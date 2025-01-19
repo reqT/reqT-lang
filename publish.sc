@@ -26,7 +26,7 @@ println(s"""val scalaVer    = "$scalaVer"""")
 println(s"""\n*** Step 1: sbt "clean; package" """)
 
 if yes("Do you want a clean build (Y/n)? ") then
-  os.proc("sbt", "clean;package").call(cwd = wd, stdout = os.Inherit)
+  os.proc("sbt", "build").call(cwd = wd, stdout = os.Inherit)
 
 val jar = s"$wd/target/scala-$scalaVer/reqt-lang_3-$reqTLangVer.jar"
 

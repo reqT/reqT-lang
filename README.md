@@ -33,10 +33,14 @@ For maintainers of https://github.com/reqT/reqT-lang
 
 * Bump version in `build.sbt` and reload build
 
-* Run `sbt package`
+* Run `sbt build`
 
 * Create a release on https://github.com/reqT/reqT-lang
 
 * Upload the jar in target/scala-x.y.z named something similar to reqT-lang_3-VERSION.jar
+
+* Upload target/metamodel-*
+
+* Upload target/reqT-quickref-GENERATED.pdf
 
 The above is automated by `scala run publish.sh`
