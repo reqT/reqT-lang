@@ -11,7 +11,7 @@ Docs at [reqt.github.io](https://reqt.github.io/)
 
 Visit:
 * [reqT homepage](https://reqt.github.io/) with instructions on [how to get started](https://reqt.github.io/#getting-started-with-reqt)
-* The [reqT Quickref]((https://github.com/reqT/reqT-lang/releases/latest/download/reqT-quickref-GENERATED.pdf)
+* The [reqT Quickref](https://github.com/reqT/reqT-lang/releases/latest/download/reqT-quickref-GENERATED.pdf)
 * All [reqT meta-concepts](https://github.com/reqT/reqT-lang/blob/main/docs/concepts-GENERATED.csv) in tabular format. 
 * [reqT language specification](https://github.com/reqT/reqT-lang/blob/main/docs/langSpec-GENERATED.md) 
 
