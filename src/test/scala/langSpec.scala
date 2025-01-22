@@ -39,7 +39,9 @@ In markdown view the above is rendered like so:
   * UseCase: zzz has
     * Prio: 23
 
-## Lexical Tokens
+## Model Syntax
+
+### Lexical Tokens
 
 `reqt` is case sensitive, has significant indentation, and use UTF-8 encoding. 
 The input is split into lines based on the newline character (Unicode `U+000A`). 
@@ -52,20 +54,6 @@ Each line is split into a sequence of the following tokens types:
   - Each tab is converted to 2 space characters.
   - The indent level `n` is defined as the number of spaces at the beginning of the line.
 * An `Outdent(n)` is inserted before an `Indent(n)` if `n < p` where `p` is the level of the previous `Indent(p)`.
-
-
-## Model Syntax
-
-### Lexical Syntax
-
-The source code of a Model consists of Unicode text. 
-
-### Preprocessing
-
-The source code is pre-processed as follows: 
-* The source code is split into a sequence of lines. 
-* Each line with index i is given an integer value `leading(i)` corresponding to the number of leading whitespace characters. 
-* The lexical analyzer inserts Indent(n) and Outdent(n) tokens that represent regions of indented code based on leading(i), where n denotes indent level.
 
 ### Grammar
 
