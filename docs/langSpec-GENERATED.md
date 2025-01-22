@@ -59,8 +59,7 @@ The source code of a Model consists of Unicode text.
 ### Preprocessing
 
 The source code is pre-processed as follows: 
-* The source code is split by '
-' into a sequence of lines. 
+* The source code is split into a sequence of lines. 
 * Each line with index i is given an integer value `leading(i)` corresponding to the number of leading whitespace characters. 
 * The lexical analyzer inserts Indent(n) and Outdent(n) tokens that represent regions of indented code based on leading(i), where n denotes indent level.
 
