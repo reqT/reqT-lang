@@ -52,11 +52,11 @@ Each line is split into a sequence of the following tokens types:
 
 ## Model Syntax
 
-# Lexical Syntax
+### Lexical Syntax
 
 The source code of a Model consists of Unicode text. 
 
-## Preprocessing
+### Preprocessing
 
 The source code is pre-processed as follows: 
 * The source code is split by '
@@ -64,7 +64,7 @@ The source code is pre-processed as follows:
 * Each line with index i is given an integer value `leading(i)` corresponding to the number of leading whitespace characters. 
 * The lexical analyzer inserts Indent(n) and Outdent(n) tokens that represent regions of indented code based on leading(i), where n denotes indent level.
 
-## Grammar
+### Grammar
 
 A legal `reqt` model abides the following grammar, where `|` denotes alternative and `*` denotes zero or more: 
 ```
@@ -114,7 +114,7 @@ RelType ::= 'Binds' | 'Deprecates' | 'Excludes' | 'Has' | 'Helps' | 'Hurts' | 'I
 'InteractsWith' | 'Is' | 'Precedes' | 'RelatesTo' | 'Requires' | 'Verifies'
 ```
 
-## Special Parsing Rules
+### Special Parsing Rules
 
 The following rules provides exceptions to the above grammar: 
 
