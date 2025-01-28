@@ -65,10 +65,19 @@ object HtmlGen:
   def elemListItem(level: Int, cls: String = "")(et: ElemType)(after: String = ""): String = 
     ("  " * level) + s"""<li><span class="$cls"> $et</span>: $after </li>""" 
 
-  def renderHtmlBody(m: Model, level: Int, insertImagesWithLocation: Boolean, parent: Option[Ent]): String = 
+  def renderHtmlBody(m: Model, level: Int, parent: Option[Ent],
+    insertImagesWithLocation: Boolean, 
+    renderTopLevelTitleAsHeadings: Boolean, 
+  ): String = 
     val ind = ("  " * level)
     val lines: Vector[String] = m.elems.map: 
       case Ent(t, id)        => elemListItem(level, "entityColor"   )(t)(id) 
+
+      case StrAttr(Title, value) if renderTopLevelTitleAsHeadings && level == 0 && value.trim.startsWith("#") => 
+        val lvl = value.trim.takeWhile(_ == '#').length
+        val head = value.trim.dropWhile(_ == '#')
+        def toId(s: String): String = s.split(" ").map(_.filter(_.isLetterOrDigit)).filter(_.nonEmpty).mkString("-")
+        s"""\n<h$lvl id="${toId(head)}">$head</h$lvl>\n"""
 
       case StrAttr(t, value) => 
         val imgTag: String = 
@@ -88,7 +97,9 @@ object HtmlGen:
       case Rel(e, t, sub)    => 
         s"""$ind<li><span class="entityColor"> ${e.t}</span>: ${e.id}""" 
         + s"""<span class="relationColor"> ${t.show}</span></li>\n"""
-        + (if sub.elems.nonEmpty then renderHtmlBody(sub, level + 1, insertImagesWithLocation, Some(e)) else "")
+        + (if sub.elems.nonEmpty 
+          then renderHtmlBody(sub, level + 1, Some(e), insertImagesWithLocation, renderTopLevelTitleAsHeadings)
+          else "")
     
     lines.mkString(s"$ind<ul>\n","\n",s"\n$ind</ul>")
   end renderHtmlBody
@@ -99,16 +110,23 @@ object HtmlGen:
 
     def toHtmlBody(
       insertImagesWithLocation: Boolean = true,
+      renderTopLevelTitleAsHeadings: Boolean = true,
     ): String = 
       if m.elems.isEmpty then "<ul><li>Empty Model</li></ul>"
-      else renderHtmlBody(m, 0, insertImagesWithLocation, parent = None)
+      else renderHtmlBody(m, 0, parent = None, insertImagesWithLocation, renderTopLevelTitleAsHeadings)
 
 
     def toHtml(
       insertImagesWithLocation: Boolean = true, 
+      renderTopLevelTitleAsHeadings: Boolean = true,
       fallBackTitle: String = defaultTitle, 
       style: String = defaultStyle,
     ): String = 
-      s"${preamble(m, fallBackTitle, style)}\n<body>\n${m.toHtmlBody}\n</body>\n</html>\n"
+      s"""|${preamble(m, fallBackTitle, style)}
+          |<body>
+          |${m.toHtmlBody(insertImagesWithLocation, renderTopLevelTitleAsHeadings)}
+          |</body>
+          |</html>
+          |""".stripMargin
   
 end HtmlGen
