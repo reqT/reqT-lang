@@ -1,6 +1,9 @@
 package reqt
 package examples
 
+import scala.util.Failure
+import scala.util.Success
+
 
 val menu: Map[String, Model] = Map(
   "Goal-Design Scale" -> Lauesen.GoalDesignScale,
@@ -313,16 +316,25 @@ object Prioritization:
         s -> (m/s.has).intAttrs.collect{ case IntAttr(verdict, b) => b}.sum
       .toMap
 
-    val relations: Vector[Rel] = requirements.map: r =>
-      val result: Vector[Double] = voters.map: s =>
-        val weighted = 
-          (m/s.has/voterPrioType).head * (m/s.has/r.has/verdictType).head * 100.0 
-        val tot = benefitSum(s) * prioSum
-        weighted / tot
-      val verdict = math.round(result.sum).toInt
-      r has verdictType(verdict)
-    
-    Model(Section("NormalizedVotes").has(relations*))
+    util.Try:  // unsafe call to head below
+      val relations: Vector[Rel] = requirements.map: r =>
+        val result: Vector[Double] = voters.map: s =>
+          val weighted = 
+            (m/s.has/voterPrioType).head * (m/s.has/r.has/verdictType).head * 100.0 
+          val tot = benefitSum(s) * prioSum
+          weighted / tot
+        val verdict = math.round(result.sum).toInt
+        r has verdictType(verdict)
+      relations
+    match 
+      case Success(relations) => Model(Section("NormalizedVotes").has(relations*))
+      case Failure(exception) => 
+        Model(Section("NormalizedVotes").has(
+          StrAttrType.Failure(
+            s"""|Failed to normalize as model does not conform to this assumed shape: 
+                |__* $voterType: a has 
+                |____* $voterPrioType: 1 
+                |____* $requirementType: x has $verdictType: 1""".stripMargin)))
 
 object QualityModel:
   val StartupQuality = Model(
