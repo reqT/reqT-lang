@@ -383,8 +383,6 @@ object csp:
         val featureOrder: Seq[Constr] = forAll(features) { f => Var(f.has/Order).in(1 to releases.size) }
         val releaseOrder: Seq[Constr] = forAll(releases) { r => Var(r.has/Order).in(1 to releases.size) }
 
-        println(releases)
-
         val weightedBenefit: Seq[Constr] = forAll(stakeholders, features): (s, f) => 
           Var(f.has/s.has/Benefit) ===  (Var(s.has/f.has/Benefit) * Var(s.has/Prio))
         
