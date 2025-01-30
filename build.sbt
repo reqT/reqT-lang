@@ -1,7 +1,8 @@
 lazy val reqTLangVer = "4.5.1"
 lazy val scalaVer    = "3.3.4"  // use LTS only
 lazy val munitVer    = "1.0.3"
-lazy val oslibVer    = "0.11.3"
+lazy val oslibVer    = "0.11.3"  // used as test dep only
+lazy val scalaXmlVer = "2.2.0"   // deprecated; migration needed eventually...
 
 ThisBuild / version      := reqTLangVer
 ThisBuild / scalaVersion := scalaVer  // use LTS only
@@ -13,13 +14,14 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 libraryDependencies += "org.scalameta" %% "munit" % munitVer % Test
 libraryDependencies += "com.lihaoyi" %% "os-lib" % oslibVer % Test
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % scalaXmlVer
 
 lazy val nameOfThisBuild = "reqt-lang"
 
 lazy val `reqt-lang` = (project in file("."))
   .settings(
     name := nameOfThisBuild,
-    scalacOptions := List("-encoding", "utf8", "-Werror", "-deprecation", "-unchecked")
+    scalacOptions := List("-encoding", "utf8", "-Werror", "-deprecation", "-unchecked", "-feature")
   )
 
 lazy val meta = taskKey[Unit]("generate meta model")
