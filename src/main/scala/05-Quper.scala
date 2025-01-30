@@ -5,6 +5,16 @@ import scala.language.implicitConversions  // TODO: remove the need for this
 // TODO: This is copied from old Scala 2 code in reqT v3; it should be migrated and improved
 object quper {
 
+  extension (m: Model) 
+    def toQuperSpec: QuperSpec = 
+      def mapOf(et: EntType): Map[String,Estimate] =
+        m.atoms.collect{ case Rel(e,l,t) if e.t == et && (t/Value).nonEmpty => (e.id,Estimate((t/Value).head)) }.toMap
+      val nonRefs = Set[EntType](Target,Barrier,Breakpoint)
+      val refMap = m.atoms.collect{
+        case Rel(e,l,t) if !nonRefs.contains(e.t) && (t/Value).nonEmpty =>
+          (e.id,Estimate((t/Value).head)) }.toMap
+      QuperSpec(mapOf(Breakpoint), mapOf(Barrier), mapOf(Target), refMap)
+
   trait Estimate {
     def min: Int
     def max: Int
@@ -31,8 +41,7 @@ object quper {
       case _ => TriangleEstimate(min, value, max)
     }
   }
-  implicit def intToEstimate(i: Int): Estimate = Estimate(i)
-
+  implicit def intToEstimate(i: Int): Estimate = Estimate(i)  //TODO: remove this
   
   case class QuperSpec(
       breakpoints: Map[String, Estimate],  
@@ -45,7 +54,7 @@ object quper {
     lazy val minValue = values.map(_.value).min
 
     def toSvgElem(dx: Int, dy: Int): scala.xml.Elem = {
-      val (axisLength, imageHeight) = (600.0, 600)
+      val (axisLength, imageHeight) = (600.0, 800)
       def normalize(value: Int): Double = axisLength*(value-minValue)/(maxValue-minValue)    
       <svg width={s"${axisLength+500}"} height={s"$imageHeight"} font-family="sans-serif">
         { svg.axis("", axisLength, dx, dy) }
@@ -54,9 +63,9 @@ object quper {
         { barriers.map{case (b, e) => 
             svg.barrier(b, e.value, normalize, svg.color("barr"), dx, dy)}}
         { targets.map{case (t, e) => 
-            svg.marker("Target",t, e.value, normalize, -25, svg.color("targ"), dx, dy)}}
+            svg.marker("Target",t, e.value, normalize, -30, svg.color("targ"), dx, dy)}}
         { references.map{case (t, e) => 
-            svg.marker("Ref",t, e.value, normalize, -25, svg.color("refe"), dx, dy)}}
+            svg.marker("Ref",t, e.value, normalize, -20, svg.color("refe"), dx, dy)}}
       </svg>
     }
       
