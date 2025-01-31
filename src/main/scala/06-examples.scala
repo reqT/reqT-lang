@@ -7,7 +7,7 @@ import scala.util.Success
 
 val menu: Map[String, Model] = Map(
   "Context 1: Simple" -> Lauesen.ContextDiagramSimple,
-  "Context 2: Interfaces" -> Lauesen.ContextDiagramInterfaces,
+  "Context 2: Interfaces with Data" -> Lauesen.ContextDiagramInterfaces,
   "Data 1: Classes with Relations" -> Lauesen.DataRelations,
   "Data 2: Classes with Fields" -> Lauesen.DataEntities,
   "Multi-level 1: Goal-Design Scale" -> Lauesen.GoalDesignScale,
@@ -127,7 +127,7 @@ object Lauesen:
     Seq(GoalDesignScale, WhySpecExample, ContextDiagramSimple, ContextDiagramInterfaces, DataRelations, DataEntities, StateMachine, QualityRequirements, ModelWithSections, TaskHotelReceptionWork)
 
   val GoalDesignScale = Model(
-    Title("Goal-Design-scale"),
+    Title("Goal-Domain-Product-Design example"),
     Goal("accuracy").has(
       Spec("Our pre-calculations shall hit within 5%"),
     ),
@@ -163,30 +163,27 @@ object Lauesen:
   )
 
   val ContextDiagramInterfaces = Model(
-    Title("Context Diagram with Interfaces"),
     Product("hotelApp").has(
       Interface("receptionUI").has(
         User("Receptionist"),
+        Data("receptionIO").has(
+          Input("booking"),
+          Input("checkOut"),
+          Output("serviceNote"),
+        )
       ),
       Interface("guestUI").has(
         User("Guest"),
+        Data("guestIO").has(
+          Output("confirmation"),
+          Output("invoice"),
+        )
       ),
       Interface("phoneAPI").has(
         System("Telephony"),
       ),
       Interface("accountAPI").has(
         System("Accounting"),
-      ),
-    ),
-    Data("InterfaceIO").has(
-      Interface("receptionUI").has(
-        Input("booking"),
-        Input("checkOut"),
-        Output("serviceNote"),
-      ),
-      Interface("guestUI").has(
-        Output("confirmation"),
-        Output("invoice"),
       ),
     ),
   )
