@@ -12,7 +12,7 @@ val menu: Map[String, Model] = Map(
   "Data 2: Classes with Fields" -> Lauesen.DataEntities,
   "Multi-level 1: Goal-Design Scale" -> Lauesen.GoalDesignScale,
   "Multi-level 2: Why-Spec-Example" -> Lauesen.WhySpecExample,
-  "Multi-level 2: Model with Sections" -> Lauesen.ModelWithSections,
+  "Multi-level 3: Model with Sections" -> Lauesen.ModelWithSections,
   "Prioritization: 100$ test" -> Prioritization.DollarTest,
   "Quality 1: System Quality Aspects" -> Lauesen.QualityRequirements,
   "Quality 2: Quper Model" -> QualityModel.StartupQuality,
