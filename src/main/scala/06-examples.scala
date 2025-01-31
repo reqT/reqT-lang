@@ -25,34 +25,34 @@ val menu: Map[String, Model] = Map(
 
 object constraintProblems:
   val releasePlanSimple = Model(
-      Stakeholder("X") has (
+      Stakeholder("s1") has (
         Prio(1),
-        Feature("1") has Benefit(4),
-        Feature("2") has Benefit(2),
-        Feature("3") has Benefit(1),
+        Feature("f1") has Benefit(4),
+        Feature("f2") has Benefit(2),
+        Feature("f3") has Benefit(1),
       ),
-      Stakeholder("Y") has (
+      Stakeholder("s2") has (
         Prio(2),
-        Feature("1") has Benefit(2),
-        Feature("2") has Benefit(1),
-        Feature("3") has Benefit(1),
+        Feature("f1") has Benefit(2),
+        Feature("f2") has Benefit(1),
+        Feature("f3") has Benefit(1),
       ),
-      Release("A") precedes Release("B"),
+      Release("r1") precedes Release("r2"),
       Resource("dev") has (
-        Feature("1") has Cost(10),
-        Feature("2") has Cost(70),
-        Feature("3") has Cost(40),
-        Release("A") has Capacity(100),
-        Release("B") has Capacity(100),
+        Feature("f1") has Cost(10),
+        Feature("f2") has Cost(70),
+        Feature("f3") has Cost(40),
+        Release("r1") has Capacity(100),
+        Release("r2") has Capacity(100),
       ),
       Resource("test") has (
-        Feature("1") has Cost(40),
-        Feature("2") has Cost(10),
-        Feature("3") has Cost(70),
-        Release("A") has Capacity(100),
-        Release("B") has Capacity(100),
+        Feature("f1") has Cost(40),
+        Feature("f2") has Cost(10),
+        Feature("f3") has Cost(70),
+        Release("r1") has Capacity(100),
+        Release("r2") has Capacity(100),
       ),
-      Feature("3") precedes Feature("1")
+      Feature("f3") precedes Feature("f1")
     ) 
   
   val releasePlanAdvanced = Model(
@@ -95,7 +95,7 @@ object constraintProblems:
       Release("Later") has Capacity(1000),
     ),
     Release("March") precedes Release("July"),
-    Release("July") precedes Release("Later"),
+    Release("July") precedes Release("ZZZ-Later"),
     Stakeholder("Ada") has (Prio(1),
       Feature("exportHtml") has Benefit(10),
       Feature("exportGraphViz") has Benefit(10),
