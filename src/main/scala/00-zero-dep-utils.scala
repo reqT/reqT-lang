@@ -145,12 +145,12 @@ object StringUtils:
 
   end extension
 end StringUtils
-
+  
 object err:
   class ParseException(msg: String) extends Exception(msg) 
   def unknown(s: String)          = ParseException(s"Unknown constraint: $s")
-  def missingPar(s: String)       = ParseException(s"Missing enclosing () in: $s")
-  def missingEndPar(s: String)    = ParseException(s"Missing matching ) at end: $s")
+  def missingParen(s: String)     = ParseException(s"Missing enclosing () in: $s")
+  def missingEndParen(s: String)  = ParseException(s"Missing matching ) at end: $s")
   def badIdentifier(s: String)    = ParseException(s"Bad identifier: $s")
   def badParamType(s: String)     = ParseException(s"Bad param type: $s")
   def varExpected(s: String)      = ParseException(s"Var expected: $s")
@@ -160,19 +160,22 @@ object err:
   def illegalPath(s: String)      = ParseException(s"Illegal path: $s")
 
 object parseUtils:
+  /** Returns true if non-empty and first chars is valid start of identifier; otherwise false. */
   def isIdStart(s: String): Boolean = s.nonEmpty && s(0).isUnicodeIdentifierStart
-
-  def parseInside(s: String, open: Char = '(', close: Char = ')', esc: Char = '"'): (String, String) = 
-    if !s.trim.startsWith("(") then throw err.missingPar(s)
+  
+  /** Returns a pair of string, first substring of s inside (), second substring of s after ) until end.
+   *  Assumes that s starts with ( and ends with ), if not throws ParseException. */
+  def parseInsideParen(s: String): (String, String) = 
+    if !s.trim.startsWith("(") then throw err.missingParen(s)
     var level = 1
     var i = 1
-    var isInsideEscape = false 
-    while i < s.length && (level >= 1 || isInsideEscape) do 
-      if s(i) == open then level += 1 
-      else if s(i) == close then level -= 1
-      else if s(i) == esc then isInsideEscape = !isInsideEscape
+    var isInsideString = false 
+    while i < s.length && (level >= 1 || isInsideString) do 
+      if s(i) == '(' then level += 1 
+      else if s(i) == ')' then level -= 1
+      else if s(i) == '"' then isInsideString = !isInsideString
       i += 1
-    if s(i - 1) != ')' then throw err.missingEndPar(s)
+    if s(i - 1) != ')' then throw err.missingEndParen(s)
     (s.substring(1,i - 1), s.substring(i))
 
 object PrintUtils:
