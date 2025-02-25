@@ -293,7 +293,7 @@ object csp:
           (fw, rest)
 
       def parseVar(s: String): (Var, String) = 
-        val (inside, rest) = parseInside(s.stripPrefix("Var"))
+        val (inside, rest) = parseInsideParen(s.stripPrefix("Var"))
         val id: (String | Path) = 
           if inside.startsWith("Path") then Path.fromString(inside).getOrElse(throw err.illegalPath(inside))
           else inside
@@ -311,7 +311,7 @@ object csp:
         val fw = s.initLetters
         if isConstrClass(fw) then 
           val rest1 = s.stripPrefix(fw)
-          val (inside, rest2) = parseInside(rest1)
+          val (inside, rest2) = parseInsideParen(rest1)
           if rest2.nonEmpty then throw err.unknownTrailing(rest2) else
             val vs = parseVarList(inside) 
             mk.constr(fw)(vs) 
