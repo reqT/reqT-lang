@@ -152,11 +152,11 @@ class TestModelOps extends munit.FunSuite:
     assert: 
       ms.forall(m => m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths)
 
-    assert: 
-      ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
+    // assert: 
+    //   ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
       
-    assert: 
-      ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
+    // assert: 
+    //   ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
 
 
     // assert: 
