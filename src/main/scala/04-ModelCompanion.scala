@@ -7,42 +7,56 @@ import reqt.PrintUtils.PrettyPrinter
 transparent trait ModelCompanion:
   self: Model.type =>
 
+  /** Create a Model from a sequence of elems */
   def apply(elems: Elem*): Model = Model(elems.toVector)
 
+  /** Return the empty model. */
   val empty: Model = Model()
 
   given PrettyPrinter[Model] with
     extension (m: Model) def pp: Unit = println(m.show)
 
+  /** Generate a random model with `size <= maxSize` and `elems.length == nbrTopLevelElems` */ 
   def random(
-    nbrTopLevelElems: Int, 
-    relationRate: Double = 0.3, 
-    nextLevelReduction: Int = 1, 
-    attrRate: Double = 0.5,  
+    nbrTopLevelElems: Int = 5, 
+    relationProb: Double = 0.25, 
+    attrProb: Double = 0.25,
+    maxSize: Int = 10000,
   ): Model =
-    //TODO: also draw elem types randomly
-    require(nbrTopLevelElems >= 0, "nbrTopLevelElems must be >= 0")
-    require(attrRate >= 0.0 && attrRate <= 1.0, "attrRate must be in [0.0, 1.0]")
-    require(relationRate >= 0.0 && relationRate <= 1.0, "relationRate must be in [0.0, 1.0]")
-    require(nextLevelReduction > 0, "nextLevelReduction must be > 0")    
-    import scala.util.Random.{nextDouble as rnd}
-    def loop(n: Int): Model =
-      val elems = Vector.fill(n){
-        if rnd() < attrRate then Prio(1)
-        else if rnd() < relationRate then 
-          val next = n - nextLevelReduction
-          val subModel = 
-            if next < 1 then Model.empty else loop(next)
-          if subModel.elems.isEmpty then Feature("x") else Rel(Feature("x"), Has, subModel)
-        else Feature("x")
-      }
+    require(nbrTopLevelElems > 0, "nbrTopLevelElems must be > 0")
+    require(attrProb + relationProb >= 0.0 && attrProb + relationProb <= 1.0, "attrRate+probRate must be in [0.0, 1.0]")
+
+    import scala.util.Random.{nextDouble, nextInt}
+    extension [T](xs: Array[T]) def pick: T = xs(nextInt(xs.length))
+    val words = Array("do", "re", "mi", "fa", "so", "la", "ti", "do")
+    def rndEnt() = EntType.values.pick.apply(words.pick + (1 to 3).map(i => words.pick.capitalize).mkString)
+
+    var tot = 0
+
+    def loop(nbrElems: Int): Model =
+      val n = 0 max ((maxSize - tot) min nbrElems)
+      tot += n
+      val elems = Vector.fill(n):
+        val rnd = nextDouble
+        if rnd < attrProb then 
+          if nextDouble() < 0.5 
+          then IntAttrType.values.pick.apply(nextInt(200) - 100)
+          else StrAttrType.values.pick.apply((1 to 10).map(i => words.pick).mkString("", " ", ".").capitalize)
+        else if tot + 1 <= maxSize && rnd < relationProb + attrProb then 
+          val subModel = loop(nextInt(1 max ((n - 1) min tot + 1)))
+          Rel(rndEnt(), RelType.values.pick, subModel)
+        else rndEnt()
+      
       Model(elems)
     end loop
     if nbrTopLevelElems > 0 then loop(nbrTopLevelElems) else Model.empty
 
   extension (elems: Seq[Elem]) 
+    /** Create a model from a sequence of elements. */
     def toModel = Model(elems.toVector)
 
+    /** Merge adjacent string attributes of same type `sat` into one single attribute 
+     * of type `sat` with all string values concatenated using `delim` as in-between separator. */
     def concatAdjacent(sat: StrAttrType, delim: String): Vector[Elem] =
       if elems.length < 2 then elems.toVector else
         val result = scala.collection.mutable.Buffer.empty[Elem]
