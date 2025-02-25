@@ -1,6 +1,6 @@
 package reqt
 
-/** Operations of trait `Model` **/
+/** Members of trait `Model` **/
 transparent trait ModelMembers:
   self: Model =>
 
