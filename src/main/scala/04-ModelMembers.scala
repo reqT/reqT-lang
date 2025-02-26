@@ -24,14 +24,14 @@ transparent trait ModelMembers:
   /** A new Model with elem e appended to the elems of this Model. Same as `m.append(e)` */
   def :+(e: Elem): Model = append(e)
 
-  /** A new Model with other Model's elems appended to elems. Same as: `m :++ other` 
-    * NOTE: Different from `m ++ other` */
+  /** A new Model with other Model's elems appended to elems. Same as: `m :++ other` */
   def append(other: Model): Model = Model(elems :++ other.elems)  
 
+  /** A new Model with other Model's elems appended to elems. Same as: `m.append(other)` */
   def :++(other: Model): Model = append(other)
 
-  /** A new model first attribute of same type updated to `a` or appended to elems if not in `elems.tip`. */
-  def updated[T](a: Attr[T]): Model = 
+  /** A new model first attribute at top level of same type updated to `a` or appended to elems. */
+  def updateFirstTop[T](a: Attr[T]): Model = 
     var isReplaced = false
     val es = elems.map: e => 
       e match
@@ -52,12 +52,22 @@ transparent trait ModelMembers:
         case elem => elem 
     Model(if isMerged then es else elems :+ r)
 
-  /** Append an elem if not already exists at top level. Relations are merged using mergeFirst. */
+  /** Append an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m + e` */
   def add(e: Elem): Model = 
     e match
-      case n: Node => if !elems.exists(_ == n) then Model(elems :+ n) else self
-      case r: Rel  => self.mergeFirst(r)
+      case a: Attr[?] => 
+        var isUpdated = false
+        val updatedIfExists = elems.map:
+          case a2: Attr[?] if a.t == a2.t => 
+            isUpdated = true
+            a
+          case other => other
+        if isUpdated then Model(updatedIfExists) else Model(elems :+ a)
 
+      case e: Ent => if !elems.exists(_ == e) then Model(elems :+ e) else self
+      case r: Rel  => self.mergeFirst(r)
+  
+  /** Append an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m.add(e)` */
   def +(e: Elem): Model = add(e)
 
   def addAll(es: Elem*): Model = 
@@ -149,20 +159,20 @@ transparent trait ModelMembers:
   /** A new Model with distinct top-level elems (non-recursive). **/
   def distinctTopElems: Model = Model(elems.distinct) 
 
-  /** A new Model that is distinct by top-level attribute type (non-recursive). **/
+  /** A new Model that is distinct by top-level attribute type (non-recursive). If duplicate AttrType is found on top level then last attribute is kept. **/
   def distinctTopAttrType: Model =
     val foundAttrTypes: collection.mutable.Set[AttrType[?]] = collection.mutable.Set()
-    val es = elems.flatMap:
+    val es = elems.reverse.flatMap:
       case a: Attr[?] => 
         if foundAttrTypes(a.t) then Vector()
         else 
           foundAttrTypes += a.t
           Vector(a)
       case e => Vector(e)
-    Model(es)
+    Model(es.reverse)
 
   /** A new Model that removes top-level Ent that are themselves part of Links. **/
-  def distinctEntLinks: Model =
+  def distinctTopEntLinks: Model =
     val es = elems.flatMap:
       case e: Ent => 
         if elems.exists: 
@@ -173,6 +183,12 @@ transparent trait ModelMembers:
       case e => Seq(e)
     Model(es)
 
+  def distinctEntLinksDeep: Model =
+    val es = distinctTopEntLinks.elems.map:
+      case n: Node => n
+      case Rel(e, r, m) => Rel(e, r, m.distinctTopEntLinks)
+    Model(es)
+
   /** A new Model with recursive de-duplication of its elems on all levels. **/
   def distinctElemsDeep: Model =
     val es = elems.distinct.map:
@@ -180,7 +196,7 @@ transparent trait ModelMembers:
       case Rel(e, r, m) => Rel(e, r, m.distinctElemsDeep)
     Model(es) 
 
-  /** A new Model with recursive de-duplication of its attributes by type on all levels.  **/
+  /** A new Model with recursive de-duplication of its attributes by type on all levels. If duplicate AttrType is found on same level then last attribute is kept.  **/
   def distinctAttrTypeDeep: Model =
     val es = distinctTopAttrType.elems.map:
       case n: Node => n 
@@ -195,10 +211,10 @@ transparent trait ModelMembers:
     Model(es.sorted) // sorted is using Elem.elemOrd implicitly
 
   /** All empty relations at any depth are replaced by its entity. */
-  def removeEmptyRelations: Model =
+  def removeEmptyRelationsDeep: Model =
     Model(elems.map:
       case n: Node => n 
-      case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.removeEmptyRelations) else e
+      case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.removeEmptyRelationsDeep) else e
     )
   
   /** A Map that groups equal links to gether. Keys of type Link point to Vector[Rel]. **/
@@ -219,7 +235,9 @@ transparent trait ModelMembers:
     Model(ess.flatten.toVector)
 
   /** A model with merged relations, no empty relations and no duplicate entities. */
-  def compact = Model().addAll(removeEmptyRelations.distinctElemsDeep.distinctEntLinks)
+  def compact = Model()
+    .addAll(this)
+    .removeEmptyRelationsDeep.distinctElemsDeep.distinctEntLinksDeep.distinctAttrTypeDeep
 
   /** A Model in normal form is `compact` and `sorted` **/
   def normal: Model = compact.sorted
@@ -241,7 +259,7 @@ transparent trait ModelMembers:
   def split: Model = self.paths.toModel
 
   /** A model with distinct elems and each relation joined by addAll. */
-  def join: Model = addAll(self)
+  def join: Model = Model().addAll(this).distinctElemsDeep
 
   /** True if this model is in normal form. */
   def isNormal: Boolean = self == normal
@@ -252,7 +270,7 @@ transparent trait ModelMembers:
   /** A Model with the tip of this Model and the tip of its sub-models. */
   def top: Model = cut(1)
 
-  /** A Model with all its submodels of top level relations. */ 
+  /** A Model with all its top-level submodels. */ 
   def sub: Model =
     elems.collect { case Rel(e, rt, sub) => sub }.foldLeft(Model())(_ :++ _)
   
@@ -309,7 +327,7 @@ transparent trait ModelMembers:
 
   def /[T](p: EntTypePath): Vector[String] =  self / LinkPath(p.links) / p.dest
 
-
+  /** All paths to leaf elems. */
   def paths: Vector[Path] = 
     val pb = collection.mutable.ArrayBuffer.empty[Path]
 
@@ -323,6 +341,7 @@ transparent trait ModelMembers:
     recur(Vector(), self)
     pb.toVector
 
+  /** All attribute paths to attributes of type `at`. */
   def pathsOf[T](at: AttrType[T]): Vector[AttrPath[T]] = 
     val pb = collection.mutable.ArrayBuffer.empty[AttrPath[T]]
 
@@ -337,10 +356,13 @@ transparent trait ModelMembers:
     recur(Vector(), self)
     pb.toVector
 
+  /** A model with concatenated paths fragments of n last path links. */
   def bottom(n: Int): Model = paths.map(_.takeLinksRight(n)).toModel
 
+  /** A model with all leaf elems */
   lazy val leafs: Model = bottom(0)
 
+  /** A model with all leaf relations */
   lazy val leafRels: Model = Model(bottom(1).elems.collect{ case r: Rel => r})
 
   def leafRelsOf[T](at: AttrType[T]): Model = 
@@ -349,9 +371,10 @@ transparent trait ModelMembers:
   def leafRelsOf(et: EntType): Model = 
     Model(leafRels.elems.collect{ case r: Rel if r.e.t == et => r})
 
+  /** A model with all adjacent Text string values joined with newline into one string. */
   def concatAdjacentText = Model(elems.concatAdjacent(Text, "\n"))
 
-  /** */
+  /** A model with all leading and trailing empty Text attributes dropped */
   def trim: Model = 
     extension (es: Vector[Elem]) def dropWhileEmptyText: Vector[Elem] = 
       es.dropWhile:
