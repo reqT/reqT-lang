@@ -68,7 +68,7 @@ class TestModelOps extends munit.FunSuite:
     assert:
       Req("x").has(Prio(1)) +: Model() == Model(Req("x").has(Prio(1))) 
 
-  test("Model normal distinct   "):
+  test("Model normal compact   "):
     val m = Model(
       Req("y").has(Prio(1),Prio(2),Req("z").has(Req("a"))),
       Req("y").has(Prio(1),Prio(2),Req("z").has(Req("b"))),
@@ -90,28 +90,22 @@ class TestModelOps extends munit.FunSuite:
     val n = Model(
       Prio(1),
       Prio(2),
-      Req("x"),
       Req("x").has(Prio(1),Prio(2),Req("x"),Req("y"),Req("z")),
       Req("y").has(Prio(1),Prio(2),Req("x"),Req("y"),Req("z"),Req("z").has(Req("a"),Req("b"))),
       Undefined(Prio),
     )
 
-    val d = Model(
+    val c = Model(
       Req("y").has(Prio(1),Prio(2),Req("z").has(Req("a"),Req("b")),Req("x"),Req("y"),Req("z")),
       Prio(2),
       Prio(1),
       Undefined(Prio),
-      Req("x"),
       Req("x").has(Prio(1),Prio(2),Req("z"),Req("x"),Req("y"))
     )
 
-    assert(m.normalize == n)
-    assert(m.distinct == d)
+    assert(m.normal == n)
+    assert(m.compact == c)
   
-    assert:
-      Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).elems.distinct ==
-      Model(Prio(1),Prio(2),Req("x"),Req("y"),Prio(3)).elems
-
     assert:
       Model(Prio(1),Prio(2),Req("x"),Req("y"),Req("x"),Prio(3)).distinctAttrTypeDeep ==
       Model(Prio(1),Req("x"),Req("y"),Req("x"))
@@ -136,38 +130,22 @@ class TestModelOps extends munit.FunSuite:
       Req("y").has(Prio(1),Prio(2),Req("z")),
     )
     
-    assert: 
-      m.distinct == m.paths.map(_.toModel).reduceLeft(_ ++ _)
-    // assert:   // AAARGH TODO think what is right here
-    //   m.expand == m.paths.map(_.toModel).reduceLeft(_ :++ _)
-    
     assert:
-      m.prune.sorted == m.prune.normalize
+      m.paths.toModel.compact == m.compact
+
+    assert:
+      m.compact.sorted == m.normal  
 
     assert:
       m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths
       
-    val ms = Seq.tabulate(100)(i => Model.random(10))
+    val ms = Seq.tabulate(100)(i => Model.random(20))
 
     assert: 
       ms.forall(m => m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths)
 
-    // assert: 
-    //   ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
-      
-    // assert: 
-    //   ms.forall(m => m.prune.expand.normalize == m.expand.prune.normalize)
-
-
-    // assert: 
-    //   randomModels.forall(m => m.distinct == m.paths.map(_.toModel).foldLeft(Model())(_ ++ _))  ????
-
-    // assert:
-    //   m.maximal == m.paths.map(_.toModel).reduceLeft(_ :++ _)
-    // assert:
-    //   m.minimal.sorted == m.minimal.normal
-
-      //TODO for all random models....
+    assert: 
+      ms.forall(m => m.split.join.normal == m.normal)
 
   test("Model ordering          "):
     val m = Model(
@@ -190,10 +168,14 @@ class TestModelOps extends munit.FunSuite:
       ),
     )
     
-    assert(m.sortLeafRelsBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e")))
+    assert:
+      m.sortLeafRelsBy(Order) == Vector(Req("d"), Req("a"), Req("b"), Req("c"), Req("e"))
 
-    assert(m.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Prio))
-    assert(m.sortLeafRelsBy(Prio).toModel.withRank(Order).toModel.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Order))
+    assert:
+      m.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Prio)
+
+    assert: 
+      m.sortLeafRelsBy(Prio).toModel.withRank(Order).toModel.sortLeafRelsBy(Order) == m.sortLeafRelsBy(Order)
 
   test("Model Examples          "):
     import examples.Prioritization.*

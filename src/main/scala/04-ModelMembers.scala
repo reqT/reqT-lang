@@ -187,8 +187,7 @@ transparent trait ModelMembers:
       case Rel(e, r, m) => Rel(e, r, m.distinctAttrTypeDeep)
     Model(es) 
 
-  /** Recursively sort elems alphabetically. */  
-  // TODO: maybe better to give each Elem ordering and IntAttr special ordering???
+  /** Recursive sorting of elems using Ordering[Elem]. The default ordering is Elem.elemOrd which gives lexicographic sorting. */  
   def sorted(using Ordering[Elem]): Model = 
     val es = elems.map:
       case n: Node => n 
@@ -219,28 +218,33 @@ transparent trait ModelMembers:
 
     Model(ess.flatten.toVector)
 
-  /** A new model constructed by adding all elems using add one by one giving no duplicates per level. */
-  def distinct = Model() ++ self  // TODO: investigate if this is redundant to distinctElemsDeep???
+  /** A model with merged relations, no empty relations and no duplicate entities. */
+  def compact = Model().addAll(removeEmptyRelations.distinctElemsDeep.distinctEntLinks)
 
-  /** A Model in normal form: elems are added one by one replacing same nodes and then sorted. **/
-  def normalize: Model = distinct.sorted
+  /** A Model in normal form is `compact` and `sorted` **/
+  def normal: Model = compact.sorted
 
-  def prune: Model = 
-    removeEmptyRelations.distinctElemsDeep.distinctAttrTypeDeep.distinctEntLinks.distinct
-
+  /** All distinct leaf nodes and single elem relations for each branch. */
   def atoms: Vector[Elem] = //paths.flatMap(_.toModel.elems)
-    def loop(m: Model, isTopLevel: Boolean): Vector[Elem] = m.elems.flatMap:
-      case e: Ent if isTopLevel => Vector(e)
-      case Rel(e,l,sub) => sub.tip.elems.map(n => Rel(e,l,Model(n))) ++ loop(sub, false)
-      case a: Attr[_] if isTopLevel => Vector(a)
-      case u: Undefined[_] if isTopLevel => Vector(u)
-      case _ => Vector()
-    loop(this, true).distinct
+    def loop(m: Model): Vector[Elem] = m.elems.flatMap:
+      case e: Ent => Vector(e)
+      case r@Rel(e,l,sub) => 
+        if sub.elems.isEmpty then Vector(r) 
+        else sub.tip.elems.map(n => Rel(e,l,Model(n))) ++ loop(sub)
+      case a: Attr[_] => Vector(a)
+    loop(self).distinct  // todo: ska atoms vara distinct?
 
-  def expand: Model = Model(atoms) 
+  /** A model split into leaf nodes and single elem relations for each branch. */
+  def atomic: Model = Model(atoms) 
+
+  /** A model with each relation split for each sub-elem. */
+  def split: Model = self.paths.toModel
+
+  /** A model with distinct elems and each relation joined by addAll. */
+  def join: Model = addAll(self)
 
   /** True if this model is in normal form. */
-  def isNormal: Boolean = self == normalize
+  def isNormal: Boolean = self == normal
 
   /** A Model with the nodes but not relations at the top of this Model. */
   def tip: Model = cut(0)
@@ -248,10 +252,11 @@ transparent trait ModelMembers:
   /** A Model with the tip of this Model and the tip of its sub-models. */
   def top: Model = cut(1)
 
+  /** A Model with all its submodels of top level relations. */ 
   def sub: Model =
     elems.collect { case Rel(e, rt, sub) => sub }.foldLeft(Model())(_ :++ _)
   
-  /** Submodels with same link are merged **/
+  /** A Map from each link to a model with all submodels of that link. */
   def linkMapOf(et: EntType): Map[Link, Model] = 
     val ls: Seq[(Link, Model)]  = elems.collect { case Rel(e, rt, sub) if e.t == et => Link(e, rt) -> sub }
     val grouped: Map[Link, Seq[(Link, Model)]] = ls.groupBy(_._1)
@@ -312,6 +317,7 @@ transparent trait ModelMembers:
       for e <- m.elems do e match
         case a: Attr[?] => pb.append(AttrPath(links, a))
         case e: Ent => pb.append(EntPath(links, e))
+        case Rel(e, rt, sub) if sub.elems.isEmpty => pb.append(LinkPath(links :+ Link(e, rt))) 
         case Rel(e, rt, sub) => recur(links :+ Link(e, rt), sub) 
     end recur
     recur(Vector(), self)
@@ -342,7 +348,6 @@ transparent trait ModelMembers:
 
   def leafRelsOf(et: EntType): Model = 
     Model(leafRels.elems.collect{ case r: Rel if r.e.t == et => r})
-
 
   def concatAdjacentText = Model(elems.concatAdjacent(Text, "\n"))
 
@@ -410,7 +415,7 @@ transparent trait ModelMembers:
 
   def md = toMarkdown
 
-  def showCompact: String = elems.map(_.show).mkString("Model(",",",")")
+  def showDense: String = elems.map(_.show).mkString("Model(",",",")")
   def showLines: String = elems.map(_.show).mkString("Model(\n  ",",\n  ","\n)")
 
   override def toString: String = elems.mkString("Model(",",",")")

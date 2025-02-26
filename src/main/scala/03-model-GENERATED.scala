@@ -22,9 +22,9 @@ object Elem:
   given elemOrd: Ordering[Elem] = Ordering.by:
     case IntAttr(t, value) => (t.toString,   value, "",         "",         "")
     case StrAttr(t, value) => (t.toString,   0,     value,      "",         "")
-    case Undefined(t) =>      ("Undefined",  0,     t.toString, "",         "")
-    case Ent(t, id) =>        (t.toString,   0,     id,         "",         "") 
-    case Rel(e, t, sub) =>    (e.t.toString, 1,     e.id,       t.toString, sub.showCompact)
+    case Undefined(t)      => ("Undefined",  0,     t.toString, "",         "")
+    case Ent(t, id)        => (t.toString,   0,     id,         "",         "") 
+    case Rel(e, t, sub)    => (e.t.toString, 1,     e.id,       t.toString, sub.showDense)
 
 sealed trait Node extends Elem:
   def t: NodeType
