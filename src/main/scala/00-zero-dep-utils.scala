@@ -24,6 +24,7 @@ object StringUtils:
   extension (s: String)
     def escaped: String = s.flatMap(_.escaped)
     def quotedEscaped: String = s"\"${s.escaped}\"" 
+    def noQuotes: String = s.filterNot(_ == '"')
 
     def toLines: Array[String] = s.split("\n")
     def spaceSplit: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)

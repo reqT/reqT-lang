@@ -61,10 +61,10 @@ object GraphvizGen:
     case IntAttr(t, value) =>  s" [label=$q$t$nlLiteral$value$q, shape=box, style=rounded]"
     case Rel(e, t, sub) => ""
     
-  def node(e: Elem, path: Path): String = s"  $q${path}/${e}$q"
+  def node(e: Elem, path: Path): String = q + s"${path}/${e}".noQuotes + q
 
   def singleSubnodeLink(from: Ent, rt: RelType, to: Elem, path: LinkPath): String =
-    s"\n//singleSubnodeLink($from,$rt,$to,$path)\n\n"+
+    s"\n//singleSubnodeLink(${from.toString.noQuotes},$rt,${to.toString.noQuotes},${path.toString.noQuotes})\n\n"+
     indent(path.depth) + node(from, path) + style(from) + ";\n" +
     indent(path.depth) + node(to, path / Link(from,rt)) + style(to) + ";\n" +
     indent(path.depth) + node(from, path) + " -> " 
@@ -74,8 +74,8 @@ object GraphvizGen:
     s"\n//subGraphPre($from,$link,$to,$path)\n\n"+ // add comment to help debug
     indent(path.depth) + node(from, path) + style(from) + ";\n" +
     indent(path.depth) + node(from, path) + " -> " + node(to, path/Link(from,link)) +
-    s" [label=$q${link.show}  $q, labeljust=l, lhead=${q}cluster_$from$q]" + ";\n" +
-    indent(path.depth) + s"  subgraph ${q}cluster_$from$q { \n"
+    s" [label=$q${link.show}  $q, labeljust=l, lhead=${q}cluster_${from.toString.noQuotes}$q]" + ";\n" +
+    indent(path.depth) + s"  subgraph ${q}cluster_${from.toString.noQuotes}$q { \n"
 
 
   def nestedBody(m: Model, path: LinkPath = Path.Root): String =
@@ -95,11 +95,11 @@ object GraphvizGen:
     xs.mkString
 
   def flatNode(elem: Elem): String = elem match {
-      case e@Ent(t, id) => s"$q$e$q [label=$q$t$nlLiteral$id$q, shape=box];\n"
+      case e@Ent(t, id) => s"$q${e.toString.noQuotes}$q [label=$q$t$nlLiteral$id$q, shape=box];\n"
       case Undefined(t) => s" [label=$q$t$nlLiteral ??? $q, shape=box, style=rounded]"
       case a: Attr[_] =>
         val (row1, row2) = (a.t, a.value)
-        s"$q$a$q [label=$q$row1$nlLiteral$row2$q, shape=box, style=rounded];\n"
+        s"$q${a.toString.noQuotes}$q [label=$q$row1$nlLiteral$row2$q, shape=box, style=rounded];\n"
       case _ => ""
     }
 
@@ -107,7 +107,7 @@ object GraphvizGen:
     case n: Node => flatNode(n)
     case Rel(from,link, Model(Vector(to))) =>
       flatNode(from) + flatNode(to) +
-      s"$q$from$q" + " -> " + s"$q$to$q" + s" [label=$link]" + ";\n"
+      s"$q${from.toString.noQuotes}$q" + " -> " + s"$q${to.toString.noQuotes}$q" + s" [label=$link]" + ";\n"
     case _ => ""
   } .mkString
 
