@@ -176,7 +176,7 @@ transparent trait ModelMembers:
   /** All entities of this model. */
   def ents: Vector[Ent]         = nodes.collect { case e: Ent => e }
 
-  /** All entities of this model. */
+  /** All entities types of this model. */
   def entTypes: Vector[EntType] = nodes.collect { case e: Ent => e.t }
 
   /** All attributes of this model. */
@@ -185,7 +185,7 @@ transparent trait ModelMembers:
   /** All string attributes of this model. */
   def strAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
 
-  /** All string values of this model. */
+  /** All string attribute values of this model. */
   def strValues: Vector[String] = nodes.collect { case a: StrAttr => a.value }
 
   /** All integer attributes of this model. */
@@ -205,31 +205,47 @@ transparent trait ModelMembers:
   lazy val idMap: Map[String, Vector[Ent]] = 
     ents.groupBy(_.id).map((id, xs) => id -> xs.toVector)
 
-  def isIdTypeDistinct: Boolean = idTypeMap.forall((id, xs) => xs.size == 1)
+  /** Returns true if all ids have exactly one entity type. */
+  def isIdTypeUnique: Boolean = idTypeMap.forall((id, xs) => xs.size == 1)
 
-  def nonTypeDistinctIds: Map[String, Set[EntType]] = idTypeMap.filter((id, xs) => xs.size > 1)
+  /** A Map from id to a set of non-unique entity types for that id. Each set has at least two members. */
+  def nonTypeUniqueIds: Map[String, Set[EntType]] = idTypeMap.filter((id, xs) => xs.size > 1)
 
+  /** All string attributes of type sat. */
   def attrsOfType(sat: StrAttrType): Vector[StrAttr] = 
     nodes.collect { case a: StrAttr if a.t == sat => a }
 
+  /** All integer attributes of type iat. */
   def attrsOfType(iat: IntAttrType): Vector[IntAttr] = 
     nodes.collect { case a: IntAttr if a.t == iat => a }
 
+  /** All entities of a certain id. */
   def entsOfId(id: String): Vector[Ent] = idMap.get(id).getOrElse(Vector())
 
+  /** All entities of a certain type. */
   def entsOfType(et: EntType): Vector[Ent] = nodes.collect { case e: Ent if e.t == et => e }
 
+  /** A Set with all entity types of a certain id. */
   def entTypesOfId(id: String): Set[EntType] = idTypeMap.getOrElse(id, Set())
   
+  /** The first entity with id. */
   def firstEntOfId(id: String): Option[Ent] = entsOfId(id).headOption
 
-  def sortLeafRelsBy[T](iat: IntAttrType, rt: RelType = Has): Vector[Ent] = 
-    val lrs: Model = leafRelsOf(iat)
-    lrs.ents.sortBy(e => (lrs / Link(e, rt) / iat).headOption)
-
+  /** All entities with leaf relation of type at and rt sorted by attribute value. */
+  def sortLeafRelsBy[T](at: AttrType[T], rt: RelType = Has): Vector[Ent] = 
+    at match
+      case iat: IntAttrType => 
+        val lrs: Model = leafRelsOf(iat)
+        lrs.ents.sortBy(e =>(lrs / Link(e, rt) / iat).headOption)
+      case sat: StrAttrType => 
+        val lrs: Model = leafRelsOf(sat)
+        lrs.ents.sortBy(e =>(lrs / Link(e, rt) / sat).headOption)
+      
+  /** For each entity generate Has-relations to integer attributes of type iat with rank values from one */
   def withRank(iat: IntAttrType, rt: RelType = Has): Vector[Rel] =
     ents.zipWithIndex.map((e, i) => Rel(e, rt, Model(iat.apply(i + 1))))
 
+  /** For all entities of type et generate relations of type rt to integer attributes of type iat with rank values from one */
   def withRankDistinct(et: EntType, iat: IntAttrType, rt: RelType = Has): Vector[Rel] =
     entsOfType(et).distinct.zipWithIndex.map((e, i) => Rel(e, rt, Model(iat.apply(i + 1))))
 
@@ -248,8 +264,8 @@ transparent trait ModelMembers:
       case e => Vector(e)
     Model(es.reverse)
 
-  /** A new Model that removes top-level Ent that are themselves part of Links. */
-  def distinctTopEntLinks: Model =
+  /** A new Model that removes top-level entities that are themselves part of relations. */
+  def removeTopEntIfLinked: Model =
     val es = elems.flatMap:
       case e: Ent => 
         if elems.exists: 
@@ -260,10 +276,11 @@ transparent trait ModelMembers:
       case e => Seq(e)
     Model(es)
 
-  def distinctEntLinksDeep: Model =
-    val es = distinctTopEntLinks.elems.map:
+  /** A new Model that removes all entities that are themselves part of relations att the same level. */
+  def removeEntIfLinkedDeep: Model =
+    val es = removeTopEntIfLinked.elems.map:
       case n: Node => n
-      case Rel(e, r, m) => Rel(e, r, m.distinctTopEntLinks)
+      case Rel(e, r, m) => Rel(e, r, m.removeTopEntIfLinked)
     Model(es)
 
   /** A new Model with recursive de-duplication of its elems on all levels. */
@@ -299,13 +316,13 @@ transparent trait ModelMembers:
       case Rel(e, rt, sub) => Link(e, rt)
       case e => e
 
-  /** */
-  def appendEqualRel: Model =  
+  /** Recursively append submodels of relations that have same link. */
+  def appendEqualLinks: Model =  
     val ess: Iterable[Vector[Elem]] = groupByLink.map:
       case (Link(e, rt), xs) => 
         val merged: Rel = 
           xs.asInstanceOf[Vector[Rel]].reduceLeft: (r1, r2) => 
-            Rel(r1.e, r1.t, (r1.sub :++ r2.sub).appendEqualRel)
+            Rel(r1.e, r1.t, (r1.sub :++ r2.sub).appendEqualLinks)
         Vector(merged)
       case (e, xs) => xs
 
@@ -314,7 +331,7 @@ transparent trait ModelMembers:
   /** A model with merged relations, no empty relations and no duplicate entities. */
   def compact = Model()
     .addAll(this)
-    .removeEmptyRelationsDeep.distinctElemsDeep.distinctEntLinksDeep.distinctAttrTypeDeep
+    .removeEmptyRelationsDeep.distinctElemsDeep.removeEntIfLinkedDeep.distinctAttrTypeDeep
 
   /** A Model in normal form is compact and sorted */
   def normal: Model = compact.sorted
@@ -442,9 +459,11 @@ transparent trait ModelMembers:
   /** A model with all leaf relations */
   lazy val leafRels: Model = Model(bottom(1).elems.collect{ case r: Rel => r})
 
+  /** A new model with only leaf relations to attributes of type at. */
   def leafRelsOf[T](at: AttrType[T]): Model = 
     Model(leafRels.elems.collect{ case r: Rel if r.sub.elems.exists(e => e.t == at) => r})
 
+  /** A new model with only leaf relations from entity et. */
   def leafRelsOf(et: EntType): Model = 
     Model(leafRels.elems.collect{ case r: Rel if r.e.t == et => r})
 
