@@ -151,37 +151,57 @@ transparent trait ModelMembers:
 
   /** Remove all elems in es using remove. Same as m.removeAll(e1, e2, e3) */
   def --(es: Elem*): Model = removeAll(es*)
-
+  
+  /** All entities and attributes in this model. */
   def nodes: Vector[Node] = elems.flatMap:
     case n: Node => Vector(n) 
     case Rel(e, r, m) => Vector(e) ++ m.nodes
 
+  /** All relation links in of this model. */
   def links: Vector[Link] = elems.flatMap:
     case _: Node => Vector() 
     case Rel(e, r, m) => Vector(Link(e,r)) ++ m.links
 
+  /** All relation types in of this model. */
   def relTypes: Vector[RelType] = links.map(_.t)
 
+  /** All relations of this model. */
   def rels: Vector[Rel] = elems.flatMap:
     case _: Node => Vector() 
     case r@Rel(_, _, m) => Vector(r) ++ m.rels
 
-
+  /** All undefined attributes of this model. */
   def undefined: Vector[Undefined[?]] = nodes.collect{ case u: Undefined[?] => u }
 
+  /** All entities of this model. */
   def ents: Vector[Ent]         = nodes.collect { case e: Ent => e }
+
+  /** All entities of this model. */
   def entTypes: Vector[EntType] = nodes.collect { case e: Ent => e.t }
+
+  /** All attributes of this model. */
   def attrs: Vector[Attr[?]]    = nodes.collect { case a: Attr[?] => a }
+
+  /** All string attributes of this model. */
   def strAttrs: Vector[StrAttr] = nodes.collect { case a: StrAttr => a }
+
+  /** All string values of this model. */
   def strValues: Vector[String] = nodes.collect { case a: StrAttr => a.value }
+
+  /** All integer attributes of this model. */
   def intAttrs: Vector[IntAttr] = nodes.collect { case a: IntAttr => a }
+
+  /** All integer attribute values of this model. */
   def intValues: Vector[Int]    = nodes.collect { case a: IntAttr => a.value }
   
+  /** All entity ids of this model. */
   lazy val ids: Vector[String] = ents.map(_.id)
 
+  /** A Map from entity id to a Set of entity types of all entity ids of this model. */
   lazy val idTypeMap: Map[String, Set[EntType]] = 
     ents.groupBy(_.id).map((id, xs) => id -> xs.map(_.t).toSet)
   
+  /** A Map from entity id to a Vector of all entities with that id. */
   lazy val idMap: Map[String, Vector[Ent]] = 
     ents.groupBy(_.id).map((id, xs) => id -> xs.toVector)
 

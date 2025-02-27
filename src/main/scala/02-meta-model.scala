@@ -252,6 +252,8 @@ object meta:
       s"|  infix def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
       s"|  infix def $name: Link = Link(e, ${name.capitalize})\n"
 
+    def dollar(s: String) = "${" + s + "}"
+
     s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT AS CHANGES ARE LOST ON RE-GENERATION 
         |//--- Edit the code below by changing `def generate` in reqt.meta
         |//--- Generate this file in sbt> `meta`
@@ -292,7 +294,8 @@ object meta:
         |
         |final case class Link(e: Ent, t: RelType)
         |
-        |final case class Ent private (t: EntType, id: String) extends Node
+        |final case class Ent private (t: EntType, id: String) extends Node:
+        |  override def toString = s"Ent(${dollar("t")},${dollar("id.quotedEscaped")})"
         |object Ent:
         |  val emptyId = "???"
         |  def apply(t: EntType, id: String): Ent = 
@@ -304,13 +307,14 @@ object meta:
         |  def t: AttrType[T]
         |  def value: T
         |
-        |final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]
+        |final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]:
+        |  override def toString = s"StrAttr(${dollar("t")},${dollar("value.quotedEscaped")})"
         |case object StrAttr extends meta.ConceptGroup:
-        |  def types: Seq[StrAttrType] = ???
+        |  def types: Seq[StrAttrType] = meta.strAttrTypes.values.toSeq
         |
         |final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int]
         |case object IntAttr extends meta.ConceptGroup:
-        |  def types: Seq[IntAttrType] = ???
+        |  def types: Seq[IntAttrType] = meta.intAttrTypes.values.toSeq
         |
         |final case class Undefined[T](t: AttrType[T]) extends Attr[T]:
         |  def value: T = throw new java.util.NoSuchElementException
