@@ -5,9 +5,11 @@
 
 package reqt
 
+/** A tree-like data structure for requirements models. */
 final case class Model(elems: Vector[Elem]) extends ModelMembers
 case object Model extends ModelCompanion
 
+/** A base type for all elements of Model. */
 sealed trait Elem:
   def t: ElemType
   def isEnt: Boolean = this.isInstanceOf[Ent]
