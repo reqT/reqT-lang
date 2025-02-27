@@ -6,11 +6,10 @@ import java.io.{BufferedWriter, File, FileWriter}
 import java.util.regex.{Matcher, Pattern}
 import java.nio.file.{Files, Path, Paths}
 
-val _ = 
-  if args.length != 1 then println("give api dir as argument")
-  else if !File(args(0)).exists then println(s"does not exist: ${args(0)}")
-    val wd = File(args(0))    
-    HtmlFilePatcher(Paths.get(args(0))).processDirectory(wd)
+if args.length != 1 then println("give api dir as argument")
+else if !File(args(0)).exists then println(s"does not exist: ${args(0)}")
+  val wd = File(args(0))    
+  HtmlFilePatcher(Paths.get(args(0))).processDirectory(wd)
 
 /** HtmlFilePatcher object that handles the reading and patching of broken linking in an html file.
  */
