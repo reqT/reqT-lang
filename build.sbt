@@ -8,6 +8,8 @@ ThisBuild / version      := reqTLangVer
 ThisBuild / scalaVersion := scalaVer  // use LTS only
 ThisBuild / organization := "io.github.reqt"
 
+sourcesInBase := false
+
 console / initialCommands := """import reqt.*"""
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
