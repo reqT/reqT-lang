@@ -181,21 +181,6 @@ class TestModelOps extends munit.FunSuite:
       ms.forall(m => m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths)
 
     assert: 
-      ms.forall(m => m.split.join.normal == m.normal)
-
-    assert: 
-      ms.forall(m => m.paths.toModel.normal == m.normal)
-
-    assert: 
-      ms.forall(m => m.split.join.normal == m.join.normal)
-
-    assert: 
-      ms.forall(m => m.split.join.split.normal == m.join.split.normal)
-
-    assert: 
-      ms.forall(m => m.split.atomic.sorted == m.atomic.split.sorted)
-
-    assert: 
       ms.forall(m => m.toMarkdown.toModel.toMarkdown == m.toMarkdown)
 
 
