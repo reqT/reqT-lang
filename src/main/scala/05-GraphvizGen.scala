@@ -98,7 +98,7 @@ object GraphvizGen:
       case e@Ent(t, id) => s"$q${e.toString.noQuotes}$q [label=$q$t$nlLiteral$id$q, shape=box];\n"
       case Undefined(t) => s" [label=$q$t$nlLiteral ??? $q, shape=box, style=rounded]"
       case a: Attr[_] =>
-        val (row1, row2) = (a.t, a.value)
+        val (row1, row2) = (a.t, a.value.toString.noQuotes)
         s"$q${a.toString.noQuotes}$q [label=$q$row1$nlLiteral$row2$q, shape=box, style=rounded];\n"
       case _ => ""
     }
