@@ -13,10 +13,10 @@ transparent trait ModelCompanion:
   /** Return the empty model. */
   val empty: Model = Model()
 
-  given PrettyPrinter[Model] with
+  given defaultModelPrettyPrinter: PrettyPrinter[Model] with
     extension (m: Model) def pp: Unit = println(m.show)
 
-  /** Generate a random model with `size <= maxSize` and `elems.length == nbrTopLevelElems` */ 
+  /** Generate a random model with size <= maxSize and elems.length == nbrTopLevelElems */ 
   def random(
     nbrTopLevelElems: Int = 5, 
     relationProb: Double = 0.25, 
@@ -55,8 +55,8 @@ transparent trait ModelCompanion:
     /** Create a model from a sequence of elements. */
     def toModel = Model(elems.toVector)
 
-    /** Merge adjacent string attributes of same type `sat` into one single attribute 
-     * of type `sat` with all string values concatenated using `delim` as in-between separator. */
+    /** Merge adjacent string attributes of same type sat into one single attribute 
+     * of type `sat` with all string values concatenated using delim as in-between separator. */
     def concatAdjacent(sat: StrAttrType, delim: String): Vector[Elem] =
       if elems.length < 2 then elems.toVector else
         val result = scala.collection.mutable.Buffer.empty[Elem]

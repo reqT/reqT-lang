@@ -1,10 +1,10 @@
 package reqt
 
-/** Members of trait `Model` **/
+/** Members of trait Model */
 transparent trait ModelMembers:
   self: Model =>
 
-  /** The number of elems at top level plus the sum of sizes of all sub models **/
+  /** The number of elems at top level plus the sum of sizes of all sub models */
   def size: Int =
     var n = elems.size
     elems.foreach:
@@ -12,25 +12,25 @@ transparent trait ModelMembers:
       case r: Rel => n += r.sub.size
     n
 
-  /** A new Model with elem e prepended to the elems of this Model. Same as `e +: m` */
+  /** A new Model with elem e prepended to the elems of this Model. Same as e +: m */
   def prepend(e: Elem): Model = Model(e +: elems)
 
-  /** A new Model with elem e prepended to the elems of this Model. Same as `m.prepend(e)` */
+  /** A new Model with elem e prepended to the elems of this Model. Same as m.prepend(e) */
   def +:(e: Elem): Model = prepend(e)
 
-  /** A new Model with elem e appended to the elems of this Model. Same as `m :+ e` */
+  /** A new Model with elem e appended to the elems of this Model. Same as m :+ e */
   def append(e: Elem): Model = Model(elems :+ e)
 
-  /** A new Model with elem e appended to the elems of this Model. Same as `m.append(e)` */
+  /** A new Model with elem e appended to the elems of this Model. Same as m.append(e) */
   def :+(e: Elem): Model = append(e)
 
-  /** A new Model with other Model's elems appended to elems. Same as: `m :++ other` */
+  /** A new Model with other Model's elems appended to elems. Same as: m :++ other */
   def append(other: Model): Model = Model(elems :++ other.elems)  
 
-  /** A new Model with other Model's elems appended to elems. Same as: `m.append(other)` */
+  /** A new Model with other Model's elems appended to elems. Same as: m.append(other) */
   def :++(other: Model): Model = append(other)
 
-  /** A new model first attribute at top level of same type updated to `a` or if it does not exists an attribute of that type then appended `a`` to elems. */
+  /** A new model first attribute at top level of same type updated to a or if it does not exists an attribute of that type then appended a to elems. */
   def updateFirst[T](a: Attr[T]): Model = 
     var isReplaced = false
     val es = elems.map: e => 
@@ -52,7 +52,7 @@ transparent trait ModelMembers:
         case elem => elem 
     Model(if isMerged then es else elems :+ r)
 
-  /** Add an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m + e` */
+  /** Add an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as m + e */
   def add(e: Elem): Model = 
     e match
       case a: Attr[?] => 
@@ -67,47 +67,47 @@ transparent trait ModelMembers:
       case e: Ent => if !elems.exists(_ == e) then Model(elems :+ e) else self
       case r: Rel  => self.mergeFirst(r)
   
-  /** Add an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m.add(e)` */
+  /** Add an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as m.add(e) */
   def +(e: Elem): Model = add(e)
 
-  /** Add multiple elements `es` using the `add` method. Same as `m ++ (e1, e2, e3)` */
+  /** Add multiple elements es using the add method. Same as m ++ (e1, e2, e3) */
   def addAll(es: Elem*): Model = 
     var result = self 
     for e <- es do result += e
     result
 
-  /** Add multiple elements of `es` using the `add` method.  Same as `m.addAll(e1, e2, e3)` **/
+  /** Add multiple elements of es using the add method.  Same as m.addAll(e1, e2, e3) */
   def ++(es: Elem*): Model = addAll(es*)  
 
-  /** Add all elements in `es` using the `add` method. Same as `m ++ Vector(e1, e2, e3)` */
+  /** Add all elements in es using the add method. Same as m ++ Vector(e1, e2, e3) */
   def addAll(es: Vector[Elem]): Model = 
     var result = self 
     for e <- es do result += e
     result
 
-  /** Add all elements of `other` model using the `add` method. Same as `m.addAll(es)` **/
+  /** Add all elements of other model using the add method. Same as m.addAll(es) */
   def ++(es: Vector[Elem]): Model = addAll(es)  
   
-  /** Add all elements of `other` model using the `add` method. Same as `m ++ other` */
+  /** Add all elements of other model using the add method. Same as m ++ other */
   def addAll(other: Model): Model =  addAll(other.elems) 
 
-  /** Add all elements of `other` model using the `add` method. Same as `m.addAll(other)` **/
+  /** Add all elements of other model using the add method. Same as m.addAll(other) */
   def ++(other: Model): Model = addAll(other)  
 
-  /** Remove all top-level elems equal to `e`. If you instead want deep removal use `remove`. */
+  /** Remove all top-level elems equal to e. If you instead want deep removal use remove. */
   def removeTop(e: Elem): Model = Model(elems.filterNot(_ == e))
 
-  /** Remove all top-level elems of type `et`. If you instead want deep removal use `remove`. */
+  /** Remove all top-level elems of type et. If you instead want deep removal use remove. */
   def removeTop(et: ElemType): Model = Model(elems.filterNot(e2 => e2.t == et))
 
-  /** Remove all top-level relations linked by `l`. If you instead want deep removal use `remove`. */
+  /** Remove all top-level relations linked by l. If you instead want deep removal use remove. */
   def removeTop(l: Link): Model = 
     val es = elems.filterNot: 
       case Rel(e, t, sub) if l.e == e && l.t == t => true
       case _ => false
     Model(es)
   
-  /** Remove all elems equal to `e` recursively. Same as `m - e` */
+  /** Remove all elems equal to e recursively. Same as m - e */
   def remove(e: Elem): Model = 
     val es = elems.flatMap: 
       case e2 if e2 == e => Seq()
@@ -115,10 +115,10 @@ transparent trait ModelMembers:
       case e2 => Seq(e2) 
     Model(es)
 
-  /** Remove all elems equal to `e` recursively. Same as `m.remove(e)` */
+  /** Remove all elems equal to e recursively. Same as m.remove(e) */
   def -(e: Elem): Model = remove(e)
 
-  /** Remove all elems equal of type `t` recursively. Same as `m - t` */
+  /** Remove all elems equal of type t recursively. Same as m - t */
   def remove(t: ElemType): Model = 
     val es = elems.flatMap: 
       case e2 if e2.t == t => Seq()
@@ -126,10 +126,10 @@ transparent trait ModelMembers:
       case e2 => Seq(e2) 
     Model(es)
 
-  /** Remove all elems equal to `e` recursively. Same as `m.remove(t)` */
+  /** Remove all elems equal to e recursively. Same as m.remove(t) */
   def -(t: ElemType): Model = remove(t) 
   
-  /** Remove all relations linked with `l`. Same as `m - t` */
+  /** Remove all relations linked with l. Same as m - t */
   def remove(l: Link): Model = 
     val es = elems.flatMap: 
       case Rel(e2, t2, sub) if e2 == l.e && t2 == l.t => Seq()
@@ -137,10 +137,10 @@ transparent trait ModelMembers:
       case e2 => Seq(e2) 
     Model(es)
 
-  /** Remove all relations linked with `l`. Same as `m.remove(t)` */
+  /** Remove all relations linked with l. Same as m.remove(t) */
   def -(l: Link): Model = remove(l)
 
-  /** Remove all elems in `es` using `remove`. Same as `m -- (e1, e2, e3)` */
+  /** Remove all elems in es using remove. Same as m -- (e1, e2, e3) */
   def removeAll(es: (Elem | ElemType | Link)*): Model = 
     var result = self 
     for e <- es do e match
@@ -149,7 +149,7 @@ transparent trait ModelMembers:
       case e: Link => result -= e
     result
 
-  /** Remove all elems in `es` using `remove`. Same as `m.removeAll(e1, e2, e3)` */
+  /** Remove all elems in es using remove. Same as m.removeAll(e1, e2, e3) */
   def --(es: Elem*): Model = removeAll(es*)
 
   def nodes: Vector[Node] = elems.flatMap:
@@ -213,10 +213,10 @@ transparent trait ModelMembers:
   def withRankDistinct(et: EntType, iat: IntAttrType, rt: RelType = Has): Vector[Rel] =
     entsOfType(et).distinct.zipWithIndex.map((e, i) => Rel(e, rt, Model(iat.apply(i + 1))))
 
-  /** A new Model with distinct top-level elems (non-recursive). **/
+  /** A new Model with distinct top-level elems (non-recursive). */
   def distinctTopElems: Model = Model(elems.distinct) 
 
-  /** A new Model that is distinct by top-level attribute type (non-recursive). If duplicate AttrType is found on top level then last attribute is kept. **/
+  /** A new Model that is distinct by top-level attribute type (non-recursive). If duplicate AttrType is found on top level then last attribute is kept. */
   def distinctTopAttrType: Model =
     val foundAttrTypes: collection.mutable.Set[AttrType[?]] = collection.mutable.Set()
     val es = elems.reverse.flatMap:
@@ -228,7 +228,7 @@ transparent trait ModelMembers:
       case e => Vector(e)
     Model(es.reverse)
 
-  /** A new Model that removes top-level Ent that are themselves part of Links. **/
+  /** A new Model that removes top-level Ent that are themselves part of Links. */
   def distinctTopEntLinks: Model =
     val es = elems.flatMap:
       case e: Ent => 
@@ -246,14 +246,14 @@ transparent trait ModelMembers:
       case Rel(e, r, m) => Rel(e, r, m.distinctTopEntLinks)
     Model(es)
 
-  /** A new Model with recursive de-duplication of its elems on all levels. **/
+  /** A new Model with recursive de-duplication of its elems on all levels. */
   def distinctElemsDeep: Model =
     val es = elems.distinct.map:
       case n: Node => n 
       case Rel(e, r, m) => Rel(e, r, m.distinctElemsDeep)
     Model(es) 
 
-  /** A new Model with recursive de-duplication of its attributes by type on all levels. If duplicate AttrType is found on same level then last attribute is kept.  **/
+  /** A new Model with recursive de-duplication of its attributes by type on all levels. If duplicate AttrType is found on same level then last attribute is kept.  */
   def distinctAttrTypeDeep: Model =
     val es = distinctTopAttrType.elems.map:
       case n: Node => n 
@@ -274,7 +274,7 @@ transparent trait ModelMembers:
       case Rel(e, r, m) => if m.elems.nonEmpty then Rel(e, r, m.removeEmptyRelationsDeep) else e
     )
   
-  /** A Map that groups equal links to gether. Keys of type Link point to Vector[Rel]. **/
+  /** A Map that groups equal links to gether. Keys of type Link point to Vector[Rel]. */
   def groupByLink: Map[Link | Elem, Vector[Elem]] = elems.groupBy: 
       case Rel(e, rt, sub) => Link(e, rt)
       case e => e
@@ -296,7 +296,7 @@ transparent trait ModelMembers:
     .addAll(this)
     .removeEmptyRelationsDeep.distinctElemsDeep.distinctEntLinksDeep.distinctAttrTypeDeep
 
-  /** A Model in normal form is `compact` and `sorted` **/
+  /** A Model in normal form is compact and sorted */
   def normal: Model = compact.sorted
 
   /** All distinct leaf nodes and single elem relations for each branch. */
@@ -338,18 +338,18 @@ transparent trait ModelMembers:
     val merged: Map[Link, Model] = grouped.map((l, xs) => l -> xs.map(_._2).foldLeft(Model())(_ :++ _))
     merged
 
-  /** Cut all relations so that no relations is deeper than depth. cut(0) == tip, cut(1) == top **/
+  /** Cut all relations so that no relations is deeper than depth. cut(0) == tip, cut(1) == top */
   def cut(depth : Int): Model = 
     if depth <= 0 then  Model(elems.map { case n: Node => n case Rel(e, _, _) => e }) 
     else Model(elems.map { case n: Node => n case Rel(e, r, m) => Rel(e, r, m.cut(depth - 1)) })
 
-  /** A Model with elems deeply filtered according to a selection expression. **/
+  /** A Model with elems deeply filtered according to a selection expression. */
   infix def keep(s: Selection.Expr): Model = Selection.select(s, this)
 
-  /** A sub-model of Link **/
+  /** A sub-model of Link */
   def /(link: Link): Model = self / LinkPath(Vector(link))
 
-  /** A deep sub-model recursing into a sequence of links in a LinkPath. **/
+  /** A deep sub-model recursing into a sequence of links in a LinkPath. */
   def /(p: LinkPath): Model = 
     p.links match
       case Vector() => self
@@ -398,7 +398,7 @@ transparent trait ModelMembers:
     recur(Vector(), self)
     pb.toVector
 
-  /** All attribute paths to attributes of type `at`. */
+  /** All attribute paths to attributes of type at. */
   def pathsOf[T](at: AttrType[T]): Vector[AttrPath[T]] = 
     val pb = collection.mutable.ArrayBuffer.empty[AttrPath[T]]
 
