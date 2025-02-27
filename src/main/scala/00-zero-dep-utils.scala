@@ -4,11 +4,26 @@ object StringUtils:
   val q: String = '\"'.toString
   val q3: String = q*3
   val nl = "\n"
+  val bs = '\\'
   def nlLiteral = """\n"""
   def indent(n: Int): String = " " * (n * Settings.indentSpacing)
 
+  extension (c: Char) 
+    def toUnicode: String = "\\u" + Integer.toHexString(c | 0x10000).substring(1)
+    def escaped: String = c match 
+      case '\b' => "\\b"
+      case '\t' => "\\t"
+      case '\n' => "\\n"
+      case '\f' => "\\f"
+      case '\r' => "\\r"
+      case '\"' => "\\\""
+      case '\\' => "\\\\"
+      case _ if c < ' ' => c.toUnicode
+      case _ => c.toString
+
   extension (s: String)
-    def p: Unit = println(s)
+    def escaped: String = s.flatMap(_.escaped)
+    def quotedEscaped: String = s"\"${s.escaped}\"" 
 
     def toLines: Array[String] = s.split("\n")
     def spaceSplit: Array[String] = s.split(" ").map(_.trim).filter(_.nonEmpty)
