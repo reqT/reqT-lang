@@ -28,8 +28,8 @@ transparent trait ModelCompanion:
 
     import scala.util.Random.{nextDouble, nextInt}
     extension [T](xs: Array[T]) def pick: T = xs(nextInt(xs.length))
-    val words = Array("do", "re", "mi", "fa", "so", "la", "ti", "do")
-    def rndEnt() = EntType.values.pick.apply(words.pick + (1 to 3).map(i => words.pick.capitalize).mkString)
+    val words = Array("Do", "Re", "Mi", "Fa", "So", "La", "Ti", "Do")
+    def rndEnt() = EntType.values.pick.apply((1 to 3).map(i => words.pick).mkString)
 
     var tot = 0
 
@@ -41,7 +41,7 @@ transparent trait ModelCompanion:
         if rnd < attrProb then 
           if nextDouble() < 0.5 
           then IntAttrType.values.pick.apply(nextInt(200) - 100)
-          else StrAttrType.values.pick.apply((1 to 10).map(i => words.pick).mkString("", " ", ".").capitalize)
+          else StrAttrType.values.pick.apply((1 to 3).map(i => words.pick).mkString("", " ", "."))
         else if tot + 1 <= maxSize && rnd < relationProb + attrProb then 
           val subModel = loop(nextInt(1 max ((n - 1) min tot + 1)))
           Rel(rndEnt(), RelType.values.pick, subModel)

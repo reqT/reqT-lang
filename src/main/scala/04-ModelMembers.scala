@@ -30,8 +30,8 @@ transparent trait ModelMembers:
   /** A new Model with other Model's elems appended to elems. Same as: `m.append(other)` */
   def :++(other: Model): Model = append(other)
 
-  /** A new model first attribute at top level of same type updated to `a` or appended to elems. */
-  def updateFirstTop[T](a: Attr[T]): Model = 
+  /** A new model first attribute at top level of same type updated to `a` or if it does not exists an attribute of that type then appended `a`` to elems. */
+  def updateFirst[T](a: Attr[T]): Model = 
     var isReplaced = false
     val es = elems.map: e => 
       e match
@@ -41,7 +41,7 @@ transparent trait ModelMembers:
         case elem => elem 
     Model(if isReplaced then es else elems :+ a)
 
-  /** merge sub model of r with the sub model of first relations with the same link or append r to elems */
+  /** Merge sub model of r with the sub model of first relations with the same link, or if that link does not exist then append r to elems. */
   def mergeFirst(r: Rel): Model = 
     var isMerged = false
     val es = elems.map: e => 
@@ -52,7 +52,7 @@ transparent trait ModelMembers:
         case elem => elem 
     Model(if isMerged then es else elems :+ r)
 
-  /** Append an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m + e` */
+  /** Add an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m + e` */
   def add(e: Elem): Model = 
     e match
       case a: Attr[?] => 
@@ -67,33 +67,90 @@ transparent trait ModelMembers:
       case e: Ent => if !elems.exists(_ == e) then Model(elems :+ e) else self
       case r: Rel  => self.mergeFirst(r)
   
-  /** Append an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m.add(e)` */
+  /** Add an elem if not already exists at top level. Relations are merged using mergeFirst. All top-level attribute value with same AttrType is updated to same value if exists. Same as `m.add(e)` */
   def +(e: Elem): Model = add(e)
 
+  /** Add multiple elements `es` using the `add` method. Same as `m ++ (e1, e2, e3)` */
   def addAll(es: Elem*): Model = 
     var result = self 
     for e <- es do result += e
     result
 
+  /** Add multiple elements of `es` using the `add` method.  Same as `m.addAll(e1, e2, e3)` **/
+  def ++(es: Elem*): Model = addAll(es*)  
+
+  /** Add all elements in `es` using the `add` method. Same as `m ++ Vector(e1, e2, e3)` */
   def addAll(es: Vector[Elem]): Model = 
     var result = self 
     for e <- es do result += e
     result
 
+  /** Add all elements of `other` model using the `add` method. Same as `m.addAll(es)` **/
+  def ++(es: Vector[Elem]): Model = addAll(es)  
+  
+  /** Add all elements of `other` model using the `add` method. Same as `m ++ other` */
   def addAll(other: Model): Model =  addAll(other.elems) 
 
-  /** A new Model with each elem of other Model added to elems of this Model. Same as `m.addAll(other)` **/
+  /** Add all elements of `other` model using the `add` method. Same as `m.addAll(other)` **/
   def ++(other: Model): Model = addAll(other)  
-  
-  def -(e: Elem): Model = Model(elems.filterNot(_ == e)) // what TODO if e is Rel?
 
-  def -(t: ElemType): Model = Model(elems.filterNot(_.t == t)) // what TODO if e is Rel?
+  /** Remove all top-level elems equal to `e`. If you instead want deep removal use `remove`. */
+  def removeTop(e: Elem): Model = Model(elems.filterNot(_ == e))
 
-  def -(l: Link): Model = 
+  /** Remove all top-level elems of type `et`. If you instead want deep removal use `remove`. */
+  def removeTop(et: ElemType): Model = Model(elems.filterNot(e2 => e2.t == et))
+
+  /** Remove all top-level relations linked by `l`. If you instead want deep removal use `remove`. */
+  def removeTop(l: Link): Model = 
     val es = elems.filterNot: 
-      case r: Rel if r.link == l => false 
-      case _ => true
+      case Rel(e, t, sub) if l.e == e && l.t == t => true
+      case _ => false
     Model(es)
+  
+  /** Remove all elems equal to `e` recursively. Same as `m - e` */
+  def remove(e: Elem): Model = 
+    val es = elems.flatMap: 
+      case e2 if e2 == e => Seq()
+      case Rel(e2, t, sub) => Seq(Rel(e2, t, sub.remove(e)))
+      case e2 => Seq(e2) 
+    Model(es)
+
+  /** Remove all elems equal to `e` recursively. Same as `m.remove(e)` */
+  def -(e: Elem): Model = remove(e)
+
+  /** Remove all elems equal of type `t` recursively. Same as `m - t` */
+  def remove(t: ElemType): Model = 
+    val es = elems.flatMap: 
+      case e2 if e2.t == t => Seq()
+      case Rel(e2, t2, sub) => Seq(Rel(e2, t2, sub.remove(t)))
+      case e2 => Seq(e2) 
+    Model(es)
+
+  /** Remove all elems equal to `e` recursively. Same as `m.remove(t)` */
+  def -(t: ElemType): Model = remove(t) 
+  
+  /** Remove all relations linked with `l`. Same as `m - t` */
+  def remove(l: Link): Model = 
+    val es = elems.flatMap: 
+      case Rel(e2, t2, sub) if e2 == l.e && t2 == l.t => Seq()
+      case Rel(e2, t2, sub) => Seq(Rel(e2, t2, sub.remove(l)))
+      case e2 => Seq(e2) 
+    Model(es)
+
+  /** Remove all relations linked with `l`. Same as `m.remove(t)` */
+  def -(l: Link): Model = remove(l)
+
+  /** Remove all elems in `es` using `remove`. Same as `m -- (e1, e2, e3)` */
+  def removeAll(es: (Elem | ElemType | Link)*): Model = 
+    var result = self 
+    for e <- es do e match
+      case e: Elem => result -= e
+      case e: ElemType => result -= e
+      case e: Link => result -= e
+    result
+
+  /** Remove all elems in `es` using `remove`. Same as `m.removeAll(e1, e2, e3)` */
+  def --(es: Elem*): Model = removeAll(es*)
 
   def nodes: Vector[Node] = elems.flatMap:
     case n: Node => Vector(n) 

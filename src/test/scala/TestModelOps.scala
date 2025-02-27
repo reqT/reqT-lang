@@ -147,6 +147,12 @@ class TestModelOps extends munit.FunSuite:
     )
     
     assert:
+      m.add(Req("zzz")).removeTop(Req("zzz")) == m 
+
+    assert:
+      m + Req("zzz") - Req("zzz") == m 
+
+    assert:
       m.paths.toModel.compact == m.compact  //this example happens to be same order
 
     assert:
@@ -163,8 +169,13 @@ class TestModelOps extends munit.FunSuite:
 
     assert:
       m.split.join.split.normal == m.join.split.normal
+
+    // run invariant tests on 100 random models
       
     val ms = Seq.tabulate(100)(i => Model.random(20))
+
+    assert: 
+      ms.forall(m => m.add(Req("zzz")).removeTop(Req("zzz")) == m)
 
     assert: 
       ms.forall(m => m.paths.map(_.show).map(Path.fromString).map(_.get) == m.paths)
@@ -186,7 +197,6 @@ class TestModelOps extends munit.FunSuite:
 
     assert: 
       ms.forall(m => m.toMarkdown.toModel.toMarkdown == m.toMarkdown)
-
 
 
   test("Model ordering          "):
