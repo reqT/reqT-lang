@@ -1,8 +1,8 @@
-lazy val reqTLangVer = "4.6.0"
-lazy val scalaVer    = "3.3.5"  // use LTS only https://www.scala-lang.org/download/all.html
-lazy val munitVer    = "1.0.3"
-lazy val oslibVer    = "0.11.3"  // used as test dep only https://github.com/com-lihaoyi/os-lib/releases
-lazy val scalaXmlVer = "2.2.0"   // deprecated; migration needed eventually...
+lazy val reqTLangVer = "4.6.1"
+lazy val scalaVer    = "3.3.7"  // use LTS only https://www.scala-lang.org/download/all.html
+lazy val munitVer    = "1.2.1"
+lazy val oslibVer    = "0.11.6"  // used as test dep only https://github.com/com-lihaoyi/os-lib/releases
+lazy val scalaXmlVer = "2.4.0"   // deprecated; migration needed eventually...
 
 ThisBuild / version      := reqTLangVer
 ThisBuild / scalaVersion := scalaVer  // use LTS only
