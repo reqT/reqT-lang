@@ -35,7 +35,7 @@ sealed trait Path:
         case et: EntType => Model(et.apply(""))
     else
       val h = links.head
-      Model() + Rel(h.e, h.t, firstLinkDropped.toModel)
+      Model(Rel(h.e, h.t, firstLinkDropped.toModel))
 
 // case object Root:  // TODO: is this needed or is it just another unnecessary way of doing Path(...)
 //   def /(link: Link): LinkPath = LinkPath(Vector(link))
@@ -63,7 +63,7 @@ case object Path:
         else
           val links: Vector[Link] = parsed.collect{ case (Some(Link(e,t)), s) => Link(e,t)}
           val last: ParsedUnion = parsedParts.last
-          if links != parsedParts.dropRight(1) then None // malformed path if not starting with links
+          if parsedParts.dropRight(1).exists(pu => !pu.isInstanceOf[Link]) then None // malformed path if not starting with links
           else
             last match
               case _: Link        => Some(LinkPath(links))

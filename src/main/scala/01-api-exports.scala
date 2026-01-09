@@ -8,7 +8,7 @@ export Show.show   // extension for pretty Model using enum types and apply
 export Selection.* // and/or-expressions for selecting Model parts 
 export Path.`/` // path factories for slash notation on Model
 
-export MarkdownParser.m       // string interpolator to parse markdown Model
+export MarkdownParser.md       // string interpolator to parse markdown Model
 export MarkdownParser.toModel // string extension to parse markdown Model
 
 export HtmlGen.{toHtml, toHtmlBody}

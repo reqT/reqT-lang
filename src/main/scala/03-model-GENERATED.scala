@@ -5,9 +5,11 @@
 
 package reqt
 
+/** A tree-like data structure for requirements models. */
 final case class Model(elems: Vector[Elem]) extends ModelMembers
 case object Model extends ModelCompanion
 
+/** A base type for all elements of Model. */
 sealed trait Elem:
   def t: ElemType
   def isEnt: Boolean = this.isInstanceOf[Ent]
@@ -22,9 +24,9 @@ object Elem:
   given elemOrd: Ordering[Elem] = Ordering.by:
     case IntAttr(t, value) => (t.toString,   value, "",         "",         "")
     case StrAttr(t, value) => (t.toString,   0,     value,      "",         "")
-    case Undefined(t) =>      ("Undefined",  0,     t.toString, "",         "")
-    case Ent(t, id) =>        (t.toString,   0,     id,         "",         "") 
-    case Rel(e, t, sub) =>    (e.t.toString, 1,     e.id,       t.toString, sub.showCompact)
+    case Undefined(t)      => ("Undefined",  0,     t.toString, "",         "")
+    case Ent(t, id)        => (t.toString,   0,     id,         "",         "") 
+    case Rel(e, t, sub)    => (e.t.toString, 1,     e.id,       t.toString, sub.showDense)
 
 sealed trait Node extends Elem:
   def t: NodeType
@@ -38,7 +40,8 @@ sealed trait AttrType[T] extends NodeType:
 
 final case class Link(e: Ent, t: RelType)
 
-final case class Ent private (t: EntType, id: String) extends Node
+final case class Ent private (t: EntType, id: String) extends Node:
+  override def toString = s"Ent(${t},${id.quotedEscaped})"
 object Ent:
   val emptyId = "???"
   def apply(t: EntType, id: String): Ent = 
@@ -50,13 +53,14 @@ sealed trait Attr[T] extends Node:
   def t: AttrType[T]
   def value: T
 
-final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]
+final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]:
+  override def toString = s"StrAttr(${t},${value.quotedEscaped})"
 case object StrAttr extends meta.ConceptGroup:
-  def types: Seq[StrAttrType] = ???
+  def types: Seq[StrAttrType] = meta.strAttrTypes.values.toSeq
 
 final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int]
 case object IntAttr extends meta.ConceptGroup:
-  def types: Seq[IntAttrType] = ???
+  def types: Seq[IntAttrType] = meta.intAttrTypes.values.toSeq
 
 final case class Undefined[T](t: AttrType[T]) extends Attr[T]:
   def value: T = throw new java.util.NoSuchElementException

@@ -2,6 +2,7 @@ package reqt
 
 import scala.collection.immutable.ArraySeq
 
+/** The meta-model of reqT-lang used for code generation of Model and the Elem hierarchy. */
 object meta:
   trait ConceptGroup:
     def types: Seq[ElemType]
@@ -252,6 +253,8 @@ object meta:
       s"|  infix def $name(sub: Elem*): Rel = Rel(e, ${name.capitalize}, Model(sub*))\n" +
       s"|  infix def $name: Link = Link(e, ${name.capitalize})\n"
 
+    def dollar(s: String) = "${" + s + "}"
+
     s"""|//--- THIS IS A GENERATED FILE! DO NOT EDIT AS CHANGES ARE LOST ON RE-GENERATION 
         |//--- Edit the code below by changing `def generate` in reqt.meta
         |//--- Generate this file in sbt> `meta`
@@ -259,9 +262,11 @@ object meta:
         |
         |package reqt
         |
+        |/** A tree-like data structure for requirements models. */
         |final case class Model(elems: Vector[Elem]) extends ModelMembers
         |case object Model extends ModelCompanion
         |
+        |/** A base type for all elements of Model. */
         |sealed trait Elem:
         |  def t: ElemType
         |  def isEnt: Boolean = this.isInstanceOf[Ent]
@@ -276,9 +281,9 @@ object meta:
         |  given elemOrd: Ordering[Elem] = Ordering.by:
         |    case IntAttr(t, value) => (t.toString,   value, "",         "",         "")
         |    case StrAttr(t, value) => (t.toString,   0,     value,      "",         "")
-        |    case Undefined(t) =>      ("Undefined",  0,     t.toString, "",         "")
-        |    case Ent(t, id) =>        (t.toString,   0,     id,         "",         "") 
-        |    case Rel(e, t, sub) =>    (e.t.toString, 1,     e.id,       t.toString, sub.showCompact)
+        |    case Undefined(t)      => ("Undefined",  0,     t.toString, "",         "")
+        |    case Ent(t, id)        => (t.toString,   0,     id,         "",         "") 
+        |    case Rel(e, t, sub)    => (e.t.toString, 1,     e.id,       t.toString, sub.showDense)
         |
         |sealed trait Node extends Elem:
         |  def t: NodeType
@@ -292,7 +297,8 @@ object meta:
         |
         |final case class Link(e: Ent, t: RelType)
         |
-        |final case class Ent private (t: EntType, id: String) extends Node
+        |final case class Ent private (t: EntType, id: String) extends Node:
+        |  override def toString = s"Ent(${dollar("t")},${dollar("id.quotedEscaped")})"
         |object Ent:
         |  val emptyId = "???"
         |  def apply(t: EntType, id: String): Ent = 
@@ -304,13 +310,14 @@ object meta:
         |  def t: AttrType[T]
         |  def value: T
         |
-        |final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]
+        |final case class StrAttr(t: StrAttrType, value: String) extends Attr[String]:
+        |  override def toString = s"StrAttr(${dollar("t")},${dollar("value.quotedEscaped")})"
         |case object StrAttr extends meta.ConceptGroup:
-        |  def types: Seq[StrAttrType] = ???
+        |  def types: Seq[StrAttrType] = meta.strAttrTypes.values.toSeq
         |
         |final case class IntAttr(t: IntAttrType, value: Int) extends Attr[Int]
         |case object IntAttr extends meta.ConceptGroup:
-        |  def types: Seq[IntAttrType] = ???
+        |  def types: Seq[IntAttrType] = meta.intAttrTypes.values.toSeq
         |
         |final case class Undefined[T](t: AttrType[T]) extends Attr[T]:
         |  def value: T = throw new java.util.NoSuchElementException

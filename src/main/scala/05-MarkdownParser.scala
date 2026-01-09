@@ -14,7 +14,7 @@ object MarkdownParser:
       def stripColonSuffix = s.stripSuffix(":")
 
   extension (sc: StringContext)
-    def m(args: Any*): Model = 
+    def md(args: Any*): Model = 
       val strings: Iterator[String] = sc.parts.iterator
       val expressions: Iterator[Any] = args.iterator
       val sb = StringBuilder(strings.next)
